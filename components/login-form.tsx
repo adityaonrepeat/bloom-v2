@@ -18,27 +18,44 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema, LoginSchema } from "@/lib/validators/auth"
 
+import { useState } from "react"
+
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
 
+  const [serverError, setServerError] = useState<string | null>(null)
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     mode: "onChange",
   })
 
   const onSubmit = async (data: LoginSchema) => {
-    const formData = new FormData()
+    setServerError(null)
 
+    const formData = new FormData()
     formData.append("email", data.email)
     formData.append("password", data.password)
 
-    await loginEmail({ error: null }, formData)
+    try {
+      const res = await loginEmail({ error: null }, formData)
+
+      if (res?.error) {
+        setServerError(res.error)
+      }
+    } catch (err: any) {
+      // ignore Next.js redirect error
+      if (!err?.message?.includes("NEXT_REDIRECT")) {
+        console.error(err)
+        setServerError("Something went wrong")
+      }
+    }
   }
 
   const handleLoginWithGoogle = async () => {
@@ -63,7 +80,6 @@ export function LoginForm({
           </p>
         </div>
 
-        {/* Email */}
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input
@@ -79,7 +95,6 @@ export function LoginForm({
           )}
         </Field>
 
-        {/* Password */}
         <Field>
           <div className="flex items-center">
             <FieldLabel htmlFor="password">Password</FieldLabel>
@@ -104,13 +119,20 @@ export function LoginForm({
           )}
         </Field>
 
+        {serverError && (
+          <FieldDescription className="text-red-500 text-center">
+            {serverError}
+          </FieldDescription>
+        )}
+
         <Field>
-          <Button type="submit">Login</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Logging in..." : "Login"}
+          </Button>
         </Field>
 
         <FieldSeparator>Or continue with</FieldSeparator>
 
-        {/* Google login */}
         <Field>
           <Button
             variant="outline"

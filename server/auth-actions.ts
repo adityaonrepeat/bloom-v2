@@ -1,48 +1,72 @@
-"use server";
+"use server"
 
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth"
+import prisma from "@/lib/prisma"
+import { headers } from "next/headers"
+import { redirect } from "next/navigation"
 
 export async function registerEmail(
-    prevState: { error: string | null },
-    formData: FormData
+  prevState: { error: string | null },
+  formData: FormData
 ) {
-  const name = formData.get("name") as string;
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const confirmPassword = formData.get("confirm-password") as string;
 
-  if (password !== confirmPassword) {
-    return { error: "Passwords do not match" };
+  const email = formData.get("email") as string
+  const password = formData.get("password") as string
+  const name = formData.get("name") as string
+
+  // check if user exists
+  const existingUser = await prisma.user.findUnique({
+    where: { email }
+  })
+
+  if (existingUser) {
+
+    if (existingUser.emailVerified) {
+      return { error: "Account already exists. Please login." }
+    }
+
+    // resend verification
+    await auth.api.sendVerificationEmail({
+      body: { email }
+    })
+
+    redirect("/verify-email")
   }
 
+  // create account
   await auth.api.signUpEmail({
     body: {
       email,
       password,
       name,
     },
-    headers: await headers(),
-  });
+  })
 
-  redirect("/dashboard");
+  redirect("/verify-email")
 }
 
 export async function loginEmail(
-    prevState: { error: string | null },
-    formData: FormData
+  prevState: { error: string | null },
+  formData: FormData
 ) {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+  try {
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
-  await auth.api.signInEmail({
-    body: {
-      email,
-      password,
-    },
-    headers: await headers(),
-  });
+    const result = await auth.api.signInEmail({
+      body: { email, password },
+      headers: await headers(),
+    });
+
+    console.log("LOGIN RESULT:", result);
+
+  } catch (err: any) {
+    console.error("LOGIN ERROR:", err);
+
+    return {
+      error: err.message ?? "Invalid credentials",
+    };
+  }
 
   redirect("/dashboard");
 }

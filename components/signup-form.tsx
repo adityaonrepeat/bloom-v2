@@ -1,5 +1,7 @@
 "use client"
 
+import { useState } from "react"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -24,6 +26,8 @@ export function SignupForm({
   ...props
 }: React.ComponentProps<"form">) {
 
+  const [serverError, setServerError] = useState<string | null>(null)
+
   const {
     register,
     handleSubmit,
@@ -34,6 +38,9 @@ export function SignupForm({
   })
 
   const onSubmit = async (data: SignupSchema) => {
+
+    setServerError(null)
+
     const formData = new FormData()
 
     formData.append("name", data.name)
@@ -41,7 +48,22 @@ export function SignupForm({
     formData.append("password", data.password)
     formData.append("confirm-password", data.confirmPassword)
 
-    await registerEmail({ error: null }, formData)
+    try {
+
+      const res = await registerEmail({ error: null }, formData)
+
+      if (res?.error) {
+        setServerError(res.error)
+      }
+
+    } catch (err: any) {
+
+      if (!err?.message?.includes("NEXT_REDIRECT")) {
+        console.error(err)
+        setServerError("Something went wrong")
+      }
+
+    }
   }
 
   const handleSignupWithGoogle = async () => {
@@ -138,6 +160,13 @@ export function SignupForm({
             Please confirm your password.
           </FieldDescription>
         </Field>
+
+        {/* SERVER ERROR */}
+        {serverError && (
+          <FieldDescription className="text-red-500 text-center">
+            {serverError}
+          </FieldDescription>
+        )}
 
         {/* Submit */}
         <Field>
