@@ -1,0 +1,131 @@
+// This is your Prisma schema file,
+// leaTagrn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EmotionTag {
+  happy
+  calm
+  stressed
+  anxious
+}
+
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
+
+  emotionalScore Int?
+  emotionalTag   EmotionTag?
+  journals      Journal[]
+
+  reportCount   Int      @default(0)
+  isBlocked     Boolean  @default(false)
+  reportsMade   Report[] @relation("Reporter")
+  reportsRecv   Report[] @relation("Reported")
+  moods         MoodLog[]
+
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model MoodLog {
+  id        String   @id @default(uuid())
+  userId    String
+  emotionTag   EmotionTag
+  emotionScore Int
+
+  createdAt DateTime @default(now()) //date         DateTime @default(now())
+
+  user User @relation(fields:[userId], references:[id])
+}
+
+model Report {
+  id         String @id @default(uuid())
+
+  reporterId String
+  reportedId String
+
+  createdAt DateTime @default(now())
+
+  reporter User @relation("Reporter", fields:[reporterId], references:[id])
+  reported User @relation("Reported", fields:[reportedId], references:[id])
+}
+
+model Journal {
+  id        String   @id @default(uuid())
+  userId    String
+
+  title     String
+  content   String
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}

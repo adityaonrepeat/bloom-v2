@@ -1,48 +1,65 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# ========================
+# Dependencies
+# ========================
+node_modules/
+web/node_modules/
+realtime/node_modules/
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+# ========================
+# Build outputs
+# ========================
+.next/
+web/.next/
 
-# testing
-/coverage
+build/
+dist/
 
-# next.js
-/.next/
-/out/
+# ========================
+# TypeScript cache
+# ========================
+*.tsbuildinfo
 
-# production
-/build
+# ========================
+# Environment files
+# ========================
+.env
+.env.*
+web/.env
+web/.env.*
+realtime/.env
+realtime/.env.*
 
-# misc
-.DS_Store
-*.pem
-
-# debug
+# ========================
+# Logs
+# ========================
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
+pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env.example
+# ========================
+# OS / Misc
+# ========================
+.DS_Store
+*.pem
 
-# vercel
+# ========================
+# Vercel
+# ========================
 .vercel
 
-# typescript
-*.tsbuildinfo
+# ========================
+# Prisma (generated files)
+# ========================
+lib/generated/prisma
+
+# ========================
+# Next.js
+# ========================
+out/
 next-env.d.ts
 
-/lib/generated/prisma
+# ========================
+# Testing
+# ========================
+coverage/
