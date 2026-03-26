@@ -52,6 +52,12 @@ export class MatchManager {
     await redis.lrem(`queue:${emotion}`, 0, socketId)
   }
 
+  static async removeFromAllQueues(socketId: string): Promise<void> {
+    for (const emotion of ALL_EMOTIONS) {
+      await redis.lrem(`queue:${emotion}`, 0, socketId)
+    }
+  }
+
   static async canSkip(socketId: string): Promise<boolean> {
     const cooldown = await redis.get(`skip-cooldown:${socketId}`)
     return !cooldown

@@ -92,11 +92,13 @@ function ZegoVideoRoom({
 
     return () => {
       cancelled = true
-      if (zpRef.current) {
-        try {
-          zpRef.current.destroy()
-        } catch {}
-        zpRef.current = null
+      const zp = zpRef.current
+      zpRef.current = null // null ref first so stale callbacks can't re-use it
+      if (zp) {
+        // defer destroy so any in-flight SDK async calls finish before teardown
+        setTimeout(() => {
+          try { zp.destroy() } catch {}
+        }, 0)
       }
     }
   }, [roomId, userId, userName])

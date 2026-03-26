@@ -65,14 +65,28 @@ io.on("connection", (socket) => {
 
     console.log(`[skip] ${socket.id} skipping partner`)
 
-    RoomManager.leaveRoom(io, socket.id)
+    // leaveRoom returns the partner's socket ID
+    const partnerId = RoomManager.leaveRoom(io, socket.id)
 
     await MatchManager.setSkipCooldown(socket.id)
 
+    // Requeue the SKIPPER
     userEmotions.set(socket.id, emotion)
     await MatchManager.addToQueue(socket.id, emotion)
     socket.emit("waiting")
-    console.log(`[requeue] ${socket.id} back in ${emotion} queue (skipper only)`)
+    console.log(`[requeue] ${socket.id} back in ${emotion} queue (skipper)`)
+
+    // Requeue the PARTNER — they were left stranded with no queue entry
+    if (partnerId) {
+      const partnerEmotion = userEmotions.get(partnerId) || emotion
+      userEmotions.set(partnerId, partnerEmotion)
+      await MatchManager.addToQueue(partnerId, partnerEmotion)
+      const partnerSocket = io.sockets.sockets.get(partnerId)
+      if (partnerSocket) {
+        partnerSocket.emit("waiting")
+        console.log(`[requeue] ${partnerId} back in ${partnerEmotion} queue (skipped partner)`)
+      }
+    }
 
     await MatchManager.processQueues(io, userDbIds, lastPartnerMap)
   })
@@ -82,11 +96,9 @@ io.on("connection", (socket) => {
 
     RoomManager.leaveRoom(io, socket.id)
 
-    const emotion = userEmotions.get(socket.id)
-    if (emotion) {
-      await MatchManager.removeFromQueue(socket.id, emotion)
-      userEmotions.delete(socket.id)
-    }
+    // Clean from ALL queues to eliminate ghost entries regardless of tracked emotion
+    await MatchManager.removeFromAllQueues(socket.id)
+    userEmotions.delete(socket.id)
 
     userDbIds.delete(socket.id)
     lastPartnerMap.delete(socket.id)
