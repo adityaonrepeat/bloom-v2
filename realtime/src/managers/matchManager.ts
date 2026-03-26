@@ -81,7 +81,8 @@ export class MatchManager {
 
         if (!user2) {
           await redis.lpush(`queue:${emotion}`, user1)
-          break
+          //break
+          continue
         }
 
         if (!io.sockets.sockets.has(user2) || RoomManager.isInRoom(user2)) {
