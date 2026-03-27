@@ -193,7 +193,10 @@ export default function TalkPage() {
       setZegoReady(false)
       setPageState("searching")
       setRoomId(null)
-      // Server already auto-requeues us
+      // Server requeued us in Redis; re-emit join-queue so this socket actively
+      // participates in the match flow (avoids the "stuck searching" state)
+      const emotion = localStorage.getItem("emotion-tag") || "calm"
+      socket.emit("join-queue", { emotion, userId: sessionRef.current?.id })
     }
 
     const handleSkipCooldown = ({ seconds }: { seconds: number }) => {

@@ -54,6 +54,13 @@ io.on("connection", (socket) => {
     await MatchManager.addToQueue(socket.id, emotion)
     socket.emit("waiting")
     console.log(`[waiting] ${socket.id} queued in ${emotion}`)
+
+    // Trigger matching in case another user is already waiting
+    try {
+      await MatchManager.processQueues(io, userDbIds, lastPartnerMap)
+    } catch (e) {
+      console.error("[join-queue] processQueues failed:", e)
+    }
   })
 
   socket.on("skip", async ({ emotion }: { emotion: string }) => {
@@ -88,7 +95,14 @@ io.on("connection", (socket) => {
       }
     }
 
-    await MatchManager.processQueues(io, userDbIds, lastPartnerMap)
+    // Delay so both lpush calls are committed to Redis before we scan
+    setTimeout(async () => {
+      try {
+        await MatchManager.processQueues(io, userDbIds, lastPartnerMap)
+      } catch (e) {
+        console.error("[skip] processQueues failed:", e)
+      }
+    }, 50)
   })
 
   socket.on("disconnect", async () => {
@@ -103,7 +117,11 @@ io.on("connection", (socket) => {
     userDbIds.delete(socket.id)
     lastPartnerMap.delete(socket.id)
 
-    await MatchManager.processQueues(io, userDbIds, lastPartnerMap)
+    try {
+      await MatchManager.processQueues(io, userDbIds, lastPartnerMap)
+    } catch (e) {
+      console.error("[disconnect] processQueues failed:", e)
+    }
   })
 })
 
