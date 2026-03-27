@@ -193,10 +193,10 @@ export default function TalkPage() {
       setZegoReady(false)
       setPageState("searching")
       setRoomId(null)
-      // Server requeued us in Redis; re-emit join-queue so this socket actively
-      // participates in the match flow (avoids the "stuck searching" state)
-      const emotion = localStorage.getItem("emotion-tag") || "calm"
-      socket.emit("join-queue", { emotion, userId: sessionRef.current?.id })
+      // Server already requeued us via the skip handler — no join-queue needed here.
+      // The server-side Promise.all guarantees both parties are in Redis before
+      // processQueues runs, so we just wait for the incoming "match-found" or
+      // stay on the searching screen.
     }
 
     const handleSkipCooldown = ({ seconds }: { seconds: number }) => {

@@ -77,17 +77,25 @@ io.on("connection", (socket) => {
 
     await MatchManager.setSkipCooldown(socket.id)
 
-    // Requeue the SKIPPER
+    // Requeue BOTH parties atomically — Promise.all guarantees both lpush calls
+    // are committed to Redis before processQueues ever reads the queues.
+    const partnerEmotion = (partnerId && userEmotions.get(partnerId)) || emotion
+
+    if (partnerId) {
+      userEmotions.set(partnerId, partnerEmotion)
+    }
     userEmotions.set(socket.id, emotion)
-    await MatchManager.addToQueue(socket.id, emotion)
+
+    await Promise.all([
+      MatchManager.addToQueue(socket.id, emotion),
+      partnerId ? MatchManager.addToQueue(partnerId, partnerEmotion) : Promise.resolve(),
+    ])
+
+    // Notify both clients they're back in the queue
     socket.emit("waiting")
     console.log(`[requeue] ${socket.id} back in ${emotion} queue (skipper)`)
 
-    // Requeue the PARTNER — they were left stranded with no queue entry
     if (partnerId) {
-      const partnerEmotion = userEmotions.get(partnerId) || emotion
-      userEmotions.set(partnerId, partnerEmotion)
-      await MatchManager.addToQueue(partnerId, partnerEmotion)
       const partnerSocket = io.sockets.sockets.get(partnerId)
       if (partnerSocket) {
         partnerSocket.emit("waiting")
@@ -95,14 +103,12 @@ io.on("connection", (socket) => {
       }
     }
 
-    // Delay so both lpush calls are committed to Redis before we scan
-    setTimeout(async () => {
-      try {
-        await MatchManager.processQueues(io, userDbIds, lastPartnerMap)
-      } catch (e) {
-        console.error("[skip] processQueues failed:", e)
-      }
-    }, 50)
+    // Both inserts are already awaited — safe to match immediately, no setTimeout needed
+    try {
+      await MatchManager.processQueues(io, userDbIds, lastPartnerMap)
+    } catch (e) {
+      console.error("[skip] processQueues failed:", e)
+    }
   })
 
   socket.on("disconnect", async () => {
