@@ -30,6 +30,7 @@ model User {
   emotionalScore Int?
   emotionalTag   EmotionTag?
   journals      Journal[]
+  aasthaSessions AasthaSession[]
 
   reportCount   Int      @default(0)
   isBlocked     Boolean  @default(false)
@@ -84,6 +85,35 @@ model Report {
 
   reporter User @relation("Reporter", fields:[reporterId], references:[id])
   reported User @relation("Reported", fields:[reportedId], references:[id])
+}
+
+model AasthaSession {
+  id          String   @id @default(uuid())
+  userId      String
+  title       String   @default("New Session")
+  emotionTag  EmotionTag?
+  emotionScore Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages AasthaMessage[]
+
+  @@index([userId])
+  @@map("aastha_session")
+}
+
+model AasthaMessage {
+  id        String   @id @default(uuid())
+  sessionId String
+  role      String   // "user" | "assistant"
+  content   String
+  createdAt DateTime @default(now())
+
+  session AasthaSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@map("aastha_message")
 }
 
 model Journal {

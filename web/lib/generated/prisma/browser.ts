@@ -38,6 +38,16 @@ export type MoodLog = Prisma.MoodLogModel
  */
 export type Report = Prisma.ReportModel
 /**
+ * Model AasthaSession
+ * 
+ */
+export type AasthaSession = Prisma.AasthaSessionModel
+/**
+ * Model AasthaMessage
+ * 
+ */
+export type AasthaMessage = Prisma.AasthaMessageModel
+/**
  * Model Journal
  * 
  */

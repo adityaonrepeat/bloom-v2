@@ -22,18 +22,23 @@ function ZegoVideoRoom({
   const containerRef = useRef<HTMLDivElement>(null)
 
   const joiningRef = useRef(false)
+  const isActiveRef = useRef(false)
 
   useEffect(() => {
+    isActiveRef.current = true
     let cancelled = false
 
     const start = async () => {
       if (joiningRef.current) return
       if (!containerRef.current) return
 
+      const container = containerRef.current
+      if (!container) return
+
       joiningRef.current = true
 
       const { ZegoUIKitPrebuilt } = await import("@zegocloud/zego-uikit-prebuilt")
-      if (cancelled || !containerRef.current) return
+      if (cancelled) return
 
       const appID = Number(process.env.NEXT_PUBLIC_ZEGO_APP_ID)
       const serverSecret = process.env.NEXT_PUBLIC_ZEGO_SERVER_SECRET || ""
@@ -50,7 +55,7 @@ function ZegoVideoRoom({
 
       const zp = ZegoUIKitPrebuilt.create(kitToken)
       if (cancelled) {
-        try { zp.destroy() } catch {}
+        try { zp.destroy() } catch { }
         return
       }
 
@@ -59,7 +64,7 @@ function ZegoVideoRoom({
       let readyCalled = false
 
       zp.joinRoom({
-        container: containerRef.current,
+        container, // ✅ use stable snapshot, not live ref
         scenario: { mode: ZegoUIKitPrebuilt.VideoConference },
         showPreJoinView: false,
         showTextChat: true,
@@ -68,12 +73,14 @@ function ZegoVideoRoom({
         turnOnCameraWhenJoining: true,
         showLeaveRoomConfirmDialog: false,
         onJoinRoom: () => {
+          if (!isActiveRef.current) return
           if (!readyCalled) {
             readyCalled = true
             onReady()
           }
         },
         onLeaveRoom: () => {
+          if (!isActiveRef.current) return
           joiningRef.current = false
           onLeave()
         },
@@ -81,6 +88,7 @@ function ZegoVideoRoom({
 
       // Fallback in case onJoinRoom never fires
       setTimeout(() => {
+        if (!isActiveRef.current) return
         if (!readyCalled) {
           readyCalled = true
           onReady()
@@ -88,17 +96,23 @@ function ZegoVideoRoom({
       }, 5000)
     }
 
-    start()
+    // Wait 200ms before starting — this ensures any in-progress destroy() from
+    // the previous mount (which has a 150ms delay) has fully settled before we
+    // call joinRoom. Without this, old and new Zego instances overlap → createSpan crash.
+    const startTimer = setTimeout(start, 200)
 
     return () => {
       cancelled = true
+      isActiveRef.current = false
+      joiningRef.current = false  // reset so remount can join without being blocked
+      clearTimeout(startTimer)
       const zp = zpRef.current
       zpRef.current = null // null ref first so stale callbacks can't re-use it
       if (zp) {
-        // defer destroy so any in-flight SDK async calls finish before teardown
+        // 150ms lets Zego finish any in-flight async work before we tear down
         setTimeout(() => {
           try { zp.destroy() } catch {}
-        }, 0)
+        }, 150)
       }
     }
   }, [roomId, userId, userName])
@@ -291,7 +305,7 @@ export default function TalkPage() {
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-sm">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 10l-4 4l6 6l4-16l-18 7l4 2l2 6l3-4"/>
+              <path d="M15 10l-4 4l6 6l4-16l-18 7l4 2l2 6l3-4" />
             </svg>
           </div>
           <div>

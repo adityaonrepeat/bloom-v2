@@ -1,35 +1,39 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { Sidebar } from "@/components/aastha/sidebar/Sidebar"
+import { ChatContainer } from "@/components/aastha/chat/ChatContainer"
+import type { AasthaSession } from "@/hooks/useAastha"
 
 export default function AasthaPage() {
-  const router = useRouter()
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(null)
+
+  const handleSessionCreated = (session: AasthaSession) => {
+    setActiveSessionId(session.id)
+  }
+
+  const handleSelectSession = (id: string) => {
+    setActiveSessionId(id || null)
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-50 via-white to-purple-50 px-4">
-      <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center space-y-6">
+    <div className="flex h-dvh overflow-hidden">
+      {/* ── Sidebar ────────────────────────────────── */}
+      <aside className="w-[260px] flex-shrink-0">
+        <Sidebar
+          activeSessionId={activeSessionId}
+          onSelectSession={handleSelectSession}
+          onSessionCreated={handleSessionCreated}
+        />
+      </aside>
 
-        <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-violet-400 to-purple-600 flex items-center justify-center">
-          <span className="text-4xl">🤖</span>
-        </div>
-
-        <div className="space-y-2">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Aastha — AI Therapist
-          </h1>
-          <p className="text-gray-500 text-sm leading-relaxed">
-            Your AI companion for mental wellness support.
-            This feature is coming soon.
-          </p>
-        </div>
-
-        <button
-          onClick={() => router.push("/dashboard")}
-          className="w-full py-3 rounded-xl bg-violet-600 text-white font-medium hover:bg-violet-700 transition text-sm"
-        >
-          Back to Dashboard
-        </button>
-      </div>
+      {/* ── Chat pane ──────────────────────────────── */}
+      <main className="min-w-0 flex-1">
+        <ChatContainer
+          activeSessionId={activeSessionId}
+          onSessionCreated={handleSessionCreated}
+        />
+      </main>
     </div>
   )
 }

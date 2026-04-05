@@ -55,6 +55,8 @@ export const ModelName = {
   Session: 'Session',
   MoodLog: 'MoodLog',
   Report: 'Report',
+  AasthaSession: 'AasthaSession',
+  AasthaMessage: 'AasthaMessage',
   Journal: 'Journal',
   Account: 'Account',
   Verification: 'Verification'
@@ -126,6 +128,30 @@ export const ReportScalarFieldEnum = {
 } as const
 
 export type ReportScalarFieldEnum = (typeof ReportScalarFieldEnum)[keyof typeof ReportScalarFieldEnum]
+
+
+export const AasthaSessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  emotionTag: 'emotionTag',
+  emotionScore: 'emotionScore',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AasthaSessionScalarFieldEnum = (typeof AasthaSessionScalarFieldEnum)[keyof typeof AasthaSessionScalarFieldEnum]
+
+
+export const AasthaMessageScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  role: 'role',
+  content: 'content',
+  createdAt: 'createdAt'
+} as const
+
+export type AasthaMessageScalarFieldEnum = (typeof AasthaMessageScalarFieldEnum)[keyof typeof AasthaMessageScalarFieldEnum]
 
 
 export const JournalScalarFieldEnum = {

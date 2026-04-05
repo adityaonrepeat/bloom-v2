@@ -388,6 +388,8 @@ export const ModelName = {
   Session: 'Session',
   MoodLog: 'MoodLog',
   Report: 'Report',
+  AasthaSession: 'AasthaSession',
+  AasthaMessage: 'AasthaMessage',
   Journal: 'Journal',
   Account: 'Account',
   Verification: 'Verification'
@@ -406,7 +408,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "moodLog" | "report" | "journal" | "account" | "verification"
+    modelProps: "user" | "session" | "moodLog" | "report" | "aasthaSession" | "aasthaMessage" | "journal" | "account" | "verification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -703,6 +705,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ReportCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ReportCountAggregateOutputType> | number
+        }
+      }
+    }
+    AasthaSession: {
+      payload: Prisma.$AasthaSessionPayload<ExtArgs>
+      fields: Prisma.AasthaSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AasthaSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AasthaSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.AasthaSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AasthaSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaSessionPayload>
+        }
+        findMany: {
+          args: Prisma.AasthaSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaSessionPayload>[]
+        }
+        create: {
+          args: Prisma.AasthaSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaSessionPayload>
+        }
+        createMany: {
+          args: Prisma.AasthaSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AasthaSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.AasthaSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaSessionPayload>
+        }
+        update: {
+          args: Prisma.AasthaSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.AasthaSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AasthaSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AasthaSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.AasthaSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.AasthaSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAasthaSession>
+        }
+        groupBy: {
+          args: Prisma.AasthaSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AasthaSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AasthaSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AasthaSessionCountAggregateOutputType> | number
+        }
+      }
+    }
+    AasthaMessage: {
+      payload: Prisma.$AasthaMessagePayload<ExtArgs>
+      fields: Prisma.AasthaMessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AasthaMessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaMessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AasthaMessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaMessagePayload>
+        }
+        findFirst: {
+          args: Prisma.AasthaMessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaMessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AasthaMessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaMessagePayload>
+        }
+        findMany: {
+          args: Prisma.AasthaMessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaMessagePayload>[]
+        }
+        create: {
+          args: Prisma.AasthaMessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaMessagePayload>
+        }
+        createMany: {
+          args: Prisma.AasthaMessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AasthaMessageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaMessagePayload>[]
+        }
+        delete: {
+          args: Prisma.AasthaMessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaMessagePayload>
+        }
+        update: {
+          args: Prisma.AasthaMessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaMessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.AasthaMessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AasthaMessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AasthaMessageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaMessagePayload>[]
+        }
+        upsert: {
+          args: Prisma.AasthaMessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AasthaMessagePayload>
+        }
+        aggregate: {
+          args: Prisma.AasthaMessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAasthaMessage>
+        }
+        groupBy: {
+          args: Prisma.AasthaMessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AasthaMessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AasthaMessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AasthaMessageCountAggregateOutputType> | number
         }
       }
     }
@@ -1019,6 +1169,30 @@ export const ReportScalarFieldEnum = {
 export type ReportScalarFieldEnum = (typeof ReportScalarFieldEnum)[keyof typeof ReportScalarFieldEnum]
 
 
+export const AasthaSessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  emotionTag: 'emotionTag',
+  emotionScore: 'emotionScore',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AasthaSessionScalarFieldEnum = (typeof AasthaSessionScalarFieldEnum)[keyof typeof AasthaSessionScalarFieldEnum]
+
+
+export const AasthaMessageScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  role: 'role',
+  content: 'content',
+  createdAt: 'createdAt'
+} as const
+
+export type AasthaMessageScalarFieldEnum = (typeof AasthaMessageScalarFieldEnum)[keyof typeof AasthaMessageScalarFieldEnum]
+
+
 export const JournalScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -1266,6 +1440,8 @@ export type GlobalOmitConfig = {
   session?: Prisma.SessionOmit
   moodLog?: Prisma.MoodLogOmit
   report?: Prisma.ReportOmit
+  aasthaSession?: Prisma.AasthaSessionOmit
+  aasthaMessage?: Prisma.AasthaMessageOmit
   journal?: Prisma.JournalOmit
   account?: Prisma.AccountOmit
   verification?: Prisma.VerificationOmit

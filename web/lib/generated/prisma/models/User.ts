@@ -269,6 +269,7 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   journals?: Prisma.JournalListRelationFilter
+  aasthaSessions?: Prisma.AasthaSessionListRelationFilter
   reportsMade?: Prisma.ReportListRelationFilter
   reportsRecv?: Prisma.ReportListRelationFilter
   moods?: Prisma.MoodLogListRelationFilter
@@ -289,6 +290,7 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   journals?: Prisma.JournalOrderByRelationAggregateInput
+  aasthaSessions?: Prisma.AasthaSessionOrderByRelationAggregateInput
   reportsMade?: Prisma.ReportOrderByRelationAggregateInput
   reportsRecv?: Prisma.ReportOrderByRelationAggregateInput
   moods?: Prisma.MoodLogOrderByRelationAggregateInput
@@ -312,6 +314,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   journals?: Prisma.JournalListRelationFilter
+  aasthaSessions?: Prisma.AasthaSessionListRelationFilter
   reportsMade?: Prisma.ReportListRelationFilter
   reportsRecv?: Prisma.ReportListRelationFilter
   moods?: Prisma.MoodLogListRelationFilter
@@ -368,6 +371,7 @@ export type UserCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   journals?: Prisma.JournalCreateNestedManyWithoutUserInput
+  aasthaSessions?: Prisma.AasthaSessionCreateNestedManyWithoutUserInput
   reportsMade?: Prisma.ReportCreateNestedManyWithoutReporterInput
   reportsRecv?: Prisma.ReportCreateNestedManyWithoutReportedInput
   moods?: Prisma.MoodLogCreateNestedManyWithoutUserInput
@@ -388,6 +392,7 @@ export type UserUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   journals?: Prisma.JournalUncheckedCreateNestedManyWithoutUserInput
+  aasthaSessions?: Prisma.AasthaSessionUncheckedCreateNestedManyWithoutUserInput
   reportsMade?: Prisma.ReportUncheckedCreateNestedManyWithoutReporterInput
   reportsRecv?: Prisma.ReportUncheckedCreateNestedManyWithoutReportedInput
   moods?: Prisma.MoodLogUncheckedCreateNestedManyWithoutUserInput
@@ -408,6 +413,7 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   journals?: Prisma.JournalUpdateManyWithoutUserNestedInput
+  aasthaSessions?: Prisma.AasthaSessionUpdateManyWithoutUserNestedInput
   reportsMade?: Prisma.ReportUpdateManyWithoutReporterNestedInput
   reportsRecv?: Prisma.ReportUpdateManyWithoutReportedNestedInput
   moods?: Prisma.MoodLogUpdateManyWithoutUserNestedInput
@@ -428,6 +434,7 @@ export type UserUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   journals?: Prisma.JournalUncheckedUpdateManyWithoutUserNestedInput
+  aasthaSessions?: Prisma.AasthaSessionUncheckedUpdateManyWithoutUserNestedInput
   reportsMade?: Prisma.ReportUncheckedUpdateManyWithoutReporterNestedInput
   reportsRecv?: Prisma.ReportUncheckedUpdateManyWithoutReportedNestedInput
   moods?: Prisma.MoodLogUncheckedUpdateManyWithoutUserNestedInput
@@ -626,6 +633,20 @@ export type UserUpdateOneRequiredWithoutReportsRecvNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReportsRecvInput, Prisma.UserUpdateWithoutReportsRecvInput>, Prisma.UserUncheckedUpdateWithoutReportsRecvInput>
 }
 
+export type UserCreateNestedOneWithoutAasthaSessionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAasthaSessionsInput, Prisma.UserUncheckedCreateWithoutAasthaSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAasthaSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAasthaSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAasthaSessionsInput, Prisma.UserUncheckedCreateWithoutAasthaSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAasthaSessionsInput
+  upsert?: Prisma.UserUpsertWithoutAasthaSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAasthaSessionsInput, Prisma.UserUpdateWithoutAasthaSessionsInput>, Prisma.UserUncheckedUpdateWithoutAasthaSessionsInput>
+}
+
 export type UserCreateNestedOneWithoutJournalsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutJournalsInput, Prisma.UserUncheckedCreateWithoutJournalsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutJournalsInput
@@ -667,6 +688,7 @@ export type UserCreateWithoutSessionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   journals?: Prisma.JournalCreateNestedManyWithoutUserInput
+  aasthaSessions?: Prisma.AasthaSessionCreateNestedManyWithoutUserInput
   reportsMade?: Prisma.ReportCreateNestedManyWithoutReporterInput
   reportsRecv?: Prisma.ReportCreateNestedManyWithoutReportedInput
   moods?: Prisma.MoodLogCreateNestedManyWithoutUserInput
@@ -686,6 +708,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   journals?: Prisma.JournalUncheckedCreateNestedManyWithoutUserInput
+  aasthaSessions?: Prisma.AasthaSessionUncheckedCreateNestedManyWithoutUserInput
   reportsMade?: Prisma.ReportUncheckedCreateNestedManyWithoutReporterInput
   reportsRecv?: Prisma.ReportUncheckedCreateNestedManyWithoutReportedInput
   moods?: Prisma.MoodLogUncheckedCreateNestedManyWithoutUserInput
@@ -721,6 +744,7 @@ export type UserUpdateWithoutSessionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   journals?: Prisma.JournalUpdateManyWithoutUserNestedInput
+  aasthaSessions?: Prisma.AasthaSessionUpdateManyWithoutUserNestedInput
   reportsMade?: Prisma.ReportUpdateManyWithoutReporterNestedInput
   reportsRecv?: Prisma.ReportUpdateManyWithoutReportedNestedInput
   moods?: Prisma.MoodLogUpdateManyWithoutUserNestedInput
@@ -740,6 +764,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   journals?: Prisma.JournalUncheckedUpdateManyWithoutUserNestedInput
+  aasthaSessions?: Prisma.AasthaSessionUncheckedUpdateManyWithoutUserNestedInput
   reportsMade?: Prisma.ReportUncheckedUpdateManyWithoutReporterNestedInput
   reportsRecv?: Prisma.ReportUncheckedUpdateManyWithoutReportedNestedInput
   moods?: Prisma.MoodLogUncheckedUpdateManyWithoutUserNestedInput
@@ -759,6 +784,7 @@ export type UserCreateWithoutMoodsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   journals?: Prisma.JournalCreateNestedManyWithoutUserInput
+  aasthaSessions?: Prisma.AasthaSessionCreateNestedManyWithoutUserInput
   reportsMade?: Prisma.ReportCreateNestedManyWithoutReporterInput
   reportsRecv?: Prisma.ReportCreateNestedManyWithoutReportedInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -778,6 +804,7 @@ export type UserUncheckedCreateWithoutMoodsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   journals?: Prisma.JournalUncheckedCreateNestedManyWithoutUserInput
+  aasthaSessions?: Prisma.AasthaSessionUncheckedCreateNestedManyWithoutUserInput
   reportsMade?: Prisma.ReportUncheckedCreateNestedManyWithoutReporterInput
   reportsRecv?: Prisma.ReportUncheckedCreateNestedManyWithoutReportedInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -813,6 +840,7 @@ export type UserUpdateWithoutMoodsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   journals?: Prisma.JournalUpdateManyWithoutUserNestedInput
+  aasthaSessions?: Prisma.AasthaSessionUpdateManyWithoutUserNestedInput
   reportsMade?: Prisma.ReportUpdateManyWithoutReporterNestedInput
   reportsRecv?: Prisma.ReportUpdateManyWithoutReportedNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -832,6 +860,7 @@ export type UserUncheckedUpdateWithoutMoodsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   journals?: Prisma.JournalUncheckedUpdateManyWithoutUserNestedInput
+  aasthaSessions?: Prisma.AasthaSessionUncheckedUpdateManyWithoutUserNestedInput
   reportsMade?: Prisma.ReportUncheckedUpdateManyWithoutReporterNestedInput
   reportsRecv?: Prisma.ReportUncheckedUpdateManyWithoutReportedNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -851,6 +880,7 @@ export type UserCreateWithoutReportsMadeInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   journals?: Prisma.JournalCreateNestedManyWithoutUserInput
+  aasthaSessions?: Prisma.AasthaSessionCreateNestedManyWithoutUserInput
   reportsRecv?: Prisma.ReportCreateNestedManyWithoutReportedInput
   moods?: Prisma.MoodLogCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -870,6 +900,7 @@ export type UserUncheckedCreateWithoutReportsMadeInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   journals?: Prisma.JournalUncheckedCreateNestedManyWithoutUserInput
+  aasthaSessions?: Prisma.AasthaSessionUncheckedCreateNestedManyWithoutUserInput
   reportsRecv?: Prisma.ReportUncheckedCreateNestedManyWithoutReportedInput
   moods?: Prisma.MoodLogUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -894,6 +925,7 @@ export type UserCreateWithoutReportsRecvInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   journals?: Prisma.JournalCreateNestedManyWithoutUserInput
+  aasthaSessions?: Prisma.AasthaSessionCreateNestedManyWithoutUserInput
   reportsMade?: Prisma.ReportCreateNestedManyWithoutReporterInput
   moods?: Prisma.MoodLogCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -913,6 +945,7 @@ export type UserUncheckedCreateWithoutReportsRecvInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   journals?: Prisma.JournalUncheckedCreateNestedManyWithoutUserInput
+  aasthaSessions?: Prisma.AasthaSessionUncheckedCreateNestedManyWithoutUserInput
   reportsMade?: Prisma.ReportUncheckedCreateNestedManyWithoutReporterInput
   moods?: Prisma.MoodLogUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -948,6 +981,7 @@ export type UserUpdateWithoutReportsMadeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   journals?: Prisma.JournalUpdateManyWithoutUserNestedInput
+  aasthaSessions?: Prisma.AasthaSessionUpdateManyWithoutUserNestedInput
   reportsRecv?: Prisma.ReportUpdateManyWithoutReportedNestedInput
   moods?: Prisma.MoodLogUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -967,6 +1001,7 @@ export type UserUncheckedUpdateWithoutReportsMadeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   journals?: Prisma.JournalUncheckedUpdateManyWithoutUserNestedInput
+  aasthaSessions?: Prisma.AasthaSessionUncheckedUpdateManyWithoutUserNestedInput
   reportsRecv?: Prisma.ReportUncheckedUpdateManyWithoutReportedNestedInput
   moods?: Prisma.MoodLogUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -997,6 +1032,7 @@ export type UserUpdateWithoutReportsRecvInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   journals?: Prisma.JournalUpdateManyWithoutUserNestedInput
+  aasthaSessions?: Prisma.AasthaSessionUpdateManyWithoutUserNestedInput
   reportsMade?: Prisma.ReportUpdateManyWithoutReporterNestedInput
   moods?: Prisma.MoodLogUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -1016,7 +1052,104 @@ export type UserUncheckedUpdateWithoutReportsRecvInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   journals?: Prisma.JournalUncheckedUpdateManyWithoutUserNestedInput
+  aasthaSessions?: Prisma.AasthaSessionUncheckedUpdateManyWithoutUserNestedInput
   reportsMade?: Prisma.ReportUncheckedUpdateManyWithoutReporterNestedInput
+  moods?: Prisma.MoodLogUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutAasthaSessionsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  emotionalScore?: number | null
+  emotionalTag?: $Enums.EmotionTag | null
+  reportCount?: number
+  isBlocked?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  journals?: Prisma.JournalCreateNestedManyWithoutUserInput
+  reportsMade?: Prisma.ReportCreateNestedManyWithoutReporterInput
+  reportsRecv?: Prisma.ReportCreateNestedManyWithoutReportedInput
+  moods?: Prisma.MoodLogCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAasthaSessionsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  emotionalScore?: number | null
+  emotionalTag?: $Enums.EmotionTag | null
+  reportCount?: number
+  isBlocked?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  journals?: Prisma.JournalUncheckedCreateNestedManyWithoutUserInput
+  reportsMade?: Prisma.ReportUncheckedCreateNestedManyWithoutReporterInput
+  reportsRecv?: Prisma.ReportUncheckedCreateNestedManyWithoutReportedInput
+  moods?: Prisma.MoodLogUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAasthaSessionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAasthaSessionsInput, Prisma.UserUncheckedCreateWithoutAasthaSessionsInput>
+}
+
+export type UserUpsertWithoutAasthaSessionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAasthaSessionsInput, Prisma.UserUncheckedUpdateWithoutAasthaSessionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAasthaSessionsInput, Prisma.UserUncheckedCreateWithoutAasthaSessionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAasthaSessionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAasthaSessionsInput, Prisma.UserUncheckedUpdateWithoutAasthaSessionsInput>
+}
+
+export type UserUpdateWithoutAasthaSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emotionalScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  emotionalTag?: Prisma.NullableEnumEmotionTagFieldUpdateOperationsInput | $Enums.EmotionTag | null
+  reportCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  journals?: Prisma.JournalUpdateManyWithoutUserNestedInput
+  reportsMade?: Prisma.ReportUpdateManyWithoutReporterNestedInput
+  reportsRecv?: Prisma.ReportUpdateManyWithoutReportedNestedInput
+  moods?: Prisma.MoodLogUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAasthaSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emotionalScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  emotionalTag?: Prisma.NullableEnumEmotionTagFieldUpdateOperationsInput | $Enums.EmotionTag | null
+  reportCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  journals?: Prisma.JournalUncheckedUpdateManyWithoutUserNestedInput
+  reportsMade?: Prisma.ReportUncheckedUpdateManyWithoutReporterNestedInput
+  reportsRecv?: Prisma.ReportUncheckedUpdateManyWithoutReportedNestedInput
   moods?: Prisma.MoodLogUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
@@ -1034,6 +1167,7 @@ export type UserCreateWithoutJournalsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  aasthaSessions?: Prisma.AasthaSessionCreateNestedManyWithoutUserInput
   reportsMade?: Prisma.ReportCreateNestedManyWithoutReporterInput
   reportsRecv?: Prisma.ReportCreateNestedManyWithoutReportedInput
   moods?: Prisma.MoodLogCreateNestedManyWithoutUserInput
@@ -1053,6 +1187,7 @@ export type UserUncheckedCreateWithoutJournalsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  aasthaSessions?: Prisma.AasthaSessionUncheckedCreateNestedManyWithoutUserInput
   reportsMade?: Prisma.ReportUncheckedCreateNestedManyWithoutReporterInput
   reportsRecv?: Prisma.ReportUncheckedCreateNestedManyWithoutReportedInput
   moods?: Prisma.MoodLogUncheckedCreateNestedManyWithoutUserInput
@@ -1088,6 +1223,7 @@ export type UserUpdateWithoutJournalsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  aasthaSessions?: Prisma.AasthaSessionUpdateManyWithoutUserNestedInput
   reportsMade?: Prisma.ReportUpdateManyWithoutReporterNestedInput
   reportsRecv?: Prisma.ReportUpdateManyWithoutReportedNestedInput
   moods?: Prisma.MoodLogUpdateManyWithoutUserNestedInput
@@ -1107,6 +1243,7 @@ export type UserUncheckedUpdateWithoutJournalsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  aasthaSessions?: Prisma.AasthaSessionUncheckedUpdateManyWithoutUserNestedInput
   reportsMade?: Prisma.ReportUncheckedUpdateManyWithoutReporterNestedInput
   reportsRecv?: Prisma.ReportUncheckedUpdateManyWithoutReportedNestedInput
   moods?: Prisma.MoodLogUncheckedUpdateManyWithoutUserNestedInput
@@ -1127,6 +1264,7 @@ export type UserCreateWithoutAccountsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   journals?: Prisma.JournalCreateNestedManyWithoutUserInput
+  aasthaSessions?: Prisma.AasthaSessionCreateNestedManyWithoutUserInput
   reportsMade?: Prisma.ReportCreateNestedManyWithoutReporterInput
   reportsRecv?: Prisma.ReportCreateNestedManyWithoutReportedInput
   moods?: Prisma.MoodLogCreateNestedManyWithoutUserInput
@@ -1146,6 +1284,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   journals?: Prisma.JournalUncheckedCreateNestedManyWithoutUserInput
+  aasthaSessions?: Prisma.AasthaSessionUncheckedCreateNestedManyWithoutUserInput
   reportsMade?: Prisma.ReportUncheckedCreateNestedManyWithoutReporterInput
   reportsRecv?: Prisma.ReportUncheckedCreateNestedManyWithoutReportedInput
   moods?: Prisma.MoodLogUncheckedCreateNestedManyWithoutUserInput
@@ -1181,6 +1320,7 @@ export type UserUpdateWithoutAccountsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   journals?: Prisma.JournalUpdateManyWithoutUserNestedInput
+  aasthaSessions?: Prisma.AasthaSessionUpdateManyWithoutUserNestedInput
   reportsMade?: Prisma.ReportUpdateManyWithoutReporterNestedInput
   reportsRecv?: Prisma.ReportUpdateManyWithoutReportedNestedInput
   moods?: Prisma.MoodLogUpdateManyWithoutUserNestedInput
@@ -1200,6 +1340,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   journals?: Prisma.JournalUncheckedUpdateManyWithoutUserNestedInput
+  aasthaSessions?: Prisma.AasthaSessionUncheckedUpdateManyWithoutUserNestedInput
   reportsMade?: Prisma.ReportUncheckedUpdateManyWithoutReporterNestedInput
   reportsRecv?: Prisma.ReportUncheckedUpdateManyWithoutReportedNestedInput
   moods?: Prisma.MoodLogUncheckedUpdateManyWithoutUserNestedInput
@@ -1213,6 +1354,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
 
 export type UserCountOutputType = {
   journals: number
+  aasthaSessions: number
   reportsMade: number
   reportsRecv: number
   moods: number
@@ -1222,6 +1364,7 @@ export type UserCountOutputType = {
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   journals?: boolean | UserCountOutputTypeCountJournalsArgs
+  aasthaSessions?: boolean | UserCountOutputTypeCountAasthaSessionsArgs
   reportsMade?: boolean | UserCountOutputTypeCountReportsMadeArgs
   reportsRecv?: boolean | UserCountOutputTypeCountReportsRecvArgs
   moods?: boolean | UserCountOutputTypeCountMoodsArgs
@@ -1244,6 +1387,13 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
  */
 export type UserCountOutputTypeCountJournalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.JournalWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAasthaSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AasthaSessionWhereInput
 }
 
 /**
@@ -1295,6 +1445,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   journals?: boolean | Prisma.User$journalsArgs<ExtArgs>
+  aasthaSessions?: boolean | Prisma.User$aasthaSessionsArgs<ExtArgs>
   reportsMade?: boolean | Prisma.User$reportsMadeArgs<ExtArgs>
   reportsRecv?: boolean | Prisma.User$reportsRecvArgs<ExtArgs>
   moods?: boolean | Prisma.User$moodsArgs<ExtArgs>
@@ -1348,6 +1499,7 @@ export type UserSelectScalar = {
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "emotionalScore" | "emotionalTag" | "reportCount" | "isBlocked" | "image" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   journals?: boolean | Prisma.User$journalsArgs<ExtArgs>
+  aasthaSessions?: boolean | Prisma.User$aasthaSessionsArgs<ExtArgs>
   reportsMade?: boolean | Prisma.User$reportsMadeArgs<ExtArgs>
   reportsRecv?: boolean | Prisma.User$reportsRecvArgs<ExtArgs>
   moods?: boolean | Prisma.User$moodsArgs<ExtArgs>
@@ -1362,6 +1514,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "User"
   objects: {
     journals: Prisma.$JournalPayload<ExtArgs>[]
+    aasthaSessions: Prisma.$AasthaSessionPayload<ExtArgs>[]
     reportsMade: Prisma.$ReportPayload<ExtArgs>[]
     reportsRecv: Prisma.$ReportPayload<ExtArgs>[]
     moods: Prisma.$MoodLogPayload<ExtArgs>[]
@@ -1775,6 +1928,7 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   journals<T extends Prisma.User$journalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$journalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JournalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  aasthaSessions<T extends Prisma.User$aasthaSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$aasthaSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AasthaSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reportsMade<T extends Prisma.User$reportsMadeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reportsMadeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reportsRecv<T extends Prisma.User$reportsRecvArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reportsRecvArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   moods<T extends Prisma.User$moodsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$moodsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MoodLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2229,6 +2383,30 @@ export type User$journalsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.JournalScalarFieldEnum | Prisma.JournalScalarFieldEnum[]
+}
+
+/**
+ * User.aasthaSessions
+ */
+export type User$aasthaSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AasthaSession
+   */
+  select?: Prisma.AasthaSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AasthaSession
+   */
+  omit?: Prisma.AasthaSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AasthaSessionInclude<ExtArgs> | null
+  where?: Prisma.AasthaSessionWhereInput
+  orderBy?: Prisma.AasthaSessionOrderByWithRelationInput | Prisma.AasthaSessionOrderByWithRelationInput[]
+  cursor?: Prisma.AasthaSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AasthaSessionScalarFieldEnum | Prisma.AasthaSessionScalarFieldEnum[]
 }
 
 /**

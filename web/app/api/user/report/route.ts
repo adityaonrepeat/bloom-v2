@@ -11,7 +11,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 })
   }
 
-  // Check if already reported in this session (same pair today)
   const existing = await prisma.report.findFirst({
     where: {
       reporterId,
@@ -26,12 +25,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Already reported" }, { status: 409 })
   }
 
-  // Create report
   await prisma.report.create({
     data: { reporterId, reportedId }
   })
 
-  // Increment report count and check threshold
   const updated = await prisma.user.update({
     where: { id: reportedId },
     data: { reportCount: { increment: 1 } }
