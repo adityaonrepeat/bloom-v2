@@ -1,7 +1,7 @@
 import { redis } from "../redis/redis.js"
 
 const ALL_EMOTIONS = ["happy", "calm", "stressed", "anxious"]
-const SKIP_COOLDOWN_SECONDS = 6
+const SKIP_COOLDOWN_SECONDS = 3
 
 export class MatchManager {
 
@@ -67,9 +67,8 @@ export class MatchManager {
     await redis.set(`skip-cooldown:${socketId}`, "1", { ex: SKIP_COOLDOWN_SECONDS })
   }
 
-  static async processQueues(io: any, userDbIds: Map<string, string>, lastPartnerMap: Map<string, { partnerId: string; time: number }>): Promise<void> {
+  static async processQueues(io: any, userDbIds: Map<string, string>, lastPartnerMap: Map<string, { partnerId: string; time: number }>, cooldownMs = 7000): Promise<void> {
     const RoomManager = (await import("./roomManager.js")).RoomManager
-    const COOLDOWN_MS = 5000
 
     for (const emotion of ALL_EMOTIONS) {
       while (true) {
@@ -82,13 +81,15 @@ export class MatchManager {
         }
 
         const lastEntry = lastPartnerMap.get(user1)
-        const avoidId = lastEntry && (Date.now() - lastEntry.time < COOLDOWN_MS) ? lastEntry.partnerId : undefined
+        const avoidId = lastEntry && (Date.now() - lastEntry.time < cooldownMs) ? lastEntry.partnerId : undefined
         const user2 = await this.findMatch(user1, emotion, avoidId)
 
         if (!user2) {
+          // Put user1 back and stop processing this emotion queue.
+          // Using `continue` here would re-pop user1 immediately and bypass
+          // the cooldown, causing the same pair to match again in the same tick.
           await redis.lpush(`queue:${emotion}`, user1)
-          //break
-          continue
+          break
         }
 
         if (!io.sockets.sockets.has(user2) || RoomManager.isInRoom(user2)) {

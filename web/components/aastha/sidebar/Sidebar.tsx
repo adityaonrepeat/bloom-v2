@@ -1,6 +1,7 @@
 "use client"
 
-import { SquarePen } from "lucide-react"
+import Link from "next/link"
+import { SquarePen, X, PanelLeftClose } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   useSessions,
@@ -14,9 +15,10 @@ interface SidebarProps {
   activeSessionId: string | null
   onSelectSession: (id: string) => void
   onSessionCreated: (session: AasthaSession) => void
+  onClose: () => void
 }
 
-export function Sidebar({ activeSessionId, onSelectSession, onSessionCreated }: SidebarProps) {
+export function Sidebar({ activeSessionId, onSelectSession, onSessionCreated, onClose }: SidebarProps) {
   const { data: sessions = [], isLoading } = useSessions()
   const { mutate: createSession, isPending: isCreating } = useCreateSession()
   const { mutate: deleteSession, variables: deletingId } = useDeleteSession()
@@ -40,22 +42,48 @@ export function Sidebar({ activeSessionId, onSelectSession, onSessionCreated }: 
 
   return (
     <div className="flex h-full flex-col border-r bg-muted/30">
-      {/* Header */}
+      {/* Header — Bloom brand */}
       <div className="flex items-center justify-between border-b px-4 py-3.5">
-        <div className="flex items-center gap-2">
-          <span className="text-lg leading-none">🌸</span>
-          <span className="text-sm font-semibold tracking-tight text-foreground">Aastha</span>
-        </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground"
-          onClick={handleNew}
-          disabled={isCreating}
-          title="New session"
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2 rounded-lg px-1 py-0.5 transition-colors hover:opacity-80"
         >
-          <SquarePen className="h-4 w-4" />
-        </Button>
+          <span className="text-lg leading-none">🌸</span>
+          <span className="text-sm font-semibold tracking-tight text-foreground">
+            Bloom
+          </span>
+        </Link>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground"
+            onClick={handleNew}
+            disabled={isCreating}
+            title="New session"
+          >
+            <SquarePen className="h-5 w-5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hidden h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground md:inline-flex"
+            onClick={onClose}
+            title="Close sidebar"
+          >
+            <PanelLeftClose className="h-5 w-5" />
+          </Button>
+          {/* Close button for mobile */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground md:hidden"
+            onClick={onClose}
+            title="Close sidebar"
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        </div>
       </div>
 
       {/* Session list */}

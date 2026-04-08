@@ -12,11 +12,21 @@ import { X } from "lucide-react"
 interface ChatContainerProps {
   activeSessionId: string | null
   onSessionCreated: (session: AasthaSession) => void
+  onToggleSidebar?: () => void
+  sidebarOpen?: boolean
 }
 
 // ─── Active chat ──────────────────────────────────────────────────────────────
 
-function ActiveChat({ sessionId }: { sessionId: string }) {
+function ActiveChat({
+  sessionId,
+  onToggleSidebar,
+  sidebarOpen,
+}: {
+  sessionId: string
+  onToggleSidebar?: () => void
+  sidebarOpen?: boolean
+}) {
   const [input, setInput] = useState("")
   const { data, isLoading, isError } = useMessages(sessionId)
   const { sendMessage, isStreaming, streamingContent, error, clearError } = useStreamingChat({
@@ -57,38 +67,47 @@ function ActiveChat({ sessionId }: { sessionId: string }) {
 
   return (
     <>
-      <ChatHeader session={data?.sessionMeta ?? null} />
-
-      <MessageList
-        messages={data?.messages ?? []}
-        streamingContent={streamingContent}
-        isStreaming={isStreaming}
+      <ChatHeader
+        session={data?.sessionMeta ?? null}
+        onToggleSidebar={onToggleSidebar}
+        sidebarOpen={sidebarOpen}
       />
 
-      {error && (
-        <Alert variant="destructive" className="mx-4 mb-2 py-2">
-          <AlertDescription className="flex items-center justify-between text-sm">
-            {error}
-            <button onClick={clearError} className="ml-2 opacity-70 hover:opacity-100">
-              <X className="h-3.5 w-3.5" />
-            </button>
-          </AlertDescription>
-        </Alert>
-      )}
+      {/* Centered conversation area like ChatGPT */}
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <MessageList
+          messages={data?.messages ?? []}
+          streamingContent={streamingContent}
+          isStreaming={isStreaming}
+        />
 
-      <ChatInput
-        value={input}
-        onChange={setInput}
-        onSend={handleSend}
-        disabled={isStreaming}
-      />
+        {error && (
+          <div className="mx-auto w-full max-w-3xl px-4">
+            <Alert variant="destructive" className="mb-2 py-2">
+              <AlertDescription className="flex items-center justify-between text-sm">
+                {error}
+                <button onClick={clearError} className="ml-2 opacity-70 hover:opacity-100">
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
+
+        <ChatInput
+          value={input}
+          onChange={setInput}
+          onSend={handleSend}
+          disabled={isStreaming}
+        />
+      </div>
     </>
   )
 }
 
 // ─── ChatContainer ────────────────────────────────────────────────────────────
 
-export function ChatContainer({ activeSessionId, onSessionCreated }: ChatContainerProps) {
+export function ChatContainer({ activeSessionId, onSessionCreated, onToggleSidebar, sidebarOpen }: ChatContainerProps) {
   const { mutate: createSession, isPending } = useCreateSession()
 
   const handleNewSession = () => {
@@ -100,9 +119,18 @@ export function ChatContainer({ activeSessionId, onSessionCreated }: ChatContain
   return (
     <div className="flex h-full flex-col bg-background">
       {!activeSessionId ? (
-        <EmptyState onNewSession={handleNewSession} isCreating={isPending} />
+        <EmptyState
+          onNewSession={handleNewSession}
+          isCreating={isPending}
+          onToggleSidebar={onToggleSidebar}
+          sidebarOpen={sidebarOpen}
+        />
       ) : (
-        <ActiveChat sessionId={activeSessionId} />
+        <ActiveChat
+          sessionId={activeSessionId}
+          onToggleSidebar={onToggleSidebar}
+          sidebarOpen={sidebarOpen}
+        />
       )}
     </div>
   )

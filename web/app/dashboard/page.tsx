@@ -44,6 +44,13 @@ export default async function Dashboard() {
 
   const latestMood = user?.emotionalTag
 
+  const today = new Date()
+  const latestMoodLogDate = mood.length > 0 ? new Date(mood[0].createdAt) : null
+  const hasLoggedMoodToday = latestMoodLogDate && 
+    latestMoodLogDate.getDate() === today.getDate() &&
+    latestMoodLogDate.getMonth() === today.getMonth() &&
+    latestMoodLogDate.getFullYear() === today.getFullYear()
+
   // Get current hour to show time-appropriate greeting
   const currentHour = new Date().getHours()
   const greeting = currentHour < 12 ? "Good morning" : currentHour < 17 ? "Good afternoon" : "Good evening"
@@ -54,34 +61,16 @@ export default async function Dashboard() {
       <Navbar />
 
       {/* Inline Mood Banner (not popup) */}
-      <MoodBanner name={userName} />
+      {!hasLoggedMoodToday && <MoodBanner name={userName} />}
 
       <div className="max-w-6xl mx-auto px-8 py-8 space-y-8">
 
         {/* Greeting Section */}
-        <div className="flex items-end justify-between">
+        <div className="flex items-end justify-between mb-4">
           <div>
-            <p className="text-sm font-medium text-emerald-700/70 tracking-wide uppercase">
-              {greeting}
-            </p>
             <h1 className="text-3xl font-bold text-stone-800 mt-1">
               {userName}
             </h1>
-            {latestMood && (
-              <p className="text-sm text-stone-400 mt-1.5 flex items-center gap-1.5">
-                Currently feeling
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 capitalize">
-                  {latestMood}
-                </span>
-              </p>
-            )}
-          </div>
-          <div className="hidden sm:flex items-center gap-2 text-xs text-stone-400">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <polyline points="12 6 12 12 16 14"/>
-            </svg>
-            {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
           </div>
         </div>
 

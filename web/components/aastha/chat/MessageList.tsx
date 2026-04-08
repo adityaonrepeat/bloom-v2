@@ -37,15 +37,17 @@ export function MessageList({ messages, streamingContent, isStreaming }: Message
   }, [messages.length, streamingContent])
 
   return (
-    <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-4 py-6 scroll-smooth">
-      {messages.map((msg) => (
-        <MessageBubble key={msg.id} msg={msg} />
-      ))}
+    <div className="flex flex-1 flex-col overflow-y-auto scroll-smooth">
+      <div className="mx-auto w-full max-w-3xl px-4 py-6 space-y-4 sm:px-6">
+        {messages.map((msg) => (
+          <MessageBubble key={msg.id} msg={msg} />
+        ))}
 
-      {isStreaming && !streamingContent && <TypingIndicator />}
-      {isStreaming && streamingContent && <StreamingBubble content={streamingContent} />}
+        {isStreaming && !streamingContent && <TypingIndicator />}
+        {isStreaming && streamingContent && <StreamingBubble content={streamingContent} />}
 
-      <div ref={bottomRef} />
+        <div ref={bottomRef} />
+      </div>
     </div>
   )
 }

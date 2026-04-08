@@ -1,6 +1,5 @@
 import { Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { EmotionBadge } from "../shared/EmotionBadge"
 import type { AasthaSession } from "@/hooks/useAastha"
 
 function timeAgo(dateStr: string) {
@@ -34,14 +33,24 @@ export function SessionItem({
   }
 
   return (
-    <button
-      onClick={onSelect}
-      disabled={isDeleting}
+    <div
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          if (!isDeleting) onSelect()
+        }
+      }}
+      onClick={() => {
+        if (!isDeleting) onSelect()
+      }}
+      aria-disabled={isDeleting}
       className={cn(
-        "group relative w-full rounded-xl px-3 py-2.5 text-left transition-colors",
+        "group relative w-full rounded-xl px-3 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         "hover:bg-accent/60",
         isActive && "bg-accent",
-        isDeleting && "opacity-50 pointer-events-none"
+        isDeleting && "opacity-50 pointer-events-none cursor-not-allowed"
       )}
     >
       <div className="flex items-start gap-2 pr-6">
@@ -64,9 +73,6 @@ export function SessionItem({
               </span>
             )}
           </div>
-          {session.emotionTag && (
-            <EmotionBadge tag={session.emotionTag} score={session.emotionScore} className="mt-1.5" />
-          )}
         </div>
       </div>
 
@@ -83,7 +89,7 @@ export function SessionItem({
       >
         <Trash2 className="h-3.5 w-3.5" />
       </button>
-    </button>
+    </div>
   )
 }
 

@@ -1,6 +1,5 @@
-import { Sparkles } from "lucide-react"
+import { Sparkles, PanelLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { EmotionBadge } from "../shared/EmotionBadge"
 import type { AasthaSession } from "@/hooks/useAastha"
 
 // ─── Empty state ──────────────────────────────────────────────────────────────
@@ -8,30 +7,50 @@ import type { AasthaSession } from "@/hooks/useAastha"
 interface EmptyStateProps {
   onNewSession: () => void
   isCreating?: boolean
+  onToggleSidebar?: () => void
+  sidebarOpen?: boolean
 }
 
-export function EmptyState({ onNewSession, isCreating }: EmptyStateProps) {
+export function EmptyState({ onNewSession, isCreating, onToggleSidebar, sidebarOpen }: EmptyStateProps) {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-5 px-6 py-16 text-center">
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 text-3xl dark:bg-emerald-950">
-        🌸
+    <div className="flex flex-1 flex-col">
+      {/* Top bar with hamburger */}
+      <div className="flex items-center border-b bg-background/80 px-4 py-3 backdrop-blur-sm">
+        {!sidebarOpen && onToggleSidebar && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground"
+            onClick={onToggleSidebar}
+            title="Open sidebar"
+          >
+            <PanelLeft className="h-4 w-4" />
+          </Button>
+        )}
       </div>
-      <div className="space-y-2">
-        <h2 className="font-serif text-2xl font-normal tracking-tight text-foreground">
-          Hi, I&apos;m Aastha
-        </h2>
-        <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
-          A safe space to talk about whatever&apos;s on your mind. I&apos;m here to listen — without judgment.
-        </p>
+
+      {/* Centered content */}
+      <div className="flex flex-1 flex-col items-center justify-center gap-5 px-6 py-16 text-center">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 text-3xl dark:bg-emerald-950">
+          🌸
+        </div>
+        <div className="space-y-2">
+          <h2 className="font-serif text-2xl font-normal tracking-tight text-foreground">
+            Hi, I&apos;m Aastha
+          </h2>
+          <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
+            A safe space to talk about whatever&apos;s on your mind. I&apos;m here to listen — without judgment.
+          </p>
+        </div>
+        <Button
+          onClick={onNewSession}
+          disabled={isCreating}
+          className="gap-2 rounded-xl bg-emerald-700 px-6 hover:bg-emerald-800"
+        >
+          <Sparkles className="h-4 w-4" />
+          {isCreating ? "Starting…" : "Start a new session"}
+        </Button>
       </div>
-      <Button
-        onClick={onNewSession}
-        disabled={isCreating}
-        className="gap-2 rounded-xl bg-emerald-700 px-6 hover:bg-emerald-800"
-      >
-        <Sparkles className="h-4 w-4" />
-        {isCreating ? "Starting…" : "Start a new session"}
-      </Button>
     </div>
   )
 }
@@ -40,11 +59,26 @@ export function EmptyState({ onNewSession, isCreating }: EmptyStateProps) {
 
 interface ChatHeaderProps {
   session: AasthaSession | null
+  onToggleSidebar?: () => void
+  sidebarOpen?: boolean
 }
 
-export function ChatHeader({ session }: ChatHeaderProps) {
+export function ChatHeader({ session, onToggleSidebar, sidebarOpen }: ChatHeaderProps) {
   return (
     <div className="flex items-center gap-3 border-b bg-background/80 px-4 py-3 backdrop-blur-sm">
+      {/* Hamburger toggle — shown when sidebar is closed */}
+      {!sidebarOpen && onToggleSidebar && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground"
+          onClick={onToggleSidebar}
+          title="Open sidebar"
+        >
+          <PanelLeft className="h-4 w-4" />
+        </Button>
+      )}
+
       <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-semibold text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
         A
       </div>
@@ -56,7 +90,6 @@ export function ChatHeader({ session }: ChatHeaderProps) {
             : "Bloom Wellness · Confidential"}
         </p>
       </div>
-      {session && <EmotionBadge tag={session.emotionTag} score={session.emotionScore} />}
     </div>
   )
 }

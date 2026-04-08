@@ -21,8 +21,9 @@ const io = new Server(httpServer, {
 const userEmotions = new Map<string, string>()
 // Track socketId → DB userId (for reports)
 const userDbIds = new Map<string, string>()
-// Track last partner per socket with timestamp (5s cooldown, then re-matchable)
+// Track last partner per socket with timestamp — must stay in sync with processQueues
 const lastPartnerMap = new Map<string, { partnerId: string; time: number }>()
+const REMATCH_COOLDOWN_MS = 4000 // always > SKIP_COOLDOWN_SECONDS (3s) to close the gap window
 
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id)
@@ -36,7 +37,7 @@ io.on("connection", (socket) => {
     if (userId) userDbIds.set(socket.id, userId)
 
     const avoidId = lastPartnerMap.get(socket.id)
-    const avoidPartner = avoidId && (Date.now() - avoidId.time < 5000) ? avoidId.partnerId : undefined
+    const avoidPartner = avoidId && (Date.now() - avoidId.time < REMATCH_COOLDOWN_MS) ? avoidId.partnerId : undefined
     const partner = await MatchManager.findMatch(socket.id, emotion, avoidPartner)
 
     if (partner && io.sockets.sockets.has(partner)) {
@@ -57,7 +58,7 @@ io.on("connection", (socket) => {
 
     // Trigger matching in case another user is already waiting
     try {
-      await MatchManager.processQueues(io, userDbIds, lastPartnerMap)
+      await MatchManager.processQueues(io, userDbIds, lastPartnerMap, REMATCH_COOLDOWN_MS)
     } catch (e) {
       console.error("[join-queue] processQueues failed:", e)
     }
@@ -66,7 +67,7 @@ io.on("connection", (socket) => {
   socket.on("skip", async ({ emotion }: { emotion: string }) => {
     const canSkip = await MatchManager.canSkip(socket.id)
     if (!canSkip) {
-      socket.emit("skip-cooldown", { seconds: 6 })
+      socket.emit("skip-cooldown", { seconds: 3 })
       return
     }
 
@@ -76,6 +77,14 @@ io.on("connection", (socket) => {
     const partnerId = RoomManager.leaveRoom(io, socket.id)
 
     await MatchManager.setSkipCooldown(socket.id)
+
+    // Refresh lastPartnerMap NOW (at skip-time) so the 7s cooldown window
+    // starts from this moment, not from when the original match was created.
+    if (partnerId) {
+      const now = Date.now()
+      lastPartnerMap.set(socket.id, { partnerId, time: now })
+      lastPartnerMap.set(partnerId, { partnerId: socket.id, time: now })
+    }
 
     // Requeue BOTH parties atomically — Promise.all guarantees both lpush calls
     // are committed to Redis before processQueues ever reads the queues.
@@ -103,12 +112,15 @@ io.on("connection", (socket) => {
       }
     }
 
-    // Both inserts are already awaited — safe to match immediately, no setTimeout needed
-    try {
-      await MatchManager.processQueues(io, userDbIds, lastPartnerMap)
-    } catch (e) {
-      console.error("[skip] processQueues failed:", e)
-    }
+    // Delay rematch by 300ms — gives Zego time to fully destroy the old room
+    // on both clients before a new match-found fires, preventing SDK overlap crashes.
+    setTimeout(async () => {
+      try {
+        await MatchManager.processQueues(io, userDbIds, lastPartnerMap, REMATCH_COOLDOWN_MS)
+      } catch (e) {
+        console.error("[skip] processQueues failed:", e)
+      }
+    }, 300)
   })
 
   socket.on("disconnect", async () => {
@@ -124,7 +136,7 @@ io.on("connection", (socket) => {
     lastPartnerMap.delete(socket.id)
 
     try {
-      await MatchManager.processQueues(io, userDbIds, lastPartnerMap)
+      await MatchManager.processQueues(io, userDbIds, lastPartnerMap, REMATCH_COOLDOWN_MS)
     } catch (e) {
       console.error("[disconnect] processQueues failed:", e)
     }

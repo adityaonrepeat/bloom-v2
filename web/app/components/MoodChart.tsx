@@ -1,14 +1,12 @@
 "use client"
 
 import {
-  AreaChart,
-  Area,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  PieChart,
-  Pie,
   Cell
 } from "recharts"
 
@@ -27,24 +25,49 @@ type MoodEntry = {
 
 export default function MoodChart({ data }: { data: MoodEntry[] }) {
 
-  // Trend chart data with "day" labels
-  const trendData = data.map((d, i) => ({
-    day: `Day ${i + 1}`,
-    score: d.emotionScore,
-    tag: d.emotionTag
-  }))
+  // Generate an array of the last 7 days up to today
+  const last7Days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date()
+    d.setDate(d.getDate() - (6 - i))
+    return d
+  })
 
-  // Distribution data for pie chart
-  const distribution = data.reduce((acc, d) => {
-    acc[d.emotionTag] = (acc[d.emotionTag] || 0) + 1
-    return acc
-  }, {} as Record<string, number>)
+  // Trend chart data mapped over the last 7 days
+  const trendData = last7Days.map((date, index) => {
+    const match = data.find(d => {
+      const entryDate = new Date(d.createdAt)
+      return entryDate.getDate() === date.getDate() &&
+             entryDate.getMonth() === date.getMonth() &&
+             entryDate.getFullYear() === date.getFullYear()
+    })
 
-  const pieData = Object.entries(distribution).map(([tag, count]) => ({
-    name: tag,
-    value: count,
-    color: EMOTION_COLORS[tag] || "#94a3b8"
-  }))
+    const daysAgo = 6 - index
+    let label = `${daysAgo} days ago`
+    if (daysAgo === 0) label = "Today"
+    if (daysAgo === 1) label = "Yesterday"
+
+    return {
+      name: label,
+      score: match ? match.emotionScore : null,
+      tag: match ? match.emotionTag : undefined,
+    }
+  })
+
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const point = payload[0].payload
+      if (!point.tag) return null
+      
+      return (
+        <div className="bg-[#1f2937] text-white border-none rounded-lg text-xs p-2 shadow-xl">
+          <p className="font-medium whitespace-nowrap">
+            {point.name}: <span className="capitalize opacity-80">{point.tag}</span>
+          </p>
+        </div>
+      )
+    }
+    return null
+  }
 
   return (
     <div className="space-y-6">
@@ -56,92 +79,27 @@ export default function MoodChart({ data }: { data: MoodEntry[] }) {
         </h3>
 
         <ResponsiveContainer width="100%" height={200}>
-          <AreaChart data={trendData}>
-            <defs>
-              <linearGradient id="moodGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
-                <stop offset="100%" stopColor="#ffffff" stopOpacity={0.05} />
-              </linearGradient>
-            </defs>
-            <XAxis
-              dataKey="day"
-              stroke="#ffffff50"
-              fontSize={11}
-              tickLine={false}
-              axisLine={false}
-            />
-            <YAxis
-              stroke="#ffffff50"
-              fontSize={11}
-              tickLine={false}
-              axisLine={false}
-              domain={[0, 50]}
-            />
+          <BarChart data={trendData}>
+            <XAxis dataKey="name" hide />
+            <YAxis hide domain={[0, 50]} />
             <Tooltip
-              contentStyle={{
-                backgroundColor: "#1f2937",
-                border: "none",
-                borderRadius: "8px",
-                fontSize: "12px",
-                color: "#fff"
-              }}
+              content={<CustomTooltip />}
+              cursor={{ fill: '#ffffff10' }}
             />
-            <Area
-              type="monotone"
+            <Bar
               dataKey="score"
-              stroke="#fff"
-              strokeWidth={2}
-              fill="url(#moodGradient)"
-            />
-          </AreaChart>
+              radius={[4, 4, 0, 0]}
+            >
+              {trendData.map((entry, index) => (
+                <Cell 
+                  key={`cell-${index}`} 
+                  fill={entry.tag ? EMOTION_COLORS[entry.tag] || "#34d399" : "#34d399"} 
+                />
+              ))}
+            </Bar>
+          </BarChart>
         </ResponsiveContainer>
       </div>
-
-      {/* Mood Distribution */}
-      {pieData.length > 0 && (
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h3 className="text-sm font-medium mb-4 text-gray-600">
-            Mood Distribution
-          </h3>
-
-          <div className="flex items-center gap-4">
-            <ResponsiveContainer width={120} height={120}>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  dataKey="value"
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={30}
-                  outerRadius={50}
-                  paddingAngle={4}
-                >
-                  {pieData.map((entry, i) => (
-                    <Cell key={i} fill={entry.color} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-
-            <div className="flex flex-col gap-2">
-              {pieData.map(entry => (
-                <div key={entry.name} className="flex items-center gap-2 text-xs">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: entry.color }}
-                  />
-                  <span className="capitalize text-gray-700">
-                    {entry.name}
-                  </span>
-                  <span className="text-gray-400">
-                    ({entry.value})
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
 
     </div>
   )
