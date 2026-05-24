@@ -2,7 +2,6 @@
 
 import { useRef, type KeyboardEvent } from "react"
 import { Send } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 interface ChatInputProps {
@@ -37,13 +36,23 @@ export function ChatInput({
   }
 
   return (
-    <div className="border-t bg-background px-4 pb-4 pt-3">
+    <div
+      className="px-4 pb-4 pt-3"
+      style={{
+        background: "rgba(247,244,239,0.92)",
+        backdropFilter: "blur(16px)",
+        borderTop: "1px solid rgba(40,49,44,0.08)",
+        fontFamily: "var(--font-figtree), ui-sans-serif, sans-serif",
+      }}
+    >
       <div className="mx-auto max-w-3xl">
         <div
-          className={cn(
-            "flex items-end gap-2 rounded-2xl border bg-card px-4 py-2.5 shadow-sm",
-            "transition-colors focus-within:border-emerald-500/70 focus-within:ring-1 focus-within:ring-emerald-500/20"
-          )}
+          className="flex items-end gap-2 rounded-2xl px-4 py-2.5 transition-all"
+          style={{
+            background: "rgba(255,255,255,0.9)",
+            border: "1px solid rgba(40,49,44,0.12)",
+            boxShadow: "0 2px 8px rgba(40,49,44,0.06)",
+          }}
         >
           <textarea
             ref={textareaRef}
@@ -55,30 +64,26 @@ export function ChatInput({
             rows={1}
             className={cn(
               "flex-1 resize-none bg-transparent text-sm leading-relaxed outline-none",
-              "placeholder:text-muted-foreground/60",
-              "disabled:cursor-not-allowed disabled:opacity-50",
-              "min-h-[24px] max-h-[160px] overflow-y-auto"
+              "min-h-6 max-h-40 overflow-y-auto",
+              "disabled:cursor-not-allowed disabled:opacity-50"
             )}
+            style={{ color: "#28312C" }}
           />
-          <Button
-            size="icon"
+          <button
             onClick={onSend}
             disabled={!value.trim() || disabled}
-            className={cn(
-              "h-8 w-8 flex-shrink-0 rounded-xl",
-              "bg-emerald-700 hover:bg-emerald-800 text-white",
-              "transition-all active:scale-95",
-              "disabled:opacity-30"
-            )}
+            className="h-8 w-8 shrink-0 rounded-xl flex items-center justify-center transition-all active:scale-95 disabled:opacity-30"
+            style={{ background: "#28312C", color: "#f7f4ef" }}
           >
             <Send className="h-3.5 w-3.5" />
-          </Button>
+          </button>
         </div>
-        <p className="mt-2 text-center text-[10px] text-muted-foreground/50">
+        <p className="mt-2 text-center text-[10px]" style={{ color: "rgba(93,104,98,0.45)" }}>
           Not a substitute for professional care. In crisis? Call iCall:{" "}
           <a
             href="tel:9152987821"
-            className="underline underline-offset-2 hover:text-muted-foreground"
+            className="underline underline-offset-2 hover:opacity-80"
+            style={{ color: "#5D6862" }}
           >
             9152987821
           </a>

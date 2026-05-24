@@ -4,8 +4,8 @@ import { headers } from "next/headers"
 import { NextRequest } from "next/server"
 import { GoogleGenAI } from "@google/genai"
 
-const genai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! })
-
+// Initialize GenAI dynamically to avoid Next.js caching issues with env variables
+// we initialize it inside the POST handler now.
 const SYSTEM_PROMPT = `You are Aastha, a compassionate and warm AI therapist on the Bloom mental wellness platform.
 
 Your core qualities:
@@ -97,12 +97,30 @@ Aastha:`
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        const result = await genai.models.generateContentStream({
-          model: "gemini-2.5-flash-preview-04-17",
-          contents: fullPrompt,
-        })
+        let result
+        let attempt = 0
+        const maxAttempts = 2
 
-        for await (const chunk of result) {
+        while (attempt < maxAttempts) {
+          try {
+            const genai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! })
+            result = await genai.models.generateContentStream({
+              model: "gemini-2.5-flash",
+              contents: fullPrompt,
+            })
+            break // Success, exit retry loop
+          } catch (e: any) {
+            attempt++
+            if (attempt >= maxAttempts || e?.status !== 503) {
+              throw e // Rethrow if max attempts reached or not a 503
+            }
+            // Wait 1 second before retrying
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+          }
+        }
+
+        // We know result is defined here if it didn't throw
+        for await (const chunk of result!) {
           const text = chunk.text ?? ""
           if (text) {
             fullAiText += text
@@ -139,8 +157,9 @@ Aastha:`
         controller.close()
       } catch (err) {
         console.error("Gemini stream error:", err)
+        const errorMsg = "I'm sorry, something on my side isn't working right now. But you're not alone — feel free to keep sharing, and I'll be back with you shortly."
         controller.enqueue(
-          encoder.encode(`data: ${JSON.stringify({ error: "AI service unavailable" })}\n\n`)
+          encoder.encode(`data: ${JSON.stringify({ error: errorMsg })}\n\n`)
         )
         controller.close()
       }

@@ -7,240 +7,265 @@ import MoodBanner from "../components/MoodBanner"
 import MoodChart from "../components/MoodChart"
 import JournalCard from "../components/JournalCard"
 import Link from "next/link"
+import { Users, ChevronRight, PenLine, Sparkles } from "lucide-react"
 
 export default async function Dashboard() {
-
-  const session = await auth.api.getSession({
-    headers: await headers()
-  })
-
-  if (!session?.user) {
-    redirect("/login")
-  }
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (!session?.user) redirect("/login")
 
   const userId = session.user.id
   const userName = session.user.name
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId }
-  })
-
-  // Redirect blocked users
-  if (user?.isBlocked) {
-    redirect("/blocked")
-  }
+  const user = await prisma.user.findUnique({ where: { id: userId } })
+  if (user?.isBlocked) redirect("/blocked")
 
   const mood = await prisma.moodLog.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
-    take: 7
+    take: 7,
   })
 
   const journals = await prisma.journal.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
-    take: 3
+    take: 3,
   })
-
-  const latestMood = user?.emotionalTag
 
   const today = new Date()
   const latestMoodLogDate = mood.length > 0 ? new Date(mood[0].createdAt) : null
-  const hasLoggedMoodToday = latestMoodLogDate && 
+  const hasLoggedMoodToday =
+    latestMoodLogDate &&
     latestMoodLogDate.getDate() === today.getDate() &&
     latestMoodLogDate.getMonth() === today.getMonth() &&
     latestMoodLogDate.getFullYear() === today.getFullYear()
 
-  // Get current hour to show time-appropriate greeting
-  const currentHour = new Date().getHours()
-  const greeting = currentHour < 12 ? "Good morning" : currentHour < 17 ? "Good afternoon" : "Good evening"
+  const firstName = userName?.split(" ")[0] ?? "there"
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-white to-emerald-50/20">
-
+    <div
+      className="min-h-screen"
+      style={{ background: "#f7f4ef", fontFamily: "var(--font-figtree), ui-sans-serif, sans-serif" }}
+    >
       <Navbar />
 
-      {/* Inline Mood Banner (not popup) */}
-      {!hasLoggedMoodToday && <MoodBanner name={userName} />}
+      <main className="max-w-5xl mx-auto px-6 lg:px-8 py-8 pb-16 space-y-6">
 
-      <div className="max-w-6xl mx-auto px-8 py-8 space-y-8">
+        {/* Mood banner */}
+        {!hasLoggedMoodToday && <MoodBanner name={firstName} />}
 
-        {/* Greeting Section */}
-        <div className="flex items-end justify-between mb-4">
-          <div>
-            <h1 className="text-3xl font-bold text-stone-800 mt-1">
-              {userName}
-            </h1>
-          </div>
-        </div>
+        {/* ── Main grid ── */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
 
-        {/* Main Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-          {/* LEFT: Mood Chart — spans 5 cols */}
-          <div className="lg:col-span-5">
+          {/* Mood chart */}
+          <div
+            className="md:col-span-5 rounded-2xl overflow-hidden"
+            style={{ minHeight: 280, boxShadow: "0 4px 24px rgba(40,49,44,0.08)" }}
+          >
             <MoodChart data={mood} />
           </div>
 
-          {/* RIGHT: Cards — spans 7 cols */}
-          <div className="lg:col-span-7 space-y-6">
+          {/* Right action area */}
+          <div className="md:col-span-7 flex flex-col gap-4">
 
-            {/* Today's Focus Card */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 p-7 rounded-2xl text-white shadow-lg">
-              {/* Decorative foliage pattern */}
-              <div className="absolute top-0 right-0 w-40 h-40 opacity-10">
-                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M80 10C60 20 50 50 50 80C50 50 40 20 20 10C40 20 50 0 80 10Z" fill="white"/>
-                  <path d="M100 40C80 45 70 60 65 80C65 60 55 45 35 40C55 45 65 25 100 40Z" fill="white"/>
-                </svg>
-              </div>
+            {/* Quiz + Aastha row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4" style={{ minHeight: 175 }}>
 
-              <div className="relative z-10">
-                <p className="text-emerald-300 text-xs font-semibold uppercase tracking-wider">
-                  Today&apos;s Focus
-                </p>
-                <h2 className="text-xl font-bold mt-2">
-                  Mindfulness & Self-Reflection
-                </h2>
-                <p className="text-emerald-200/70 text-sm mt-2 leading-relaxed max-w-md">
-                  Take a moment to reflect on your emotions. Understanding your feelings is the first step toward growth.
-                </p>
-                <Link href="/quiz">
-                  <button className="mt-5 bg-white/15 backdrop-blur-sm text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-white/25 transition-all border border-white/10">
-                    Take the Quiz: Present Moment
+              {/* Quiz card */}
+              <div
+                className="relative overflow-hidden flex flex-col justify-between rounded-2xl p-5 group cursor-pointer transition-all duration-200"
+                style={{
+                  background: "rgba(255,255,255,0.82)",
+                  border: "1px solid rgba(40,49,44,0.08)",
+                  boxShadow: "0 2px 12px rgba(40,49,44,0.04)",
+                }}
+              >
+                <div
+                  aria-hidden
+                  className="absolute -bottom-10 -right-10 w-36 h-36 opacity-[0.04] pointer-events-none"
+                >
+                  <svg viewBox="0 0 100 100" fill="#28312C">
+                    <path d="M50 0C50 0 20 20 20 50C20 80 50 100 50 100C50 100 80 80 80 50C80 20 50 0 50 0Z" />
+                  </svg>
+                </div>
+                <div className="relative z-10">
+                  <h3
+                    style={{
+                      fontFamily: "var(--font-fraunces), Georgia, serif",
+                      fontSize: "17px",
+                      color: "#28312C",
+                      lineHeight: 1.25,
+                      letterSpacing: "-0.01em",
+                    }}
+                  >
+                    Take the Quiz:<br />Present Moment
+                  </h3>
+                  <p className="mt-2" style={{ fontSize: "13px", color: "#5D6862", lineHeight: 1.5 }}>
+                    Check in with your feelings right now.
+                  </p>
+                </div>
+                <Link href="/quiz" className="relative z-10 mt-5">
+                  <button
+                    className="text-[13px] font-medium px-4 py-2 rounded-full flex items-center gap-1.5 transition-all hover:opacity-90 active:scale-[0.98]"
+                    style={{ background: "#28312C", color: "#f7f4ef" }}
+                  >
+                    Start Quiz <ChevronRight size={13} strokeWidth={2.5} />
                   </button>
                 </Link>
               </div>
-            </div>
 
-            {/* Two Action Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-              {/* AI Therapist Card */}
-              <Link href="/aastha" className="block group">
-                <div className="relative overflow-hidden bg-white p-6 rounded-2xl border border-stone-100 shadow-sm hover:shadow-md hover:border-stone-200 transition-all duration-300 h-full">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-100 to-purple-100 flex items-center justify-center flex-shrink-0">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 8V4H8"/>
-                        <rect width="16" height="12" x="4" y="8" rx="2"/>
-                        <path d="M2 14h2"/>
-                        <path d="M20 14h2"/>
-                        <path d="M15 13v2"/>
-                        <path d="M9 13v2"/>
-                      </svg>
+              {/* Aastha card */}
+              <Link href="/aastha" className="group block">
+                <div
+                  className="h-full flex flex-col rounded-2xl p-5 transition-all duration-200 cursor-pointer"
+                  style={{
+                    background: "#28312C",
+                    boxShadow: "0 4px 20px rgba(40,49,44,0.18)",
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <div
+                      className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+                      style={{ background: "#E3A863", color: "#28312C" }}
+                    >
+                      A
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-stone-800 text-base">Aastha</h3>
-                      <p className="text-xs text-stone-400 mt-0.5">AI Therapist</p>
-                      <p className="text-sm text-stone-500 mt-2 leading-relaxed">
-                        Your AI companion is here to listen and support you.
-                      </p>
+                    <div>
+                      <p style={{ fontSize: "14px", fontWeight: 500, color: "#F0EBE1", lineHeight: 1 }}>Aastha</p>
+                      <p style={{ fontSize: "11px", color: "#A6B3A8" }}>AI Therapist</p>
                     </div>
+                    <span
+                      className="ml-auto w-2 h-2 rounded-full animate-pulse shrink-0"
+                      style={{ background: "#7C9885" }}
+                    />
                   </div>
-                  <div className="mt-4 flex items-center text-sm font-medium text-violet-600 group-hover:text-violet-700 transition-colors">
-                    Start conversation
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1.5 transition-transform group-hover:translate-x-1">
-                      <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
-                    </svg>
-                  </div>
-                </div>
-              </Link>
-
-              {/* Talk to Someone Card */}
-              <Link href="/talk" className="block group">
-                <div className="relative overflow-hidden bg-white p-6 rounded-2xl border border-stone-100 shadow-sm hover:shadow-md hover:border-stone-200 transition-all duration-300 h-full">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center flex-shrink-0">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                        <circle cx="9" cy="7" r="4"/>
-                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                      </svg>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-stone-800 text-base">Talk to Someone</h3>
-                      <p className="text-xs text-stone-400 mt-0.5">Anonymous & Safe</p>
-                      <p className="text-sm text-stone-500 mt-2 leading-relaxed">
-                        Connect with someone who understands how you feel.
-                      </p>
-                    </div>
-                  </div>
-                  {latestMood && (
-                    <p className="text-xs text-stone-400 mt-3">
-                      Matching based on: <span className="capitalize font-medium text-emerald-600">{latestMood}</span> mood
-                    </p>
-                  )}
-                  <div className="mt-3 flex items-center text-sm font-medium text-emerald-600 group-hover:text-emerald-700 transition-colors">
-                    Find a match
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1.5 transition-transform group-hover:translate-x-1">
-                      <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
-                    </svg>
+                  <p className="mt-2 leading-relaxed" style={{ fontSize: "13px", color: "rgba(240,235,225,0.7)" }}>
+                    Talk anytime, judgment-free.
+                  </p>
+                  <div
+                    className="mt-auto pt-4 rounded-xl px-3 py-2.5"
+                    style={{
+                      background: "rgba(255,255,255,0.07)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                      fontSize: "12px",
+                      color: "rgba(240,235,225,0.8)",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    &ldquo;Hi {firstName}, let&apos;s chat 🌸&rdquo;
                   </div>
                 </div>
               </Link>
-
             </div>
-          </div>
-        </div>
 
-        {/* Journal Section */}
-        <div>
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <h2 className="text-xl font-bold text-stone-800">
-                Journals
-              </h2>
-              <p className="text-xs text-stone-400 mt-0.5">
-                Your personal reflections
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <Link
-                href="/journal"
-                className="text-sm text-stone-500 hover:text-stone-700 font-medium transition-colors"
+            {/* Talk card */}
+            <Link href="/talk" className="group block">
+              <div
+                className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-2xl px-5 py-4 transition-all duration-200 cursor-pointer"
+                style={{
+                  background: "rgba(255,255,255,0.82)",
+                  border: "1px solid rgba(40,49,44,0.08)",
+                  boxShadow: "0 2px 12px rgba(40,49,44,0.04)",
+                  minHeight: "80px",
+                }}
               >
-                View All
-              </Link>
-              <Link href="/journal">
-                <button className="bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-emerald-700 transition-colors shadow-sm flex items-center gap-1.5">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-                  </svg>
-                  New Entry
+                <div className="flex items-center gap-4">
+                  <div
+                    className="w-11 h-11 rounded-full shrink-0 flex items-center justify-center"
+                    style={{ background: "rgba(40,49,44,0.06)" }}
+                  >
+                    <Users size={20} strokeWidth={1.5} style={{ color: "#28312C" }} />
+                  </div>
+                  <div>
+                    <h3 style={{ fontSize: "16px", fontWeight: 500, color: "#28312C", lineHeight: 1.2 }}>
+                      Talk to Someone
+                    </h3>
+                    <p style={{ fontSize: "13px", color: "#5D6862", marginTop: "2px" }}>
+                      Match with a real human who feels the same shade of blue.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  className="shrink-0 text-[13px] font-medium px-5 py-2 rounded-full transition-all hover:opacity-90"
+                  style={{ background: "#28312C", color: "#f7f4ef" }}
+                >
+                  Get Support
                 </button>
-              </Link>
-            </div>
-          </div>
-
-          {journals.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {journals.map((j) => (
-                <JournalCard key={j.id} journal={j} />
-              ))}
-            </div>
-          ) : (
-            <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-10 text-center">
-              <div className="w-14 h-14 mx-auto rounded-2xl bg-stone-50 flex items-center justify-center mb-4">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a8a29e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-                  <path d="m15 5 4 4"/>
-                </svg>
               </div>
-              <p className="text-stone-500 text-sm">
-                No journal entries yet.
-              </p>
-              <Link href="/journal">
-                <button className="mt-3 text-emerald-600 text-sm font-medium hover:text-emerald-700 transition-colors underline underline-offset-2">
-                  Write your first entry
-                </button>
-              </Link>
-            </div>
-          )}
+            </Link>
+          </div>
         </div>
 
-      </div>
+        {/* ── Journals section ── */}
+        <section
+          className="rounded-2xl px-6 py-5"
+          style={{
+            background: "rgba(255,255,255,0.82)",
+            border: "1px solid rgba(40,49,44,0.08)",
+            boxShadow: "0 2px 12px rgba(40,49,44,0.04)",
+          }}
+        >
+          <div className="flex items-center justify-between mb-5 px-1">
+            <h2
+              style={{
+                fontFamily: "var(--font-fraunces), Georgia, serif",
+                fontSize: "20px",
+                letterSpacing: "-0.01em",
+                color: "#28312C",
+              }}
+            >
+              Journals
+            </h2>
+            <Link
+              href="/journal"
+              className="flex items-center gap-0.5 text-[13px] font-medium transition-opacity hover:opacity-60"
+              style={{ color: "#5D6862" }}
+            >
+              View All <ChevronRight size={14} />
+            </Link>
+          </div>
+
+          <div className="relative">
+            {journals.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {journals.map((j) => (
+                  <JournalCard key={j.id} journal={j} />
+                ))}
+              </div>
+            ) : (
+              <div
+                className="py-14 text-center rounded-xl"
+                style={{ background: "rgba(40,49,44,0.03)", border: "1px dashed rgba(40,49,44,0.1)" }}
+              >
+                <p style={{ fontSize: "14px", color: "#5D6862", marginBottom: "12px" }}>No journal entries yet.</p>
+                <Link href="/journal">
+                  <button
+                    className="text-[13px] font-medium px-5 py-2.5 rounded-full transition-all hover:opacity-90"
+                    style={{ background: "#28312C", color: "#f7f4ef" }}
+                  >
+                    Write your first entry
+                  </button>
+                </Link>
+              </div>
+            )}
+
+            {journals.length > 0 && (
+              <Link href="/journal/new" className="absolute bottom-2 right-2">
+                <button
+                  className="text-[13px] font-medium px-5 py-2.5 rounded-full flex items-center gap-1.5 transition-all hover:opacity-90 active:scale-[0.98]"
+                  style={{
+                    background: "#28312C",
+                    color: "#f7f4ef",
+                    boxShadow: "0 4px 16px rgba(40,49,44,0.2)",
+                  }}
+                >
+                  New Entry <PenLine size={13} />
+                </button>
+              </Link>
+            )}
+          </div>
+        </section>
+
+      </main>
     </div>
   )
 }

@@ -2,26 +2,46 @@ import { useEffect, useRef } from "react"
 import { MessageBubble, StreamingBubble } from "./MessageBubble"
 import type { AasthaMessage } from "@/hooks/useAastha"
 
-// ─── Typing indicator ─────────────────────────────────────────────────────────
-
-export function TypingIndicator() {
+function TypingIndicator() {
   return (
     <div className="flex items-end gap-2">
-      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[12px] font-semibold text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
+      <div
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] font-bold"
+        style={{
+          background: "#E3A863",
+          color: "#28312C",
+          fontFamily: "var(--font-fraunces), Georgia, serif",
+        }}
+      >
         A
       </div>
-      <div className="rounded-2xl rounded-bl-sm border border-border/60 bg-card px-4 py-3 shadow-sm">
+      <div
+        className="rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm"
+        style={{
+          background: "rgba(255,255,255,0.9)",
+          border: "1px solid rgba(40,49,44,0.08)",
+        }}
+      >
         <div className="flex items-center gap-1.5">
-          <span className="h-2 w-2 animate-bounce rounded-full bg-emerald-400 [animation-delay:0ms]" />
-          <span className="h-2 w-2 animate-bounce rounded-full bg-emerald-400 [animation-delay:150ms]" />
-          <span className="h-2 w-2 animate-bounce rounded-full bg-emerald-400 [animation-delay:300ms]" />
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              className="h-2 w-2 animate-bounce rounded-full"
+              style={{ background: "#A6B3A8", animationDelay: `${i * 150}ms` }}
+            />
+          ))}
         </div>
       </div>
     </div>
   )
 }
 
-// ─── Message list ─────────────────────────────────────────────────────────────
+const WELCOME_MESSAGE: AasthaMessage = {
+  id: "__welcome__",
+  role: "assistant",
+  content: "Hi, I'm Aastha. I'm here to listen. No judgment, no pressure.\n\nWhat's been on your mind lately?",
+  createdAt: new Date().toISOString(),
+}
 
 interface MessageListProps {
   messages: AasthaMessage[]
@@ -36,10 +56,15 @@ export function MessageList({ messages, streamingContent, isStreaming }: Message
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages.length, streamingContent])
 
+  const displayMessages = messages.length === 0 ? [WELCOME_MESSAGE] : messages
+
   return (
-    <div className="flex flex-1 flex-col overflow-y-auto scroll-smooth">
+    <div
+      className="flex flex-1 flex-col overflow-y-auto scroll-smooth"
+      style={{ background: "#f7f4ef" }}
+    >
       <div className="mx-auto w-full max-w-3xl px-4 py-6 space-y-4 sm:px-6">
-        {messages.map((msg) => (
+        {displayMessages.map((msg) => (
           <MessageBubble key={msg.id} msg={msg} />
         ))}
 

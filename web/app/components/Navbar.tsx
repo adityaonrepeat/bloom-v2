@@ -2,24 +2,30 @@
 
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { signOut } from "@/lib/auth-client"
 
-export default function Navbar() {
+const nav = [
+  { name: "Home", href: "/dashboard" },
+  { name: "Journal", href: "/journal" },
+  { name: "Talk", href: "/talk" },
+  { name: "Quiz", href: "/quiz" },
+  { name: "Aastha", href: "/aastha" },
+]
 
+export default function Navbar() {
   const path = usePathname()
   const router = useRouter()
-  const [dropdownOpen, setDropdownOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownOpen(false)
-      }
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
     }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
+    document.addEventListener("mousedown", handler)
+    return () => document.removeEventListener("mousedown", handler)
   }, [])
 
   const handleLogout = async () => {
@@ -27,94 +33,125 @@ export default function Navbar() {
     router.push("/login")
   }
 
-  const nav = [
-    { name: "Home", href: "/dashboard" },
-    { name: "Journal", href: "/journal" },
-    { name: "Talk", href: "/talk" },
-    { name: "Quiz", href: "/quiz" },
-    { name: "Aastha", href: "/aastha" }
-  ]
-
   return (
+    <nav
+      className="w-full sticky top-0 z-40"
+      style={{
+        background: "rgba(247,244,239,0.92)",
+        backdropFilter: "blur(16px)",
+        borderBottom: "1px solid rgba(40,49,44,0.08)",
+        fontFamily: "var(--font-figtree), ui-sans-serif, sans-serif",
+      }}
+    >
+      <div className="max-w-6xl mx-auto flex items-center justify-between px-6 lg:px-10 h-[58px]">
 
-    <nav className="w-full h-16 bg-white/80 backdrop-blur-md border-b border-stone-200/60 flex items-center justify-between px-10 sticky top-0 z-40">
+        {/* Logo */}
+        <Link href="/dashboard" className="flex items-center w-fit" style={{ marginLeft: "-6px" }}>
+          <Image
+            src="/logo.png"
+            alt="Bloom"
+            width={52}
+            height={38}
+            style={{ mixBlendMode: "multiply", marginRight: "-10px" }}
+          />
+          <span
+            style={{
+              fontFamily: "var(--font-fraunces), Georgia, serif",
+              fontSize: "18px",
+              letterSpacing: "-0.03em",
+              color: "#28312C",
+              lineHeight: 1,
+            }}
+          >
+            bloom
+          </span>
+        </Link>
 
-      {/* Logo */}
-      <Link href="/dashboard" className="flex items-center gap-2 group">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2C8 6 4 10 4 14C4 18.4183 7.58172 22 12 22C16.4183 22 20 18.4183 20 14C20 10 16 6 12 2Z" fill="#059669" opacity="0.15"/>
-          <path d="M12 2C8 6 4 10 4 14C4 18.4183 7.58172 22 12 22C16.4183 22 20 18.4183 20 14C20 10 16 6 12 2Z" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M12 22V10" stroke="#059669" strokeWidth="1.2" strokeLinecap="round" opacity="0.5"/>
-          <path d="M8 14C8 14 10 12 12 14" stroke="#059669" strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
-          <path d="M16 14C16 14 14 12 12 14" stroke="#059669" strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
-        </svg>
-        <span className="text-lg font-bold text-stone-800 group-hover:text-emerald-800 transition-colors">
-          Bloom
-        </span>
-      </Link>
+        {/* Nav links */}
+        <div className="hidden md:flex items-center gap-0.5">
+          {nav.map((item) => {
+            const isActive =
+              path === item.href ||
+              (item.href !== "/dashboard" && path.startsWith(item.href))
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="relative px-3.5 py-1.5 text-[13.5px] font-medium transition-colors duration-150 rounded-lg"
+                style={{ color: isActive ? "#28312C" : "#A6B3A8" }}
+              >
+                {item.name}
+                {isActive && (
+                  <span
+                    className="absolute bottom-0 left-3.5 right-3.5 h-[1.5px] rounded-full"
+                    style={{ background: "#C67156" }}
+                  />
+                )}
+              </Link>
+            )
+          })}
+        </div>
 
-      {/* Navigation Links */}
-      <div className="flex items-center gap-1">
-
-        {nav.map((item) => {
-          const isActive = path === item.href
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                isActive
-                  ? "text-emerald-800 bg-emerald-50"
-                  : "text-stone-500 hover:text-stone-700 hover:bg-stone-50"
-              }`}
+        {/* Right — Profile dropdown */}
+        <div className="flex items-center gap-3">
+          <div className="relative" ref={ref}>
+            <button
+              onClick={() => setOpen(!open)}
+              className="flex items-center gap-1.5 transition-opacity hover:opacity-75"
+              title="Account"
             >
-              {item.name}
-              {isActive && (
-                <span className="block h-0.5 bg-emerald-600 rounded-full mt-0.5 mx-auto w-4" />
-              )}
-            </Link>
-          )
-        })}
-
-      </div>
-
-      {/* Profile section */}
-      <div className="flex items-center gap-3 relative" ref={dropdownRef}>
-
-        {/* Avatar trigger */}
-        <button 
-          onClick={() => setDropdownOpen(!dropdownOpen)}
-          className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-200 to-teal-200 flex items-center justify-center border-2 border-white shadow-sm hover:ring-2 hover:ring-emerald-100 transition-all focus:outline-none"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
-          </svg>
-        </button>
-
-        {/* Dropdown */}
-        {dropdownOpen && (
-          <div className="absolute right-0 top-12 w-48 bg-white rounded-xl shadow-lg border border-stone-100 py-1 z-50 animate-in fade-in zoom-in-95 duration-200">
-            <Link 
-              href="/edit-profile" 
-              onClick={() => setDropdownOpen(false)}
-              className="block px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 hover:text-emerald-700 transition-colors"
-            >
-              Edit Profile
-            </Link>
-            <div className="h-px bg-stone-100 my-1" />
-            <button 
-              onClick={handleLogout}
-              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-            >
-              Logout
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center"
+                style={{ background: "rgba(40,49,44,0.08)" }}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#28312C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </div>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#A6B3A8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m6 9 6 6 6-6"/>
+              </svg>
             </button>
+
+            {open && (
+              <div
+                className="absolute right-0 top-[calc(100%+8px)] w-44 rounded-xl overflow-hidden z-50"
+                style={{
+                  background: "rgba(255,255,255,0.98)",
+                  backdropFilter: "blur(16px)",
+                  border: "1px solid rgba(40,49,44,0.1)",
+                  boxShadow: "0 8px 32px rgba(40,49,44,0.12)",
+                }}
+              >
+                <div className="p-1">
+                  <Link
+                    href="/edit-profile"
+                    onClick={() => setOpen(false)}
+                    className="block px-3 py-2 text-[13px] font-medium rounded-lg transition-colors"
+                    style={{ color: "#28312C" }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(40,49,44,0.05)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                  >
+                    Edit profile
+                  </Link>
+                  <div className="h-px mx-1 my-1" style={{ background: "rgba(40,49,44,0.06)" }} />
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-3 py-2 text-[13px] font-medium rounded-lg transition-colors"
+                    style={{ color: "#C67156" }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(198,113,86,0.08)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
 
       </div>
-
     </nav>
-
   )
 }

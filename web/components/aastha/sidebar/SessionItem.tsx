@@ -20,13 +20,7 @@ interface SessionItemProps {
   isDeleting?: boolean
 }
 
-export function SessionItem({
-  session,
-  isActive,
-  onSelect,
-  onDelete,
-  isDeleting,
-}: SessionItemProps) {
+export function SessionItem({ session, isActive, onSelect, onDelete, isDeleting }: SessionItemProps) {
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation()
     if (confirm("Delete this session? This can't be undone.")) onDelete()
@@ -42,33 +36,39 @@ export function SessionItem({
           if (!isDeleting) onSelect()
         }
       }}
-      onClick={() => {
-        if (!isDeleting) onSelect()
-      }}
+      onClick={() => { if (!isDeleting) onSelect() }}
       aria-disabled={isDeleting}
       className={cn(
-        "group relative w-full rounded-xl px-3 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        "hover:bg-accent/60",
-        isActive && "bg-accent",
-        isDeleting && "opacity-50 pointer-events-none cursor-not-allowed"
+        "group relative w-full rounded-xl px-3 py-2.5 text-left transition-all focus-visible:outline-none cursor-pointer",
+        isDeleting && "opacity-50 pointer-events-none"
       )}
+      style={{
+        background: isActive ? "rgba(40,49,44,0.08)" : "transparent",
+      }}
+      onMouseEnter={(e) => {
+        if (!isActive) e.currentTarget.style.background = "rgba(40,49,44,0.05)"
+      }}
+      onMouseLeave={(e) => {
+        if (!isActive) e.currentTarget.style.background = "transparent"
+      }}
     >
       <div className="flex items-start gap-2 pr-6">
         <div className="min-w-0 flex-1">
           <p
-            className={cn(
-              "truncate text-[13px] font-medium leading-snug",
-              isActive ? "text-foreground" : "text-foreground/80"
-            )}
+            className="truncate text-[13px] font-medium leading-snug"
+            style={{ color: isActive ? "#28312C" : "#5D6862" }}
           >
             {session.title}
           </p>
           <div className="mt-1 flex items-center gap-1.5">
-            <span className="text-[11px] text-muted-foreground">
+            <span className="text-[11px]" style={{ color: "rgba(93,104,98,0.6)" }}>
               {timeAgo(session.updatedAt)}
             </span>
             {session._count && (
-              <span className="rounded-full bg-muted px-1.5 py-px text-[10px] text-muted-foreground">
+              <span
+                className="rounded-full px-1.5 py-px text-[10px]"
+                style={{ background: "rgba(40,49,44,0.07)", color: "#5D6862" }}
+              >
                 {session._count.messages}
               </span>
             )}
@@ -76,14 +76,10 @@ export function SessionItem({
         </div>
       </div>
 
-      {/* Delete button — only visible on hover */}
       <button
         onClick={handleDelete}
-        className={cn(
-          "absolute right-2 top-2.5 rounded-md p-1",
-          "text-muted-foreground/0 transition-all",
-          "group-hover:text-muted-foreground hover:!text-destructive hover:bg-destructive/10"
-        )}
+        className="absolute right-2 top-2.5 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-all hover:text-[#C67156]"
+        style={{ color: "#5D6862" }}
         title="Delete session"
         tabIndex={-1}
       >
@@ -93,13 +89,11 @@ export function SessionItem({
   )
 }
 
-// ─── Skeleton loader ──────────────────────────────────────────────────────────
-
 export function SessionItemSkeleton() {
   return (
     <div className="rounded-xl px-3 py-2.5">
-      <div className="h-3 w-3/4 animate-pulse rounded bg-muted" />
-      <div className="mt-2 h-2.5 w-1/2 animate-pulse rounded bg-muted" />
+      <div className="h-3 w-3/4 animate-pulse rounded" style={{ background: "rgba(40,49,44,0.08)" }} />
+      <div className="mt-2 h-2.5 w-1/2 animate-pulse rounded" style={{ background: "rgba(40,49,44,0.06)" }} />
     </div>
   )
 }

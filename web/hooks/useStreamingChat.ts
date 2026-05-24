@@ -67,57 +67,77 @@ export function useStreamingChat({ sessionId }: UseStreamingChatOptions) {
           const lines = chunk.split("\n").filter((l) => l.startsWith("data: "))
 
           for (const line of lines) {
+            let payload
             try {
-              const payload = JSON.parse(line.slice(6))
-
-              if (payload.error) throw new Error(payload.error)
-
-              if (payload.token) {
-                accumulated += payload.token
-                setState((s) => ({ ...s, streamingContent: accumulated }))
-              }
-
-              if (payload.done && payload.message) {
-                // ── 3. Commit final messages to cache ──────────────────────
-                qc.setQueryData<{ messages: AasthaMessage[]; sessionMeta: any }>(
-                  keys.messages(sessionId),
-                  (prev) => {
-                    if (!prev) return prev
-                    const withoutOptimistic = prev.messages.filter(
-                      (m) => m.id !== optimisticUserMsg.id
-                    )
-                    const confirmedUser: AasthaMessage = {
-                      ...optimisticUserMsg,
-                      id: `user-${Date.now()}`,
-                    }
-                    return {
-                      ...prev,
-                      messages: [...withoutOptimistic, confirmedUser, payload.message],
-                    }
-                  }
-                )
-
-                // ── 4. Refetch sessions list (title may have auto-updated) ─
-                qc.invalidateQueries({ queryKey: keys.sessions })
-              }
+              payload = JSON.parse(line.slice(6))
             } catch {
-              // Malformed SSE line — skip
+              continue // Malformed JSON — skip
+            }
+
+            if (payload.error) {
+              throw new Error(payload.error)
+            }
+
+            if (payload.token) {
+              accumulated += payload.token
+              setState((s) => ({ ...s, streamingContent: accumulated }))
+            }
+
+            if (payload.done && payload.message) {
+              // ── 3. Commit final messages to cache ──────────────────────
+              qc.setQueryData<{ messages: AasthaMessage[]; sessionMeta: any }>(
+                keys.messages(sessionId),
+                (prev) => {
+                  if (!prev) return prev
+                  const withoutOptimistic = prev.messages.filter(
+                    (m) => m.id !== optimisticUserMsg.id
+                  )
+                  const confirmedUser: AasthaMessage = {
+                    ...optimisticUserMsg,
+                    id: `user-${Date.now()}`,
+                  }
+                  return {
+                    ...prev,
+                    messages: [...withoutOptimistic, confirmedUser, payload.message],
+                  }
+                }
+              )
+
+              // ── 4. Refetch sessions list (title may have auto-updated) ─
+              qc.invalidateQueries({ queryKey: keys.sessions })
             }
           }
         }
-      } catch (err: any) {
-        // Roll back optimistic message
-        qc.setQueryData<{ messages: AasthaMessage[]; sessionMeta: any }>(
+      } catch (err: unknown) {
+        const rawMsg = err instanceof Error ? err.message : ""
+        const friendlyMsg = rawMsg.startsWith("I\u2019m sorry") || rawMsg.startsWith("I'm sorry")
+          ? rawMsg
+          : "I\u2019m sorry, something on my side isn\u2019t working right now. But you\u2019re not alone \u2014 feel free to keep sharing, and I\u2019ll be back with you shortly."
+
+        // Roll back optimistic user message
+        qc.setQueryData<{ messages: AasthaMessage[]; sessionMeta: unknown }>(
           keys.messages(sessionId),
           (prev) => {
             if (!prev) return prev
-            return {
-              ...prev,
-              messages: prev.messages.filter((m) => m.id !== optimisticUserMsg.id),
-            }
+            return { ...prev, messages: prev.messages.filter((m) => m.id !== optimisticUserMsg.id) }
           }
         )
-        setState((s) => ({ ...s, error: err.message || "Something went wrong. Try again." }))
+
+        // Inject friendly error as assistant bubble
+        const errorBubble: AasthaMessage = {
+          id: `error-${Date.now()}`,
+          role: "assistant",
+          content: friendlyMsg,
+          createdAt: new Date().toISOString(),
+        }
+        qc.setQueryData<{ messages: AasthaMessage[]; sessionMeta: unknown }>(
+          keys.messages(sessionId),
+          (prev) => {
+            if (!prev) return prev
+            return { ...prev, messages: [...prev.messages, errorBubble] }
+          }
+        )
+        setState((s) => ({ ...s, error: null }))
       } finally {
         setState((s) => ({ ...s, isStreaming: false, streamingContent: "" }))
       }

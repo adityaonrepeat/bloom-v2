@@ -30,7 +30,7 @@ export async function registerEmail(
       body: { email }
     })
 
-    redirect("/verify-email")
+    return { success: true }
   }
 
   // create account
@@ -42,7 +42,7 @@ export async function registerEmail(
     },
   })
 
-  redirect("/verify-email")
+  return { success: true }
 }
 
 export async function loginEmail(
@@ -68,7 +68,7 @@ export async function loginEmail(
     };
   }
 
-  redirect("/dashboard");
+  return { success: true };
 }
 
 export async function signOut() {

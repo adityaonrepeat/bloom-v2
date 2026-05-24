@@ -1,15 +1,4 @@
-export type Option = {
-  label: string
-  score: number
-}
-
-export type Question = {
-  id: number
-  text: string
-  options: Option[]
-}
-
-export const questions: Question[] = [
+export const questions = [
   {
     id: 1,
     text: "How would you describe your mood right now?",

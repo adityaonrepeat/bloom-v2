@@ -41,6 +41,8 @@ pnpm-debug.log*
 # OS / Misc
 # ========================
 .DS_Store
+Thumbs.db
+Desktop.ini
 *.pem
 
 # ========================
@@ -51,7 +53,7 @@ pnpm-debug.log*
 # ========================
 # Prisma (generated files)
 # ========================
-lib/generated/prisma
+web/lib/generated/
 
 # ========================
 # Next.js
@@ -63,3 +65,29 @@ next-env.d.ts
 # Testing
 # ========================
 coverage/
+
+# ========================
+# Claude / AI tooling
+# ========================
+.claude/
+CLAUDE.md
+
+# ========================
+# IDE
+# ========================
+.vscode/
+.idea/
+
+# ========================
+# Local scripts / dev utilities
+# ========================
+*.cjs
+
+# ========================
+# Screenshots / images
+# ========================
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
