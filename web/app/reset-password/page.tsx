@@ -1,6 +1,5 @@
 import { ResetPasswordForm } from "@/components/reset-password-form";
-import Image from "next/image";
-import Link from "next/link";
+import { Suspense } from "react";
 
 export default function LoginPage() {
   return (
@@ -10,7 +9,9 @@ export default function LoginPage() {
           className="flex items-center gap-2 self-center font-medium"
         >
         </div>
-        <ResetPasswordForm />
+        <Suspense fallback={null}>
+          <ResetPasswordForm />
+        </Suspense>
       </div>
     </div>
   );

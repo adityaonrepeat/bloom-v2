@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import prisma from "@/lib/prisma"
-import Navbar from "../components/Navbar"
+import TopNav from "@/app/components/bloom/TopNav"
 import { EditProfileForm } from "./EditProfileForm"
 
 export default async function EditProfilePage() {
@@ -23,25 +23,55 @@ export default async function EditProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50">
-      <Navbar />
+    <div className="min-h-screen" style={{ background: "#f7f4ef" }}>
+      <TopNav />
 
-      <main className="max-w-3xl mx-auto px-6 py-12">
-        <div className="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
-          <div className="p-8 border-b border-stone-200">
-            <h1 className="text-2xl font-bold text-stone-800">Edit Profile</h1>
-            <p className="text-stone-500 mt-1">Manage your account settings and preferences.</p>
+      <main className="max-w-xl mx-auto px-6 pt-24 pb-16">
+        <div
+          className="rounded-2xl overflow-hidden"
+          style={{
+            background: "#ffffff",
+            border: "1px solid rgba(40,49,44,0.08)",
+            boxShadow: "0 4px 24px rgba(40,49,44,0.06)",
+          }}
+        >
+          <div
+            className="px-8 pt-8 pb-6"
+            style={{ borderBottom: "1px solid rgba(40,49,44,0.07)" }}
+          >
+            <p
+              className="eyebrow mb-1"
+              style={{ color: "rgba(40,49,44,0.4)" }}
+            >
+              Account
+            </p>
+            <h1
+              className="font-display"
+              style={{
+                fontSize: "28px",
+                letterSpacing: "-0.02em",
+                color: "#28312C",
+                lineHeight: 1.1,
+              }}
+            >
+              Edit Profile
+            </h1>
+            <p
+              className="mt-1.5 text-sm"
+              style={{ color: "rgba(40,49,44,0.48)" }}
+            >
+              Manage your name and account details.
+            </p>
           </div>
 
-          <div className="p-8 space-y-6">
-            <EditProfileForm 
-              initialName={user.name || ""} 
-              email={user.email || ""} 
+          <div className="px-8 py-8">
+            <EditProfileForm
+              initialName={user.name || ""}
+              email={user.email || ""}
             />
           </div>
         </div>
       </main>
-
     </div>
   )
 }

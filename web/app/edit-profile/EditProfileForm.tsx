@@ -19,11 +19,11 @@ export function EditProfileForm({ initialName, email }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
+
     try {
       const result = await updateProfile(name)
       if (result.success) {
-        toast.success("Profile edited successfully")
+        toast.success("Profile updated")
         router.refresh()
         router.push("/dashboard")
       } else {
@@ -36,63 +36,114 @@ export function EditProfileForm({ initialName, email }: Props) {
     }
   }
 
+  const initial = name.charAt(0).toUpperCase() || "U"
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Profile Photo */}
-      <div className="flex items-center gap-6">
-        <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center border-4 border-white shadow-sm shrink-0">
-          <span className="text-emerald-700 font-bold text-2xl">
-            {name.charAt(0).toUpperCase() || "U"}
+    <form onSubmit={handleSubmit} className="space-y-6" style={{ fontFamily: "var(--font-figtree), ui-sans-serif, sans-serif" }}>
+      {/* Avatar initial */}
+      <div className="flex items-center gap-4">
+        <div
+          className="w-16 h-16 rounded-full flex items-center justify-center shrink-0"
+          style={{ background: "rgba(40,49,44,0.08)", border: "2px solid rgba(40,49,44,0.1)" }}
+        >
+          <span
+            className="font-display"
+            style={{ fontSize: "22px", color: "#28312C", letterSpacing: "-0.02em" }}
+          >
+            {initial}
           </span>
+        </div>
+        <div>
+          <p className="text-sm font-medium" style={{ color: "#28312C" }}>{name || "Your name"}</p>
+          <p className="text-xs mt-0.5" style={{ color: "rgba(40,49,44,0.45)" }}>{email}</p>
         </div>
       </div>
 
-      {/* Name */}
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-stone-700" htmlFor="name">
+      {/* Name field */}
+      <div className="space-y-1.5">
+        <label
+          className="text-sm font-medium"
+          htmlFor="name"
+          style={{ color: "#28312C" }}
+        >
           Full Name
         </label>
-        <input 
-          type="text" 
+        <input
+          type="text"
           id="name"
           name="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full h-11 px-4 rounded-xl border border-stone-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all placeholder:text-stone-400"
           placeholder="Your full name"
           required
+          className="w-full h-11 px-4 rounded-xl text-sm outline-none transition-all"
+          style={{
+            background: "rgba(40,49,44,0.04)",
+            border: "1px solid rgba(40,49,44,0.12)",
+            color: "#28312C",
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.border = "1px solid rgba(40,49,44,0.35)"
+            e.currentTarget.style.background = "#fff"
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.border = "1px solid rgba(40,49,44,0.12)"
+            e.currentTarget.style.background = "rgba(40,49,44,0.04)"
+          }}
         />
       </div>
 
-      {/* Email */}
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-stone-700" htmlFor="email">
+      {/* Email field — read-only */}
+      <div className="space-y-1.5">
+        <label
+          className="text-sm font-medium"
+          htmlFor="email"
+          style={{ color: "#28312C" }}
+        >
           Email Address
         </label>
-        <input 
-          type="email" 
+        <input
+          type="email"
           id="email"
           disabled
           value={email}
-          className="w-full h-11 px-4 rounded-xl border border-stone-200 bg-stone-50 text-stone-500 outline-none cursor-not-allowed"
+          className="w-full h-11 px-4 rounded-xl text-sm cursor-not-allowed"
+          style={{
+            background: "rgba(40,49,44,0.03)",
+            border: "1px solid rgba(40,49,44,0.08)",
+            color: "rgba(40,49,44,0.4)",
+          }}
         />
-        <p className="text-xs text-stone-500">Your email address cannot be changed right now.</p>
+        <p className="text-xs" style={{ color: "rgba(40,49,44,0.4)" }}>
+          Email cannot be changed right now.
+        </p>
       </div>
 
-      {/* Save Button */}
-      <div className="pt-4 flex items-center justify-end gap-3 border-t border-stone-100 mt-8">
-        <Link 
+      {/* Actions */}
+      <div
+        className="pt-5 flex items-center justify-end gap-3"
+        style={{ borderTop: "1px solid rgba(40,49,44,0.07)", marginTop: "8px" }}
+      >
+        <Link
           href="/dashboard"
-          className="px-5 py-2.5 rounded-xl text-sm font-medium text-stone-600 hover:bg-stone-100 transition-colors"
+          className="px-5 py-2.5 rounded-full text-sm font-medium transition-all"
+          style={{ color: "rgba(40,49,44,0.6)" }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(40,49,44,0.06)")}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
         >
           Cancel
         </Link>
-        <button 
+        <button
           type="submit"
           disabled={isSubmitting}
-          className="px-5 py-2.5 rounded-xl text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm shadow-emerald-200 transition-colors disabled:opacity-50"
+          className="px-5 py-2.5 rounded-full text-sm font-medium transition-all active:scale-[0.98] disabled:opacity-50"
+          style={{
+            background: "#28312C",
+            color: "#f7f4ef",
+            boxShadow: "0 4px 16px rgba(40,49,44,0.15)",
+          }}
         >
-          {isSubmitting ? "Saving..." : "Save Changes"}
+          {isSubmitting ? "Saving…" : "Save Changes"}
         </button>
       </div>
     </form>
