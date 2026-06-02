@@ -5,6 +5,21 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* ── Bloom design tokens (exact values from tailwind.config) ───────────── */
+  --color-bloom-cream: #F9F6F0;
+  --color-bloom-peach: #F4EAE1;
+  --color-bloom-peachDeep: #EFDFD2;
+  --color-bloom-forest: #1C2A25;
+  --color-bloom-forestSoft: #253630;
+  --color-bloom-forestBorder: #364A41;
+  --color-bloom-terracotta: #D96A4E;
+  --color-bloom-terracottaHover: #C35A40;
+  --color-bloom-sage: #C5D1CB;
+  --color-bloom-sageLight: #E6EBE8;
+  --color-bloom-ink: #2A2F2D;
+  --color-bloom-inkSoft: #5C6B64;
+  --color-bloom-line: #E5DCD3;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -125,6 +140,52 @@
   }
 }
 
+/* ─── Aastha chat textarea — dark-blended scrollbar ───────────────────────── */
+
+.aastha-textarea {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(54, 74, 65, 0.8) transparent;
+}
+.aastha-textarea::-webkit-scrollbar {
+  width: 5px;
+}
+.aastha-textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+.aastha-textarea::-webkit-scrollbar-thumb {
+  background: rgba(54, 74, 65, 0.85);
+  border-radius: 999px;
+}
+.aastha-textarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(54, 74, 65, 1);
+}
+
+/* ─── Aastha message list — thin dark scrollbar ───────────────────────────── */
+
+.aastha-messages::-webkit-scrollbar {
+  width: 5px;
+}
+.aastha-messages::-webkit-scrollbar-track {
+  background: rgba(28, 42, 37, 0.4);
+}
+.aastha-messages::-webkit-scrollbar-thumb {
+  background: rgba(54, 74, 65, 0.8);
+  border-radius: 999px;
+}
+.aastha-messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(54, 74, 65, 1);
+}
+
+/* ─── Aastha sidebar sessions — hide native scrollbar ─────────────────────── */
+
+.aastha-sessions-scroll {
+  scrollbar-width: none;
+}
+.aastha-sessions-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 /* ─── Aastha streaming animations ─────────────────────────────────────────── */
 
 @keyframes blink {
@@ -172,6 +233,31 @@
 
 .animate-scale-in {
   animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ─── Bloom dashboard utilities ────────────────────────────────────────────── */
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fade-up 0.8s ease-out both;
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.55; }
+}
+.animate-pulse-soft {
+  animation: pulse-soft 2.4s ease-in-out infinite;
+}
+
+.eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 /* ─── Smooth scroll ─────────────────────────────────────────────────────────── */
