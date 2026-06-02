@@ -14,23 +14,25 @@ export async function POST(req: Request) {
   }
 
   const userId = session.user.id
-  const body = await req.json()
+  const { tag, score, note } = await req.json()
 
   await prisma.user.update({
     where: { id: userId },
-    data: {
-      emotionalTag: body.tag,
-      emotionalScore: body.score
-    }
+    data: { emotionalTag: tag, emotionalScore: score },
   })
 
   await prisma.moodLog.create({
-    data: {
-      userId,
-      emotionTag: body.tag,
-      emotionScore: body.score
-    }
+    data: { userId, emotionTag: tag, emotionScore: score },
   })
+
+  if (note?.trim()) {
+    const date = new Date().toLocaleDateString("en-US", {
+      weekday: "long", month: "short", day: "numeric",
+    })
+    await prisma.journal.create({
+      data: { userId, title: `Check-in · ${date}`, content: note.trim() },
+    })
+  }
 
   return NextResponse.json({ success: true })
 }
