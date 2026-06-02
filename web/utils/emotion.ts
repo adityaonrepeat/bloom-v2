@@ -1,7 +1,7 @@
 // Max score = 50 (10 questions × 5 each)
 export function getEmotionLevel(score: number): string {
-  if (score >= 42) return "happy"
-  if (score >= 31) return "calm"
+  if (score >= 40) return "happy"
+  if (score >= 30) return "calm"
   if (score >= 20) return "stressed"
   return "anxious"
 }

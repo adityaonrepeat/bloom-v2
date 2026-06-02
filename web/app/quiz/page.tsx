@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { questions } from "@/data/questions"
 import ProgressBar from "../components/ProgressBar"
+import { ArrowLeft, ArrowRight } from "lucide-react"
 
 export default function Quiz() {
   const router = useRouter()
@@ -11,6 +13,7 @@ export default function Quiz() {
   const [score, setScore] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
   const [isMounted, setIsMounted] = useState(false)
+  const [readyToFinish, setReadyToFinish] = useState(false)
 
   useEffect(() => {
     setIsMounted(true)
@@ -22,27 +25,33 @@ export default function Quiz() {
     }
   }, [])
 
+  const isLastQuestion = index === questions.length - 1
+
   function handleAnswer(optionScore: number) {
     if (selected !== null) return
     setSelected(optionScore)
 
-    setTimeout(() => {
-      const newScore = score + optionScore
-      const newIndex = index + 1
+    const newScore = score + optionScore
 
-      if (newIndex < questions.length) {
+    if (isLastQuestion) {
+      localStorage.setItem("emotion-score", newScore.toString())
+      localStorage.removeItem("quiz-index")
+      localStorage.removeItem("quiz-score")
+      setScore(newScore)
+      setReadyToFinish(true)
+    } else {
+      setTimeout(() => {
         setScore(newScore)
-        setIndex(newIndex)
+        setIndex(index + 1)
         setSelected(null)
         localStorage.setItem("quiz-score", newScore.toString())
-        localStorage.setItem("quiz-index", newIndex.toString())
-      } else {
-        localStorage.setItem("emotion-score", newScore.toString())
-        localStorage.removeItem("quiz-index")
-        localStorage.removeItem("quiz-score")
-        router.push("/result")
-      }
-    }, 350)
+        localStorage.setItem("quiz-index", (index + 1).toString())
+      }, 350)
+    }
+  }
+
+  function handleFinish() {
+    router.push("/result")
   }
 
   if (!isMounted) return null
@@ -50,49 +59,30 @@ export default function Quiz() {
   const question = questions[index]
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-6"
-      style={{ background: "#f7f4ef", fontFamily: "var(--font-figtree), ui-sans-serif, sans-serif" }}
-    >
+    <div className="min-h-screen bg-bloom-cream font-sans flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-xl">
 
-        {/* Badge */}
-        <div className="text-center mb-8">
-          <span
-            className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-1.5 rounded-full"
-            style={{
-              background: "rgba(198,113,86,0.1)",
-              border: "1px solid rgba(198,113,86,0.18)",
-              color: "#C67156",
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-            }}
+        {/* Header: back link + eyebrow */}
+        <div className="flex items-center justify-between mb-8">
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-1.5 text-xs text-bloom-inkSoft hover:text-bloom-ink transition-colors"
           >
-            Mental Wellness Check-in
+            <ArrowLeft size={12} strokeWidth={1.75} />
+            Dashboard
+          </Link>
+          <p className="eyebrow text-bloom-inkSoft">Wellness Check-in</p>
+          <span className="text-xs text-bloom-inkSoft w-20 text-right">
+            {index + 1} / {questions.length}
           </span>
         </div>
 
         {/* Card */}
-        <div
-          className="rounded-3xl p-8 md:p-10 space-y-8"
-          style={{
-            background: "rgba(255,255,255,0.9)",
-            border: "1px solid rgba(40,49,44,0.08)",
-            boxShadow: "0 8px 40px rgba(40,49,44,0.08)",
-          }}
-        >
+        <div className="bg-white rounded-3xl border border-bloom-line/70 shadow-[0_18px_50px_-30px_rgba(42,47,45,0.18)] p-8 md:p-10 space-y-8">
           <ProgressBar current={index + 1} total={questions.length} />
 
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-400" key={index}>
-            <h2
-              className="leading-relaxed mb-8"
-              style={{
-                fontFamily: "var(--font-fraunces), Georgia, serif",
-                fontSize: "22px",
-                color: "#28312C",
-                letterSpacing: "-0.01em",
-              }}
-            >
+            <h2 className="font-display text-2xl text-bloom-ink leading-snug tracking-tight mb-8">
               {question.text}
             </h2>
 
@@ -104,32 +94,19 @@ export default function Quiz() {
                     key={i}
                     onClick={() => handleAnswer(option.score)}
                     disabled={selected !== null}
-                    className="w-full p-4 text-left rounded-xl text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed"
-                    style={{
-                      border: isSelected ? "1.5px solid #C67156" : "1.5px solid rgba(40,49,44,0.1)",
-                      background: isSelected ? "rgba(198,113,86,0.08)" : "rgba(255,255,255,0.6)",
-                      color: isSelected ? "#C67156" : "#28312C",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (selected === null) {
-                        (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(198,113,86,0.4)"
-                        ;(e.currentTarget as HTMLButtonElement).style.background = "rgba(198,113,86,0.04)"
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (selected === null) {
-                        (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(40,49,44,0.1)"
-                        ;(e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.6)"
-                      }
-                    }}
+                    className={`w-full p-4 text-left rounded-xl text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed border ${
+                      isSelected
+                        ? "border-bloom-terracotta bg-bloom-terracotta/8 text-bloom-terracotta"
+                        : "border-bloom-line bg-white/60 text-bloom-ink hover:border-bloom-terracotta/40 hover:bg-bloom-terracotta/4"
+                    }`}
                   >
                     <span className="flex items-center gap-3">
                       <span
-                        className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-                        style={{
-                          border: isSelected ? "1.5px solid #C67156" : "1.5px solid rgba(40,49,44,0.15)",
-                          color: isSelected ? "#C67156" : "#5D6862",
-                        }}
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 border ${
+                          isSelected
+                            ? "border-bloom-terracotta text-bloom-terracotta"
+                            : "border-bloom-line/60 text-bloom-inkSoft"
+                        }`}
                       >
                         {String.fromCharCode(65 + i)}
                       </span>
@@ -139,10 +116,21 @@ export default function Quiz() {
                 )
               })}
             </div>
+
+            {/* Finish button — only on last question after selection */}
+            {isLastQuestion && readyToFinish && (
+              <button
+                onClick={handleFinish}
+                className="mt-6 w-full h-12 rounded-full text-sm font-semibold flex items-center justify-center gap-2 bg-bloom-forest text-bloom-cream hover:bg-bloom-forestSoft transition-colors active:scale-[0.99]"
+              >
+                See your result
+                <ArrowRight size={15} strokeWidth={1.75} />
+              </button>
+            )}
           </div>
         </div>
 
-        <p className="text-center text-xs mt-6" style={{ color: "rgba(93,104,98,0.5)" }}>
+        <p className="text-center text-xs mt-6 text-bloom-inkSoft/50">
           Your responses are private and only used to personalise your experience.
         </p>
       </div>
