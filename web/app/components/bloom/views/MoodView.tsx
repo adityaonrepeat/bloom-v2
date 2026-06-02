@@ -10,11 +10,13 @@ import {
     Tooltip,
     CartesianGrid,
 } from "recharts";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, ArrowRight, Sparkles } from "lucide-react";
+import Link from "next/link";
 import {
     WorkspaceShell,
     WorkspaceHeader,
     Card,
+    DarkCard,
     Eyebrow,
 } from "../Workspace";
 
@@ -22,6 +24,7 @@ interface MoodLogEntry {
     id: string;
     emotionScore: number;
     emotionTag: string;
+    note: string | null;
     createdAt: string;
 }
 
@@ -43,6 +46,7 @@ interface RecentEntry {
     time: string;
     score: number;
     label: string;
+    note: string | null;
 }
 
 interface TooltipPayload {
@@ -166,6 +170,7 @@ function getRecentEntries(logs: MoodLogEntry[]): RecentEntry[] {
             time: d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
             score: l.emotionScore,
             label: l.emotionTag,
+            note: l.note,
         };
     });
 }
@@ -317,6 +322,43 @@ export default function MoodView({ logs }: MoodViewProps) {
                 </div>
             </Card>
 
+            <DarkCard testId="quiz-cta" className="p-8 mb-5 relative overflow-hidden">
+                {/* decorative concentric rings */}
+                <div className="absolute -right-20 -top-20 w-64 h-64 rounded-full border border-bloom-cream/10 pointer-events-none" />
+                <div className="absolute -right-10 -top-10 w-44 h-44 rounded-full border border-bloom-cream/10 pointer-events-none" />
+
+                <div className="relative flex items-center justify-between gap-8">
+                    <div className="max-w-md">
+                        <Eyebrow className="text-bloom-cream/50 mb-3 inline-flex items-center gap-2">
+                            <Sparkles size={11} strokeWidth={1.5} />
+                            Wellness check-in
+                        </Eyebrow>
+                        <p className="font-display text-3xl text-bloom-cream leading-snug">
+                            Know yourself{" "}
+                            <span className="italic text-bloom-terracotta">a little better.</span>
+                        </p>
+                        <p className="mt-3 text-sm text-bloom-cream/60 max-w-sm">
+                            Ten quiet questions. Updates your emotional score and helps us match you with the right people.
+                        </p>
+                        <Link
+                            href="/quiz"
+                            data-testid="quiz-cta-link"
+                            className="mt-6 inline-flex items-center gap-2 rounded-full bg-bloom-terracotta text-bloom-cream pl-5 pr-4 py-2.5 text-sm hover:bg-bloom-terracottaHover transition-colors"
+                        >
+                            Take the check-in
+                            <ArrowRight size={15} strokeWidth={1.75} />
+                        </Link>
+                    </div>
+
+                    <div className="hidden md:flex shrink-0 flex-col items-center justify-center w-28 h-28 rounded-full bg-bloom-cream/6 border border-bloom-cream/10">
+                        <span className="font-display text-5xl text-bloom-cream leading-none">10</span>
+                        <span className="text-[10px] tracking-[0.18em] uppercase text-bloom-cream/45 mt-1.5">
+                            questions
+                        </span>
+                    </div>
+                </div>
+            </DarkCard>
+
             <Card testId="recent-entries" className="p-7">
                 <div className="flex items-center justify-between mb-5">
                     <Eyebrow>Recent check-ins</Eyebrow>
@@ -342,6 +384,11 @@ export default function MoodView({ logs }: MoodViewProps) {
                                 </div>
                                 <div className="col-span-2">
                                     <span className="text-xs italic text-bloom-terracotta">{e.label}</span>
+                                </div>
+                                <div className="col-span-5">
+                                    {e.note && (
+                                        <p className="text-sm text-bloom-inkSoft italic truncate">{e.note}</p>
+                                    )}
                                 </div>
                             </div>
                         ))}

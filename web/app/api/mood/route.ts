@@ -22,17 +22,8 @@ export async function POST(req: Request) {
   })
 
   await prisma.moodLog.create({
-    data: { userId, emotionTag: tag, emotionScore: score },
+    data: { userId, emotionTag: tag, emotionScore: score, note: note?.trim() || null },
   })
-
-  if (note?.trim()) {
-    const date = new Date().toLocaleDateString("en-US", {
-      weekday: "long", month: "short", day: "numeric",
-    })
-    await prisma.journal.create({
-      data: { userId, title: `Check-in · ${date}`, content: note.trim() },
-    })
-  }
 
   return NextResponse.json({ success: true })
 }

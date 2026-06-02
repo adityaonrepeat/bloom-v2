@@ -24,6 +24,7 @@ export default async function MoodPage() {
     id: l.id,
     emotionScore: l.emotionScore,
     emotionTag: l.emotionTag as string,
+    note: l.note ?? null,
     createdAt: l.createdAt.toISOString(),
   }))
 

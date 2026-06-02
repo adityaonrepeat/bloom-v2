@@ -190,14 +190,19 @@ export default function TodayView({ emotionalScore, emotionalTag, streak = 0, la
 
                     <Card testId="streak-card" className="p-6">
                         <Eyebrow className="mb-3">Quiet streak</Eyebrow>
-                        <div className="flex items-end gap-2">
+                        <div className="flex items-baseline gap-2.5">
                             <p className={`font-display text-5xl leading-none ${streak > 0 ? "text-bloom-ink" : "text-bloom-inkSoft"}`}>
                                 {streak > 0 ? streak : "—"}
                             </p>
+                            {streak > 0 && (
+                                <p className="text-sm text-bloom-inkSoft">
+                                    {streak === 1 ? "evening" : "evenings"} in a row
+                                </p>
+                            )}
                         </div>
                         <p className="mt-2 text-xs text-bloom-inkSoft">
                             {streak > 0
-                                ? `${streak === 1 ? "evening" : "evenings"} in a row — keep it going.`
+                                ? "keep it going."
                                 : "Check in each evening to build your streak."}
                         </p>
                         <div className="mt-4 grid grid-cols-7 gap-1.5">

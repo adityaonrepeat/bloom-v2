@@ -3,7 +3,14 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Sparkles, Lock } from "lucide-react"
+
+const PROMPTS = [
+  "What made me smile today?",
+  "What's weighing on my mind?",
+  "What am I grateful for right now?",
+  "What do I need to let go of?",
+]
 
 export default function NewJournalPage() {
   const router = useRouter()
@@ -43,120 +50,117 @@ export default function NewJournalPage() {
   }
 
   const today = new Date()
-  const dayLabel = today.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase()
+  const dateLabel = today.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  })
   const timeLabel = today.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
 
   return (
-    <div className="min-h-screen" style={{ background: "#f7f4ef" }}>
-      <header className="px-6 py-5">
+    <div className="min-h-screen bg-bloom-cream text-bloom-ink font-sans">
+      <header className="px-6 md:px-10 py-6">
         <Link
           href="/journal"
-          className="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-60"
-          style={{ color: "#5D6862" }}
+          className="inline-flex items-center gap-2 text-sm text-bloom-inkSoft hover:text-bloom-ink transition-colors"
         >
-          <ArrowLeft size={15} strokeWidth={2} />
+          <ArrowLeft size={15} strokeWidth={1.75} />
           Journal
         </Link>
       </header>
 
-      <main className="max-w-2xl mx-auto px-4 pb-16 pt-2">
+      <main className="max-w-2xl mx-auto px-4 pb-20 pt-2">
+        {/* Editorial intro */}
+        <div className="px-2 mb-6">
+          <p className="eyebrow text-bloom-inkSoft mb-2 inline-flex items-center gap-2">
+            <Sparkles size={11} strokeWidth={1.5} />
+            New entry · {dateLabel}
+          </p>
+          <h1 className="font-display text-3xl md:text-4xl leading-tight tracking-tight">
+            Whatever&apos;s{" "}
+            <span className="italic font-light text-bloom-terracotta">true tonight.</span>
+          </h1>
+        </div>
+
         <form onSubmit={handleSubmit}>
-          <div
-            className="bg-white rounded-3xl overflow-hidden"
-            style={{ boxShadow: "0 4px 32px rgba(40,49,44,0.06), 0 1px 4px rgba(40,49,44,0.04)" }}
-          >
-            {/* Card header row */}
+          <div className="bg-white rounded-3xl border border-bloom-line/70 shadow-[0_18px_50px_-30px_rgba(42,47,45,0.2)] overflow-hidden">
+            {/* terracotta accent bar */}
+            <div className="h-1 bg-bloom-terracotta" />
+
             <div className="px-8 pt-7">
-              <p className="text-xs font-medium tracking-wide" style={{ color: "#9CA3AF" }}>
-                {dayLabel} · {timeLabel}
-              </p>
+              <p className="eyebrow text-bloom-inkSoft">{timeLabel}</p>
             </div>
 
             {/* Title */}
-            <div className="px-8 pt-6 pb-2">
+            <div className="px-8 pt-4 pb-3">
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Title…"
-                className="w-full bg-transparent border-none outline-none"
-                style={{
-                  fontFamily: "var(--font-fraunces), Georgia, serif",
-                  fontSize: "clamp(22px, 4vw, 32px)",
-                  color: "#28312C",
-                  letterSpacing: "-0.02em",
-                  lineHeight: 1.2,
-                }}
+                placeholder="Give it a title…"
+                className="w-full bg-transparent outline-none font-display text-2xl md:text-3xl text-bloom-ink leading-tight placeholder:text-bloom-inkSoft/35 placeholder:not-italic"
                 maxLength={120}
                 autoFocus
               />
             </div>
 
-            <div className="mx-8 h-px" style={{ background: "rgba(40,49,44,0.08)" }} />
+            <div className="mx-8 h-px bg-bloom-line/70" />
 
             {/* Content */}
-            <div className="px-8 py-4">
+            <div className="px-8 py-5">
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="What's on your mind today? Write freely — this is your private space…"
-                className="w-full bg-transparent border-none outline-none resize-none"
-                style={{ minHeight: "300px", fontSize: "16px", lineHeight: "2", color: "#28312C" }}
+                className="w-full bg-transparent outline-none resize-none text-bloom-ink placeholder:text-bloom-inkSoft/45 placeholder:italic"
+                style={{ minHeight: "320px", fontSize: "16px", lineHeight: "1.9" }}
               />
             </div>
 
-            {/* Card footer */}
-            <div
-              className="px-8 py-5 flex items-center justify-between"
-              style={{ borderTop: "1px solid rgba(40,49,44,0.06)" }}
-            >
-              <p className="text-xs" style={{ color: "#9CA3AF" }}>
-                <span className="font-medium" style={{ color: "#6B7280" }}>{wordCount}</span> words
+            {/* Footer */}
+            <div className="px-8 py-5 flex items-center justify-between border-t border-bloom-line/60 bg-bloom-cream/40">
+              <p className="text-xs text-bloom-inkSoft">
+                <span className="font-medium text-bloom-ink">{wordCount}</span>{" "}
+                {wordCount === 1 ? "word" : "words"}
               </p>
               <button
                 type="submit"
                 disabled={saving || !title.trim() || !content.trim()}
-                className="h-9 px-5 text-sm font-medium rounded-full transition-all hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
-                style={{ background: "#28312C", color: "#f7f4ef" }}
+                className="inline-flex items-center rounded-full px-6 py-2.5 text-sm bg-bloom-forest text-bloom-cream hover:bg-bloom-forestSoft transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {saving ? "Saving…" : "Save Entry"}
+                {saving ? "Saving…" : "Save entry"}
               </button>
             </div>
           </div>
 
           {error && (
-            <p
-              className="mt-4 text-sm rounded-xl px-4 py-3"
-              style={{ color: "#C67156", background: "rgba(198,113,86,0.08)", border: "1px solid rgba(198,113,86,0.2)" }}
-            >
+            <p className="mt-4 text-sm rounded-2xl px-4 py-3 text-bloom-terracotta bg-bloom-terracotta/8 border border-bloom-terracotta/20">
               {error}
             </p>
           )}
         </form>
 
+        {/* Privacy reassurance */}
+        <p className="mt-5 px-2 inline-flex items-center gap-2 text-xs text-bloom-inkSoft/70">
+          <Lock size={12} strokeWidth={1.5} className="text-bloom-terracotta" />
+          Only you can read this. Entries are private to your account.
+        </p>
+
         {/* Writing prompts */}
-        <div className="mt-10" style={{ borderTop: "1px solid rgba(40,49,44,0.1)", paddingTop: "28px" }}>
-          <p
-            className="mb-4 uppercase tracking-wider"
-            style={{ fontSize: "11px", fontWeight: 600, color: "rgba(93,104,98,0.5)" }}
-          >
-            Need inspiration?
-          </p>
+        <div className="mt-10 pt-7 border-t border-bloom-line">
+          <p className="eyebrow text-bloom-inkSoft/60 mb-4">Need a place to start?</p>
           <div className="grid sm:grid-cols-2 gap-2.5">
-            {[
-              "What made me smile today?",
-              "What's weighing on my mind?",
-              "What am I grateful for right now?",
-              "What do I need to let go of?",
-            ].map((prompt) => (
+            {PROMPTS.map((prompt) => (
               <button
                 key={prompt}
                 type="button"
-                onClick={() => setContent((c) => c ? `${c}\n\n${prompt}\n` : `${prompt}\n`)}
-                className="text-left text-sm rounded-xl px-4 py-3 transition-all hover:opacity-80"
-                style={{ color: "#5D6862", background: "rgba(255,255,255,0.72)", border: "1px solid rgba(40,49,44,0.08)" }}
+                onClick={() => setContent((c) => (c ? `${c}\n\n${prompt}\n` : `${prompt}\n`))}
+                className="group flex items-center gap-3 text-left text-sm rounded-2xl px-4 py-3 bg-white border border-bloom-line/70 text-bloom-inkSoft hover:border-bloom-terracotta/50 hover:text-bloom-ink transition-colors"
               >
-                ✦ {prompt}
+                <span className="shrink-0 text-bloom-terracotta/70 group-hover:text-bloom-terracotta transition-colors">
+                  <Sparkles size={13} strokeWidth={1.5} />
+                </span>
+                {prompt}
               </button>
             ))}
           </div>

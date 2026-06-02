@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Trash2, Lock } from "lucide-react"
 
 interface Journal {
   id: string
@@ -128,11 +128,8 @@ export default function JournalEntryPage({ params }: { params: Promise<{ id: str
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#f7f4ef" }}>
-        <div
-          className="w-8 h-8 border-4 rounded-full animate-spin"
-          style={{ borderColor: "rgba(40,49,44,0.1)", borderTopColor: "#C67156" }}
-        />
+      <div className="min-h-screen bg-bloom-cream flex items-center justify-center">
+        <div className="w-10 h-10 rounded-full border-4 border-bloom-line border-t-bloom-terracotta animate-spin" />
       </div>
     )
   }
@@ -140,146 +137,124 @@ export default function JournalEntryPage({ params }: { params: Promise<{ id: str
   if (!journal) return null
 
   const date = new Date(journal.createdAt)
-  const dayLabel = date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase()
+  const dateLabel = date.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })
   const timeLabel = date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
 
   return (
-    <div className="min-h-screen" style={{ background: "#f7f4ef" }}>
-      <header className="px-6 py-5">
+    <div className="min-h-screen bg-bloom-cream text-bloom-ink font-sans">
+      <header className="px-6 md:px-10 py-6">
         <Link
           href="/journal"
-          className="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-60"
-          style={{ color: "#5D6862" }}
+          className="inline-flex items-center gap-2 text-sm text-bloom-inkSoft hover:text-bloom-ink transition-colors"
         >
-          <ArrowLeft size={15} strokeWidth={2} />
+          <ArrowLeft size={15} strokeWidth={1.75} />
           Journal
         </Link>
       </header>
 
-      <main className="max-w-2xl mx-auto px-4 pb-16 pt-2">
-        <div
-          className="bg-white rounded-3xl overflow-hidden"
-          style={{ boxShadow: "0 4px 32px rgba(40,49,44,0.06), 0 1px 4px rgba(40,49,44,0.04)" }}
-        >
-          {/* Card header row */}
+      <main className="max-w-2xl mx-auto px-4 pb-20 pt-2">
+        {/* Editorial intro */}
+        <div className="px-2 mb-6">
+          <p className="eyebrow text-bloom-inkSoft mb-2">{dateLabel}</p>
+          <h1 className="font-display text-3xl md:text-4xl leading-tight tracking-tight">
+            An entry you{" "}
+            <span className="italic font-light text-bloom-terracotta">already started.</span>
+          </h1>
+        </div>
+
+        <div className="bg-white rounded-3xl border border-bloom-line/70 shadow-[0_18px_50px_-30px_rgba(42,47,45,0.2)] overflow-hidden">
+          {/* terracotta accent bar */}
+          <div className="h-1 bg-bloom-terracotta" />
+
           <div className="px-8 pt-7">
-            <p className="text-xs font-medium tracking-wide" style={{ color: "#9CA3AF" }}>
-              {dayLabel} · {timeLabel}
-            </p>
+            <p className="eyebrow text-bloom-inkSoft">{timeLabel}</p>
           </div>
 
           {/* Title */}
-          <div className="px-8 pt-6 pb-2">
+          <div className="px-8 pt-4 pb-3">
             <input
               type="text"
               value={title}
               onChange={(e) => { setTitle(e.target.value); setIsDirty(true) }}
-              className="w-full bg-transparent border-none outline-none"
-              style={{
-                fontFamily: "var(--font-fraunces), Georgia, serif",
-                fontSize: "clamp(22px, 4vw, 32px)",
-                color: "#28312C",
-                letterSpacing: "-0.02em",
-                lineHeight: 1.2,
-              }}
+              className="w-full bg-transparent outline-none font-display text-2xl md:text-3xl text-bloom-ink leading-tight placeholder:text-bloom-inkSoft/35"
               maxLength={120}
             />
           </div>
 
-          <div className="mx-8 h-px" style={{ background: "rgba(40,49,44,0.08)" }} />
+          <div className="mx-8 h-px bg-bloom-line/70" />
 
           {/* Content */}
-          <div className="px-8 py-4">
+          <div className="px-8 py-5">
             <textarea
               value={content}
               onChange={(e) => { setContent(e.target.value); setIsDirty(true) }}
-              className="w-full bg-transparent border-none outline-none resize-none"
-              style={{ minHeight: "320px", fontSize: "16px", lineHeight: "2", color: "#28312C" }}
+              className="w-full bg-transparent outline-none resize-none text-bloom-ink"
+              style={{ minHeight: "320px", fontSize: "16px", lineHeight: "1.9" }}
             />
           </div>
 
-          {/* Card footer */}
-          <div
-            className="px-8 py-5 flex items-center justify-between"
-            style={{ borderTop: "1px solid rgba(40,49,44,0.06)" }}
-          >
-            <p className="text-xs" style={{ color: saveError ? "#C67156" : "#9CA3AF" }}>
+          {/* Footer */}
+          <div className="px-8 py-5 flex items-center justify-between border-t border-bloom-line/60 bg-bloom-cream/40">
+            <p className={`text-xs ${saveError ? "text-bloom-terracotta" : "text-bloom-inkSoft"}`}>
               {saveError ? saveError : (
                 <>
-                  <span className="font-medium" style={{ color: "#6B7280" }}>{wordCount}</span>
-                  {" "}words{lastSaved ? ` · ${getLastSavedLabel()}` : ""}
+                  <span className="font-medium text-bloom-ink">{wordCount}</span>
+                  {" "}{wordCount === 1 ? "word" : "words"}{lastSaved ? ` · ${getLastSavedLabel()}` : ""}
                 </>
               )}
             </p>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowDeleteConfirm(true)}
-                className="h-9 px-4 text-sm font-medium rounded-full transition-all hover:opacity-80"
-                style={{ border: "1px solid rgba(40,49,44,0.12)", color: "#5D6862", background: "transparent" }}
+                className="inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-sm border border-bloom-line text-bloom-inkSoft hover:border-bloom-terracotta/50 hover:text-bloom-terracotta transition-colors"
               >
+                <Trash2 size={14} strokeWidth={1.75} />
                 Delete
               </button>
               <button
                 onClick={handleManualSave}
                 disabled={saving}
-                className="h-9 px-5 text-sm font-medium rounded-full transition-all hover:opacity-90 disabled:opacity-50"
-                style={{ background: "#28312C", color: "#f7f4ef" }}
+                className="inline-flex items-center rounded-full px-6 py-2.5 text-sm bg-bloom-forest text-bloom-cream hover:bg-bloom-forestSoft transition-colors disabled:opacity-50"
               >
                 {saving ? "Saving…" : "Save"}
               </button>
             </div>
           </div>
         </div>
+
+        {/* Privacy reassurance */}
+        <p className="mt-5 px-2 inline-flex items-center gap-2 text-xs text-bloom-inkSoft/70">
+          <Lock size={12} strokeWidth={1.5} className="text-bloom-terracotta" />
+          Only you can read this. Changes autosave as you write.
+        </p>
       </main>
 
       {/* Delete confirmation */}
       {showDeleteConfirm && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
-          style={{ background: "rgba(40,49,44,0.4)", backdropFilter: "blur(8px)" }}
-        >
-          <div
-            className="rounded-2xl p-8 max-w-sm w-full mx-4 space-y-5"
-            style={{ background: "#f7f4ef", boxShadow: "0 32px 64px rgba(40,49,44,0.24)" }}
-          >
-            <div className="text-center space-y-2">
-              <div
-                className="w-12 h-12 rounded-full flex items-center justify-center mx-auto"
-                style={{ background: "rgba(198,113,86,0.12)" }}
-              >
-                <svg width="20" height="20" fill="none" stroke="#C67156" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                  <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" />
-                </svg>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-bloom-forest/40 backdrop-blur-sm px-4">
+          <div className="bg-bloom-cream rounded-3xl border border-bloom-line/70 shadow-[0_32px_80px_-20px_rgba(28,42,37,0.5)] p-8 max-w-sm w-full space-y-5 animate-scale-in">
+            <div className="text-center space-y-3">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto bg-bloom-terracotta/12">
+                <Trash2 size={20} strokeWidth={1.75} className="text-bloom-terracotta" />
               </div>
-              <h2
-                style={{
-                  fontFamily: "var(--font-fraunces), Georgia, serif",
-                  fontSize: "20px",
-                  letterSpacing: "-0.01em",
-                  color: "#28312C",
-                }}
-              >
-                Delete this entry?
-              </h2>
-              <p style={{ fontSize: "14px", color: "#5D6862" }}>
+              <h2 className="font-display text-xl text-bloom-ink">Delete this entry?</h2>
+              <p className="text-sm text-bloom-inkSoft">
                 This cannot be undone. Your journal entry will be permanently deleted.
               </p>
             </div>
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-3 pt-1">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="flex-1 h-11 rounded-full text-sm font-medium transition-all hover:opacity-80"
-                style={{ border: "1px solid rgba(40,49,44,0.15)", color: "#5D6862", background: "transparent" }}
+                className="flex-1 h-11 rounded-full text-sm border border-bloom-line text-bloom-inkSoft hover:bg-white transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
-                className="flex-1 h-11 rounded-full text-sm font-medium transition-all hover:opacity-90 disabled:opacity-50"
-                style={{ background: "#C67156", color: "#fff" }}
+                className="flex-1 h-11 rounded-full text-sm bg-bloom-terracotta text-bloom-cream hover:bg-bloom-terracottaHover transition-colors disabled:opacity-50"
               >
-                {deleting ? "Deleting…" : "Yes, Delete"}
+                {deleting ? "Deleting…" : "Yes, delete"}
               </button>
             </div>
           </div>

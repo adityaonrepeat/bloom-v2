@@ -65,12 +65,13 @@ model Session {
 }
 
 model MoodLog {
-  id        String   @id @default(uuid())
-  userId    String
+  id           String     @id @default(uuid())
+  userId       String
   emotionTag   EmotionTag
   emotionScore Int
+  note         String?
 
-  createdAt DateTime @default(now()) //date         DateTime @default(now())
+  createdAt DateTime @default(now())
 
   user User @relation(fields:[userId], references:[id])
 }
