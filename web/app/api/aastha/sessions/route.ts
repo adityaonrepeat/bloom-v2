@@ -13,8 +13,9 @@ export async function GET() {
     orderBy: { updatedAt: "desc" },
     include: {
       messages: {
-        orderBy: { createdAt: "asc" },
-        take: 1, // just the first message for preview
+        where: { role: "user" },
+        orderBy: { createdAt: "desc" },
+        take: 1, // last user message for preview
       },
       _count: { select: { messages: true } },
     },

@@ -2,24 +2,47 @@ import { useEffect, useRef } from "react"
 import { MessageBubble, StreamingBubble } from "./MessageBubble"
 import type { AasthaMessage } from "@/hooks/useAastha"
 
+function isSameDay(a: Date, b: Date) {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  )
+}
+
+function formatDateLabel(dateStr: string): string {
+  const d = new Date(dateStr)
+  const now = new Date()
+  const yesterday = new Date(now)
+  yesterday.setDate(now.getDate() - 1)
+  if (isSameDay(d, now)) return "Today"
+  if (isSameDay(d, yesterday)) return "Yesterday"
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" }).toUpperCase()
+}
+
+function DateSeparator({ label }: { label: string }) {
+  return (
+    <div className="flex items-center gap-3 my-2 px-1">
+      <div className="flex-1 h-px" style={{ background: "rgba(54,74,65,0.5)" }} />
+      <span
+        className="text-[10px] font-semibold tracking-widest"
+        style={{ color: "rgba(249,246,240,0.35)" }}
+      >
+        {label}
+      </span>
+      <div className="flex-1 h-px" style={{ background: "rgba(54,74,65,0.5)" }} />
+    </div>
+  )
+}
+
 function TypingIndicator() {
   return (
-    <div className="flex items-end gap-2">
+    <div className="flex justify-start">
       <div
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] font-bold"
+        className="rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm"
         style={{
-          background: "#E3A863",
-          color: "#28312C",
-          fontFamily: "var(--font-fraunces), Georgia, serif",
-        }}
-      >
-        A
-      </div>
-      <div
-        className="rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm"
-        style={{
-          background: "rgba(255,255,255,0.9)",
-          border: "1px solid rgba(40,49,44,0.08)",
+          background: "rgba(37,54,48,0.85)",
+          border: "1px solid rgba(54,74,65,0.6)",
         }}
       >
         <div className="flex items-center gap-1.5">
@@ -27,7 +50,7 @@ function TypingIndicator() {
             <span
               key={i}
               className="h-2 w-2 animate-bounce rounded-full"
-              style={{ background: "#A6B3A8", animationDelay: `${i * 150}ms` }}
+              style={{ background: "rgba(249,246,240,0.4)", animationDelay: `${i * 150}ms` }}
             />
           ))}
         </div>
@@ -60,13 +83,23 @@ export function MessageList({ messages, streamingContent, isStreaming }: Message
 
   return (
     <div
-      className="flex flex-1 flex-col overflow-y-auto scroll-smooth"
-      style={{ background: "#f7f4ef" }}
+      className="aastha-messages flex flex-1 min-h-0 flex-col overflow-y-auto scroll-smooth"
+      style={{ background: "#1C2A25" }}
     >
       <div className="mx-auto w-full max-w-3xl px-4 py-6 space-y-4 sm:px-6">
-        {displayMessages.map((msg) => (
-          <MessageBubble key={msg.id} msg={msg} />
-        ))}
+        {displayMessages.map((msg, i) => {
+          const isWelcome = msg.id === "__welcome__"
+          const prev = displayMessages[i - 1]
+          const showSeparator =
+            !isWelcome &&
+            (!prev || !isSameDay(new Date(msg.createdAt), new Date(prev.createdAt)))
+          return (
+            <div key={msg.id}>
+              {showSeparator && <DateSeparator label={formatDateLabel(msg.createdAt)} />}
+              <MessageBubble msg={msg} hideTimestamp={isWelcome} />
+            </div>
+          )
+        })}
 
         {isStreaming && !streamingContent && <TypingIndicator />}
         {isStreaming && streamingContent && <StreamingBubble content={streamingContent} />}

@@ -2,14 +2,27 @@ import { Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { AasthaSession } from "@/hooks/useAastha"
 
-function timeAgo(dateStr: string) {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const mins = Math.floor(diff / 60000)
-  if (mins < 1) return "just now"
-  if (mins < 60) return `${mins}m ago`
-  const hrs = Math.floor(mins / 60)
-  if (hrs < 24) return `${hrs}h ago`
-  return `${Math.floor(hrs / 24)}d ago`
+function formatSessionDate(dateStr: string): string {
+  const d = new Date(dateStr)
+  const now = new Date()
+
+  const sameDay =
+    d.getFullYear() === now.getFullYear() &&
+    d.getMonth() === now.getMonth() &&
+    d.getDate() === now.getDate()
+
+  if (sameDay) return now.getHours() >= 18 ? "TONIGHT" : "TODAY"
+
+  const diffMs = now.getTime() - d.getTime()
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+
+  if (diffDays < 7) {
+    return d.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase()
+  }
+
+  return d
+    .toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    .toUpperCase()
 }
 
 interface SessionItemProps {
@@ -39,14 +52,12 @@ export function SessionItem({ session, isActive, onSelect, onDelete, isDeleting 
       onClick={() => { if (!isDeleting) onSelect() }}
       aria-disabled={isDeleting}
       className={cn(
-        "group relative w-full rounded-xl px-3 py-2.5 text-left transition-all focus-visible:outline-none cursor-pointer",
+        "group relative w-full rounded-xl px-3 py-2.5 text-left transition-all cursor-pointer focus-visible:outline-none",
         isDeleting && "opacity-50 pointer-events-none"
       )}
-      style={{
-        background: isActive ? "rgba(40,49,44,0.08)" : "transparent",
-      }}
+      style={{ background: isActive ? "rgba(244, 234, 225, 0.7)" : "transparent" }}
       onMouseEnter={(e) => {
-        if (!isActive) e.currentTarget.style.background = "rgba(40,49,44,0.05)"
+        if (!isActive) e.currentTarget.style.background = "rgba(40,49,44,0.04)"
       }}
       onMouseLeave={(e) => {
         if (!isActive) e.currentTarget.style.background = "transparent"
@@ -56,30 +67,33 @@ export function SessionItem({ session, isActive, onSelect, onDelete, isDeleting 
         <div className="min-w-0 flex-1">
           <p
             className="truncate text-[13px] font-medium leading-snug"
-            style={{ color: isActive ? "#28312C" : "#5D6862" }}
+            style={{ color: isActive ? "#28312C" : "#3D4A45" }}
           >
             {session.title}
           </p>
-          <div className="mt-1 flex items-center gap-1.5">
-            <span className="text-[11px]" style={{ color: "rgba(93,104,98,0.6)" }}>
-              {timeAgo(session.updatedAt)}
-            </span>
-            {session._count && (
-              <span
-                className="rounded-full px-1.5 py-px text-[10px]"
-                style={{ background: "rgba(40,49,44,0.07)", color: "#5D6862" }}
-              >
-                {session._count.messages}
-              </span>
-            )}
-          </div>
+          {session.messages?.[0]?.content && (
+            <p
+              className="truncate text-[11.5px] italic leading-snug mt-0.5"
+              style={{ color: isActive ? "rgba(40,49,44,0.55)" : "rgba(40,49,44,0.38)" }}
+            >
+              {session.messages[0].content}
+            </p>
+          )}
+          <span
+            className="mt-1 block text-[10px] font-semibold tracking-wider"
+            style={{ color: isActive ? "rgba(40,49,44,0.5)" : "rgba(40,49,44,0.28)" }}
+          >
+            {formatSessionDate(session.updatedAt)}
+          </span>
         </div>
       </div>
 
       <button
         onClick={handleDelete}
-        className="absolute right-2 top-2.5 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-all hover:text-[#C67156]"
-        style={{ color: "#5D6862" }}
+        className="absolute right-2 top-2.5 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-all"
+        style={{ color: "rgba(40,49,44,0.35)" }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = "#D96A4E")}
+        onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(40,49,44,0.35)")}
         title="Delete session"
         tabIndex={-1}
       >
@@ -92,8 +106,8 @@ export function SessionItem({ session, isActive, onSelect, onDelete, isDeleting 
 export function SessionItemSkeleton() {
   return (
     <div className="rounded-xl px-3 py-2.5">
-      <div className="h-3 w-3/4 animate-pulse rounded" style={{ background: "rgba(40,49,44,0.08)" }} />
-      <div className="mt-2 h-2.5 w-1/2 animate-pulse rounded" style={{ background: "rgba(40,49,44,0.06)" }} />
+      <div className="h-3 w-3/4 animate-pulse rounded" style={{ background: "rgba(40,49,44,0.07)" }} />
+      <div className="mt-2 h-2 w-1/3 animate-pulse rounded" style={{ background: "rgba(40,49,44,0.05)" }} />
     </div>
   )
 }

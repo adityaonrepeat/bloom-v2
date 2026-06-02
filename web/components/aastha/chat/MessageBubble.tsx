@@ -3,14 +3,12 @@ import remarkGfm from "remark-gfm"
 import { cn } from "@/lib/utils"
 import type { AasthaMessage } from "@/hooks/useAastha"
 
-function timeAgo(dateStr: string) {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const mins = Math.floor(diff / 60000)
-  if (mins < 1) return "just now"
-  if (mins < 60) return `${mins}m ago`
-  const hrs = Math.floor(mins / 60)
-  if (hrs < 24) return `${hrs}h ago`
-  return `${Math.floor(hrs / 24)}d ago`
+function formatTime(dateStr: string) {
+  const d = new Date(dateStr)
+  const h = d.getHours() % 12 || 12
+  const mins = d.getMinutes().toString().padStart(2, "0")
+  const ampm = d.getHours() >= 12 ? "pm" : "am"
+  return `${h}:${mins}${ampm}`
 }
 
 const markdownComponents: React.ComponentProps<typeof ReactMarkdown>["components"] = {
@@ -23,7 +21,10 @@ const markdownComponents: React.ComponentProps<typeof ReactMarkdown>["components
     </li>
   ),
   code: ({ children }) => (
-    <code className="rounded px-1 py-0.5 text-[12px] font-mono" style={{ background: "rgba(40,49,44,0.08)" }}>
+    <code
+      className="rounded px-1 py-0.5 text-[12px] font-mono"
+      style={{ background: "rgba(249,246,240,0.15)" }}
+    >
       {children}
     </code>
   ),
@@ -31,51 +32,38 @@ const markdownComponents: React.ComponentProps<typeof ReactMarkdown>["components
 
 function UserBubble({ msg }: { msg: AasthaMessage }) {
   return (
-    <div className="flex items-end justify-end gap-2">
+    <div className="flex items-end justify-end">
       <div className="max-w-[72%]">
         <div
-          className="rounded-2xl rounded-br-sm px-4 py-2.5 text-sm shadow-sm"
-          style={{ background: "#28312C", color: "#F0EBE1" }}
+          className="rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm shadow-sm"
+          style={{ background: "#D96A4E", color: "#F9F6F0" }}
         >
-          <p className="leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+          <p className="leading-relaxed whitespace-pre-wrap wrap-break-word">{msg.content}</p>
         </div>
-        <p className="mt-1 pr-1 text-right text-[10px]" style={{ color: "rgba(93,104,98,0.5)" }}>
-          {timeAgo(msg.createdAt)}
+        <p
+          className="mt-1 pr-1 text-right text-[10px]"
+          style={{ color: "rgba(249,246,240,0.4)" }}
+        >
+          {formatTime(msg.createdAt)}
         </p>
-      </div>
-      <div
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] font-semibold"
-        style={{ background: "rgba(40,49,44,0.08)", color: "#28312C" }}
-      >
-        U
       </div>
     </div>
   )
 }
 
-function AasthaBubble({ msg, isStreaming }: { msg: AasthaMessage; isStreaming?: boolean }) {
+function AasthaBubble({ msg, isStreaming, hideTimestamp }: { msg: AasthaMessage; isStreaming?: boolean; hideTimestamp?: boolean }) {
   return (
-    <div className="flex items-end gap-2">
-      <div
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] font-bold"
-        style={{
-          background: "#E3A863",
-          color: "#28312C",
-          fontFamily: "var(--font-fraunces), Georgia, serif",
-        }}
-      >
-        A
-      </div>
+    <div className="flex justify-start">
       <div className="max-w-[72%]">
         <div
           className={cn(
-            "rounded-2xl rounded-bl-sm px-4 py-2.5 text-sm shadow-sm",
+            "rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm shadow-sm",
             isStreaming && "animate-pulse-subtle"
           )}
           style={{
-            background: "rgba(255,255,255,0.9)",
-            border: "1px solid rgba(40,49,44,0.08)",
-            color: "#28312C",
+            background: "rgba(37,54,48,0.85)",
+            border: "1px solid rgba(54,74,65,0.6)",
+            color: "#F9F6F0",
           }}
         >
           <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
@@ -84,13 +72,16 @@ function AasthaBubble({ msg, isStreaming }: { msg: AasthaMessage; isStreaming?: 
           {isStreaming && (
             <span
               className="ml-0.5 inline-block h-3.5 w-0.5 animate-blink"
-              style={{ background: "#C67156" }}
+              style={{ background: "#D96A4E" }}
             />
           )}
         </div>
-        {!isStreaming && (
-          <p className="mt-1 pl-1 text-[10px]" style={{ color: "rgba(93,104,98,0.5)" }}>
-            {timeAgo(msg.createdAt)}
+        {!isStreaming && !hideTimestamp && (
+          <p
+            className="mt-1 pl-1 text-[10px]"
+            style={{ color: "rgba(249,246,240,0.4)" }}
+          >
+            {formatTime(msg.createdAt)}
           </p>
         )}
       </div>
@@ -98,9 +89,9 @@ function AasthaBubble({ msg, isStreaming }: { msg: AasthaMessage; isStreaming?: 
   )
 }
 
-export function MessageBubble({ msg }: { msg: AasthaMessage }) {
+export function MessageBubble({ msg, hideTimestamp }: { msg: AasthaMessage; hideTimestamp?: boolean }) {
   if (msg.role === "user") return <UserBubble msg={msg} />
-  return <AasthaBubble msg={msg} />
+  return <AasthaBubble msg={msg} hideTimestamp={hideTimestamp} />
 }
 
 export function StreamingBubble({ content }: { content: string }) {
