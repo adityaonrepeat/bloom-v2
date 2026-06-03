@@ -155,9 +155,6 @@ export default function TalkPage() {
   const [emotion, setEmotion] = useState<EmotionTag | null>(null)
 
   const sessionRef = useRef<{ id: string } | null>(null)
-  // Mirror emotion into a ref so socket handlers (bound once) read the latest value
-  const emotionRef = useRef<EmotionTag | null>(null)
-  useEffect(() => { emotionRef.current = emotion }, [emotion])
 
   // ─── Skip cooldown timer ───
   useEffect(() => {
@@ -227,13 +224,8 @@ export default function TalkPage() {
     const handlePartnerLeft = () => {
       if (!mounted) return
       setZegoReady(false)
-      setRoomId(null)
       setPageState("searching")
-      // A disconnecting partner does NOT requeue us server-side, so rejoin here
-      const e = emotionRef.current
-      if (e && sessionRef.current) {
-        socket.emit("join-queue", { emotion: e, userId: sessionRef.current.id })
-      }
+      setRoomId(null)
     }
 
     const handleSkipCooldown = ({ seconds }: { seconds: number }) => {
