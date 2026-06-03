@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useRef, useCallback } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { ArrowLeft, Video, Shield } from "lucide-react"
 import { socket } from "@/lib/socket"
 import { authClient } from "@/lib/auth-client"
 
@@ -126,12 +128,22 @@ function ZegoVideoRoom({
 }
 
 
-type PageState = "searching" | "connected"
+const VALID_EMOTIONS = ["happy", "calm", "stressed", "anxious"] as const
+type EmotionTag = (typeof VALID_EMOTIONS)[number]
+
+const EMOTIONS: { tag: EmotionTag; label: string; blurb: string }[] = [
+  { tag: "happy", label: "Sunny & open", blurb: "Feeling good" },
+  { tag: "calm", label: "Steady & grounded", blurb: "At ease" },
+  { tag: "stressed", label: "Under pressure", blurb: "Stretched thin" },
+  { tag: "anxious", label: "On edge", blurb: "Restless" },
+]
+
+type PageState = "lobby" | "searching" | "connected"
 
 export default function TalkPage() {
   const router = useRouter()
 
-  const [pageState, setPageState] = useState<PageState>("searching")
+  const [pageState, setPageState] = useState<PageState>("lobby")
   const [roomId, setRoomId] = useState<string | null>(null)
   const [hasReported, setHasReported] = useState(false)
   const [userId, setUserId] = useState<string | null>(null)
@@ -140,9 +152,12 @@ export default function TalkPage() {
   const [skipCooldown, setSkipCooldown] = useState(0)
   const [userName, setUserName] = useState("")
   const [zegoReady, setZegoReady] = useState(false)
+  const [emotion, setEmotion] = useState<EmotionTag | null>(null)
 
-  const hasJoined = useRef(false)
   const sessionRef = useRef<{ id: string } | null>(null)
+  // Mirror emotion into a ref so socket handlers (bound once) read the latest value
+  const emotionRef = useRef<EmotionTag | null>(null)
+  useEffect(() => { emotionRef.current = emotion }, [emotion])
 
   // ─── Skip cooldown timer ───
   useEffect(() => {
@@ -170,15 +185,22 @@ export default function TalkPage() {
       setUserName(session.user.name || "Anonymous")
       sessionRef.current = { id: session.user.id }
 
-      if (!socket.connected) {
-        socket.connect()
+      // Emotion comes from the DB (authoritative), not localStorage. The user
+      // confirms or changes it in the lobby before matchmaking starts.
+      try {
+        const eRes = await fetch("/api/user/emotion")
+        if (eRes.ok) {
+          const { emotionalTag } = await eRes.json()
+          if (emotionalTag && (VALID_EMOTIONS as readonly string[]).includes(emotionalTag)) {
+            setEmotion(emotionalTag as EmotionTag)
+          }
+        }
+      } catch {
+        // Lobby still lets the user pick manually if this fails
       }
 
-      // Join the queue immediately
-      const emotion = localStorage.getItem("emotion-tag") || "calm"
-      if (!hasJoined.current) {
-        hasJoined.current = true
-        socket.emit("join-queue", { emotion, userId: session.user.id }) // Added userId here for proper DB reporting!
+      if (!socket.connected) {
+        socket.connect()
       }
     }
 
@@ -205,8 +227,13 @@ export default function TalkPage() {
     const handlePartnerLeft = () => {
       if (!mounted) return
       setZegoReady(false)
-      setPageState("searching")
       setRoomId(null)
+      setPageState("searching")
+      // A disconnecting partner does NOT requeue us server-side, so rejoin here
+      const e = emotionRef.current
+      if (e && sessionRef.current) {
+        socket.emit("join-queue", { emotion: e, userId: sessionRef.current.id })
+      }
     }
 
     const handleSkipCooldown = ({ seconds }: { seconds: number }) => {
@@ -224,18 +251,29 @@ export default function TalkPage() {
       socket.off("waiting", handleWaiting)
       socket.off("partner-left", handlePartnerLeft)
       socket.off("skip-cooldown", handleSkipCooldown)
-      hasJoined.current = false
     }
   }, [router])
 
   // ─── Actions ───
 
+  const startMatching = () => {
+    if (!emotion || !sessionRef.current) return
+    if (!socket.connected) socket.connect()
+    setPageState("searching")
+    socket.emit("join-queue", { emotion, userId: sessionRef.current.id })
+  }
+
+  const cancelSearch = () => {
+    socket.disconnect()
+    setPageState("lobby")
+  }
+
   const handleSkip = () => {
+    if (!emotion) return
     setZegoReady(false)
     setPageState("searching")
     setRoomId(null)
-    const emotion = localStorage.getItem("emotion-tag") || "calm"
-    socket.emit("skip", { emotion, userId: sessionRef.current?.id }) // Added userId here for proper DB reporting!
+    socket.emit("skip", { emotion, userId: sessionRef.current?.id })
   }
 
   const handleReport = async () => {
@@ -263,6 +301,76 @@ export default function TalkPage() {
     socket.disconnect()
     router.push("/dashboard")
   }, [router])
+
+  // ─────────── LOBBY STATE ───────────
+  if (pageState === "lobby") {
+    return (
+      <div className="min-h-screen bg-bloom-cream text-bloom-ink font-sans flex flex-col">
+        <header className="px-6 md:px-10 py-6">
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-2 text-sm text-bloom-inkSoft hover:text-bloom-ink transition-colors"
+          >
+            <ArrowLeft size={15} strokeWidth={1.75} />
+            Dashboard
+          </Link>
+        </header>
+
+        <main className="flex-1 flex items-center justify-center px-4 pb-16">
+          <div className="w-full max-w-lg">
+            <div className="text-center mb-8">
+              <p className="eyebrow text-bloom-inkSoft mb-3">Bloom Talk</p>
+              <h1 className="font-display text-3xl md:text-4xl leading-tight tracking-tight">
+                Talk to someone who{" "}
+                <span className="italic font-light text-bloom-terracotta">gets it.</span>
+              </h1>
+              <p className="mt-3 text-sm text-bloom-inkSoft max-w-sm mx-auto">
+                A 1-on-1 video chat with someone feeling something similar. Anonymous —
+                you can skip or leave anytime.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl border border-bloom-line/70 shadow-[0_18px_50px_-30px_rgba(42,47,45,0.2)] overflow-hidden">
+              <div className="h-1 bg-bloom-terracotta" />
+              <div className="p-7">
+                <p className="eyebrow text-bloom-inkSoft mb-4">How are you feeling right now?</p>
+                <div className="grid grid-cols-2 gap-2.5">
+                  {EMOTIONS.map((e) => (
+                    <button
+                      key={e.tag}
+                      onClick={() => setEmotion(e.tag)}
+                      className={`text-left rounded-2xl border px-4 py-3.5 transition-all ${
+                        emotion === e.tag
+                          ? "bg-bloom-terracotta/10 border-bloom-terracotta"
+                          : "bg-bloom-cream border-bloom-line hover:border-bloom-terracotta/50"
+                      }`}
+                    >
+                      <p className="text-sm font-medium text-bloom-ink">{e.label}</p>
+                      <p className="text-xs text-bloom-inkSoft mt-0.5">{e.blurb}</p>
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={startMatching}
+                  disabled={!emotion}
+                  className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium bg-bloom-forest text-bloom-cream hover:bg-bloom-forestSoft transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <Video size={16} strokeWidth={1.75} />
+                  {emotion ? "Find someone" : "Pick how you feel first"}
+                </button>
+              </div>
+            </div>
+
+            <p className="mt-5 inline-flex items-center justify-center gap-2 text-xs text-bloom-inkSoft/70 w-full">
+              <Shield size={12} strokeWidth={1.5} className="text-bloom-terracotta" />
+              Be kind. You can report anyone who makes you uncomfortable.
+            </p>
+          </div>
+        </main>
+      </div>
+    )
+  }
 
   // ─────────── SEARCHING STATE ───────────
   if (pageState === "searching") {
@@ -303,7 +411,7 @@ export default function TalkPage() {
             </p>
           </div>
           <button
-            onClick={handleLeave}
+            onClick={cancelSearch}
             className="text-sm underline underline-offset-2 transition-colors hover:opacity-60"
             style={{ color: "#A6B3A8" }}
           >
