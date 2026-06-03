@@ -77,7 +77,6 @@ export default function TodayView({ emotionalScore, emotionalTag, streak = 0, la
     return (
         <WorkspaceShell>
             <WorkspaceHeader
-                eyebrow="Today"
                 title="Good evening,"
                 titleAccent="there."
                 sub="You haven't written tonight. There's no rush — the page is here when you're ready."
