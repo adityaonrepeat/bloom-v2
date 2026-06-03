@@ -261,11 +261,13 @@ export default function TalkPage() {
   }
 
   const handleSkip = () => {
-    if (!emotion) return
+    // Skip must ALWAYS reach the server so the room tears down and both requeue.
+    // Never gate it on emotion state (which can momentarily be null after a
+    // hot-reload) — fall back so the emit always fires.
     setZegoReady(false)
     setPageState("searching")
     setRoomId(null)
-    socket.emit("skip", { emotion, userId: sessionRef.current?.id })
+    socket.emit("skip", { emotion: emotion ?? "calm", userId: sessionRef.current?.id })
   }
 
   const handleReport = async () => {
