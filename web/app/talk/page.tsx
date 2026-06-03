@@ -245,8 +245,7 @@ export default function TalkPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          reporterId: userId,
-          reportedId: partnerId // Realtime server now guarantees this is a proper DB user ID!
+          reportedId: partnerId // Realtime server guarantees this is a proper DB user ID; reporter comes from the session
         })
       })
       setHasReported(true)

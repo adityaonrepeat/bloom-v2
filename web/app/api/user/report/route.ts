@@ -1,14 +1,31 @@
 import prisma from "@/lib/prisma"
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 
 const REPORT_THRESHOLD = 5
 
 export async function POST(req: Request) {
 
-  const { reporterId, reportedId } = await req.json()
+  // Reporter identity comes from the authenticated session — never trust the
+  // client to say who is reporting, or anyone could mass-report any user.
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
 
-  if (!reporterId || !reportedId) {
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
+  const reporterId = session.user.id
+  const { reportedId } = await req.json()
+
+  if (!reportedId) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 })
+  }
+
+  if (reportedId === reporterId) {
+    return NextResponse.json({ error: "Cannot report yourself" }, { status: 400 })
   }
 
   const existing = await prisma.report.findFirst({
