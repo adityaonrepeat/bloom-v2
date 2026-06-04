@@ -1,40 +1,37 @@
-"use client"
-
-import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { ShieldAlert } from "lucide-react"
 
 export default function BlockedPage() {
-  const router = useRouter()
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 via-white to-orange-50 px-4">
-      <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center space-y-6">
+    <div className="min-h-screen bg-bloom-cream text-bloom-ink font-sans flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white rounded-3xl border border-bloom-line/70 shadow-[0_18px_50px_-30px_rgba(42,47,45,0.2)] overflow-hidden">
+          <div className="h-1 bg-bloom-terracotta" />
+          <div className="p-8 text-center space-y-6">
+            <div className="w-16 h-16 mx-auto rounded-full bg-bloom-terracotta/10 flex items-center justify-center">
+              <ShieldAlert size={28} strokeWidth={1.75} className="text-bloom-terracotta" />
+            </div>
 
-        <div className="w-20 h-20 mx-auto rounded-full bg-red-100 flex items-center justify-center">
-          <span className="text-4xl">🚫</span>
+            <div className="space-y-2">
+              <h1 className="font-display text-2xl tracking-tight">Account restricted</h1>
+              <p className="text-sm text-bloom-inkSoft leading-relaxed">
+                Your account has been restricted following multiple reports from
+                other members. You can&apos;t use Bloom Talk right now.
+              </p>
+            </div>
+
+            <Link
+              href="/dashboard"
+              className="block w-full rounded-full px-6 py-3 text-sm font-medium bg-bloom-forest text-bloom-cream hover:bg-bloom-forestSoft transition-colors"
+            >
+              Back to dashboard
+            </Link>
+          </div>
         </div>
 
-        <div className="space-y-2">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Account Restricted
-          </h1>
-          <p className="text-gray-500 text-sm leading-relaxed">
-            Your account has been restricted due to multiple reports from other users.
-            You are unable to use the Talk feature at this time.
-          </p>
-        </div>
-
-        <div className="space-y-3">
-          <button
-            onClick={() => router.push("/dashboard")}
-            className="w-full py-3 rounded-xl bg-gray-800 text-white font-medium hover:bg-gray-900 transition text-sm"
-          >
-            Go to Dashboard
-          </button>
-          <p className="text-xs text-gray-400">
-            If you believe this is a mistake, please contact support.
-          </p>
-        </div>
-
+        <p className="mt-5 text-center text-xs text-bloom-inkSoft/70">
+          If you believe this is a mistake, please contact support and we&apos;ll review it.
+        </p>
       </div>
     </div>
   )
