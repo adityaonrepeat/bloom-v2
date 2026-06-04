@@ -43,13 +43,21 @@ function ZegoVideoRoom({
       if (cancelled) return
 
       const appID = Number(process.env.NEXT_PUBLIC_ZEGO_APP_ID)
-      const serverSecret = process.env.NEXT_PUBLIC_ZEGO_SERVER_SECRET || ""
 
-      const zegoUserID = userId || crypto.randomUUID()
+      // Token is signed on the server — the ServerSecret never reaches the
+      // browser. The route also tells us which user id the token is bound to.
+      const tokenRes = await fetch("/api/talk/token", { method: "POST" })
+      if (cancelled) return
+      if (!tokenRes.ok) {
+        console.error("Failed to obtain Zego token")
+        joiningRef.current = false
+        return
+      }
+      const { token, userId: zegoUserID } = await tokenRes.json()
 
-      const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
+      const kitToken = ZegoUIKitPrebuilt.generateKitTokenForProduction(
         appID,
-        serverSecret,
+        token,
         roomId,
         zegoUserID,
         userName || "stranger"

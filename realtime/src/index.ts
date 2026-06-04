@@ -9,12 +9,19 @@ import { RoomManager } from "./managers/roomManager.js"
 dotenv.config()
 
 const app = express()
-app.use(cors())
+
+// Lock CORS to the web origin(s). Set CORS_ORIGIN on the host to your deployed
+// web domain (comma-separated for multiple). Defaults to localhost for dev.
+const allowedOrigins = (process.env.CORS_ORIGIN ?? "http://localhost:3000")
+  .split(",")
+  .map((o) => o.trim())
+
+app.use(cors({ origin: allowedOrigins }))
 
 const httpServer = createServer(app)
 
 const io = new Server(httpServer, {
-  cors: { origin: "*" }
+  cors: { origin: allowedOrigins, methods: ["GET", "POST"] }
 })
 
 // Track socketId → emotion
