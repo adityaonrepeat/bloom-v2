@@ -7,13 +7,24 @@ import ForgotPasswordEmail from "@/components/emails/reset-password";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-console.log("EMAIL_FROM:", process.env.EMAIL_FROM); //CHECK
-
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+
+  // Surface isBlocked on the session user so the proxy can gate EVERY
+  // protected route, not just /dashboard. input:false prevents clients from
+  // ever setting it themselves via signup/update.
+  user: {
+    additionalFields: {
+      isBlocked: {
+        type: "boolean",
+        defaultValue: false,
+        input: false,
+      },
+    },
+  },
 
   emailAndPassword: {
     enabled: true,
@@ -29,12 +40,7 @@ export const auth = betterAuth({
     //     }),
     //   });
     // },
-      sendResetPassword: async ({ user, url, token }) => {
-      console.log("RESET PASSWORD EMAIL");
-      console.log("User:", user.email);
-      console.log("Token:", token);
-      console.log("URL:", url);
-
+    sendResetPassword: async ({ user, url }) => {
       await resend.emails.send({
         from: process.env.EMAIL_FROM!,
         to: user.email,
@@ -47,20 +53,12 @@ export const auth = betterAuth({
       });
     },
 
-    onPasswordReset: async ({ user }) => {
-      console.log(`Password for user ${user.email} has been reset.`);
-    },
-
     requireEmailVerification: true,
   },
 
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {
-      console.log("Verification email triggered");
-      console.log("User:", user.email);
-      console.log("URL:", url);
-
-      const result = await resend.emails.send({
+      await resend.emails.send({
         from: process.env.EMAIL_FROM!,
         to: user.email,
         subject: "Verify your email",
@@ -69,7 +67,6 @@ export const auth = betterAuth({
           verifyUrl: url,
         }),
       });
-      console.log("Resend result:", result);
     },
     sendOnSignUp: true,
   },

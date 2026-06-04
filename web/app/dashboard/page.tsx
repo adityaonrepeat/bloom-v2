@@ -10,7 +10,6 @@ export default async function Dashboard() {
   if (!session?.user) redirect("/login")
 
   const user = await prisma.user.findUnique({ where: { id: session.user.id } })
-  if (user?.isBlocked) redirect("/blocked")
 
   const sixtyDaysAgo = new Date()
   sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60)

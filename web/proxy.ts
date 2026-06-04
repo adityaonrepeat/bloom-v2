@@ -21,6 +21,7 @@ export async function proxy(request: NextRequest) {
   // /dashboard forever. Checking the real session here keeps both layers in
   // agreement. (This endpoint isn't in the matcher, so there's no recursion.)
   let isLoggedIn = false;
+  let isBlocked = false;
   try {
     const res = await fetch(new URL("/api/auth/get-session", request.url), {
       headers: { cookie: request.headers.get("cookie") ?? "" },
@@ -28,6 +29,7 @@ export async function proxy(request: NextRequest) {
     if (res.ok) {
       const session = await res.json().catch(() => null);
       isLoggedIn = !!session?.user;
+      isBlocked = !!session?.user?.isBlocked;
     }
   } catch {
     isLoggedIn = false;
@@ -38,7 +40,14 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // 2. Prevent logged-in users from seeing login/signup
+  // 2. Restricted (over-reported) users lose ONLY Talk — the peer-to-peer
+  // feature where abuse happens. Their private wellness tools (journal,
+  // Aastha, mood) stay open. /blocked isn't in the matcher, so no loop.
+  if (pathname.startsWith("/talk") && isBlocked) {
+    return NextResponse.redirect(new URL("/blocked", request.url));
+  }
+
+  // 3. Prevent logged-in users from seeing login/signup
   if (isAuthPage && isLoggedIn) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
