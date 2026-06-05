@@ -4,13 +4,13 @@ import { SignupForm } from "@/components/signup-form"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Sign up — Bloom",
+  title: "Sign up · Bloom",
   description: "Create your free Bloom account and start your mental wellness journey today.",
 }
 
 const perks = [
-  { dot: "#E3A863", text: "100% free — no credit card needed" },
-  { dot: "#A6B3A8", text: "Your data is private & never sold" },
+  { dot: "#E3A863", text: "100% free, no credit card needed" },
+  { dot: "#A6B3A8", text: "Your journals stay private to you" },
   { dot: "#C67156", text: "Aastha AI therapist, always available" },
   { dot: "#7C9885", text: "Unlimited private journal entries" },
 ]
@@ -57,7 +57,13 @@ export default function SignupPage() {
 
             <p className="mt-5 text-xs text-center leading-relaxed" style={{ color: "rgba(93,104,98,0.5)" }}>
               By creating an account you agree to our{" "}
-              <span className="underline cursor-pointer" style={{ color: "#5D6862" }}>Terms</span>{" "}
+              <Link
+                href="/terms"
+                className="underline transition-colors hover:opacity-80"
+                style={{ color: "#5D6862" }}
+              >
+                Terms
+              </Link>{" "}
               and{" "}
               <span className="underline cursor-pointer" style={{ color: "#5D6862" }}>Privacy Policy</span>.
             </p>
@@ -146,7 +152,7 @@ export default function SignupPage() {
               className="mt-6 leading-relaxed"
               style={{ fontSize: "16px", color: "#A6B3A8", maxWidth: "300px" }}
             >
-              Join thousands building healthier minds — one honest moment at a time.
+              Join hundreds building healthier minds, one honest moment at a time.
             </p>
           </div>
 
@@ -172,7 +178,7 @@ export default function SignupPage() {
             }}
           >
             {[
-              { num: "10k+", label: "People supported" },
+              { num: "100+", label: "People supported" },
               { num: "∞", label: "Journal entries" },
               { num: "24/7", label: "Aastha available" },
               { num: "0", label: "Ads, ever" },

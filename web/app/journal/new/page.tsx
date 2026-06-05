@@ -111,7 +111,7 @@ export default function NewJournalPage() {
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="What's on your mind today? Write freely — this is your private space…"
+                placeholder="What's on your mind today? Write freely. This is your private space…"
                 className="w-full bg-transparent outline-none resize-none text-bloom-ink placeholder:text-bloom-inkSoft/45 placeholder:italic"
                 style={{ minHeight: "320px", fontSize: "16px", lineHeight: "1.9" }}
               />

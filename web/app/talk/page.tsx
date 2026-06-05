@@ -327,8 +327,7 @@ export default function TalkPage() {
                 <span className="italic font-light text-bloom-terracotta">gets it.</span>
               </h1>
               <p className="mt-3 text-sm text-bloom-inkSoft max-w-sm mx-auto">
-                A 1-on-1 video chat with someone feeling something similar. Anonymous —
-                you can skip or leave anytime.
+                A 1-on-1 video chat with someone feeling something similar. Anonymous. Skip or leave anytime.
               </p>
             </div>
 

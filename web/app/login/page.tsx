@@ -4,7 +4,7 @@ import { LoginForm } from "@/components/login-form"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Sign in — Bloom",
+  title: "Sign in · Bloom",
   description: "Sign in to your Bloom account to continue your mental wellness journey.",
 }
 
@@ -16,7 +16,7 @@ export default function LoginPage() {
     >
       {/* ── Left: Decorative dark panel ─────────────────── */}
       <div
-        className="relative hidden lg:flex flex-col justify-between overflow-hidden p-16"
+        className="relative hidden lg:flex flex-col justify-center overflow-hidden p-16"
         style={{ background: "#28312C" }}
       >
         {/* Atmospheric blobs */}
@@ -43,78 +43,81 @@ export default function LoginPage() {
           }}
         />
 
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-1 w-fit z-10" style={{ marginLeft: "-8px" }}>
-          <Image
-            src="/logo.png"
-            alt=""
-            width={72}
-            height={52}
-            style={{ mixBlendMode: "luminosity", opacity: 0.85, marginRight: "-16px" }}
-          />
-          <span
-            style={{
-              fontFamily: "var(--font-fraunces), Georgia, serif",
-              fontSize: "20px",
-              letterSpacing: "-0.03em",
-              color: "#F0EBE1",
-              lineHeight: 1,
-            }}
-          >
-            bloom
-          </span>
-        </Link>
-
-        {/* Main content */}
-        <div className="relative z-10 space-y-10">
-          <div>
-            <div
-              className="inline-flex items-center gap-2 mb-6"
-              style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: "#A6B3A8" }}
-            >
-              <span>•</span> A soft place for the mind
-            </div>
-            <h2
+        <div className="relative z-10">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-1 w-fit mb-12" style={{ marginLeft: "-8px" }}>
+            <Image
+              src="/logo.png"
+              alt=""
+              width={72}
+              height={52}
+              style={{ mixBlendMode: "luminosity", opacity: 0.85, marginRight: "-16px" }}
+            />
+            <span
               style={{
                 fontFamily: "var(--font-fraunces), Georgia, serif",
-                fontSize: "52px",
-                lineHeight: 0.97,
+                fontSize: "20px",
                 letterSpacing: "-0.03em",
                 color: "#F0EBE1",
+                lineHeight: 1,
               }}
             >
-              Welcome<br />back to<br />
-              <span style={{ color: "#C67156", fontStyle: "italic" }}>bloom.</span>
-            </h2>
-            <p
-              className="mt-6 leading-relaxed"
-              style={{ fontSize: "16px", color: "#A6B3A8", maxWidth: "300px" }}
-            >
-              Your feelings have been waiting. Let&rsquo;s pick up where you left off.
-            </p>
-          </div>
+              bloom
+            </span>
+          </Link>
 
-          {/* Feature pills */}
-          <div className="flex flex-wrap gap-2">
-            {["Mood tracking", "Aastha AI", "Private Journal", "Peer Talk"].map((f) => (
-              <span
-                key={f}
-                className="text-xs font-medium px-3 py-1.5 rounded-full"
+          {/* Main content */}
+          <div className="space-y-10">
+            <div>
+              <div
+                className="inline-flex items-center gap-2 mb-6"
+                style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: "#A6B3A8" }}
+              >
+                <span>•</span> A soft place for the mind
+              </div>
+              <h2
                 style={{
-                  background: "rgba(255,255,255,0.07)",
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  color: "rgba(240,235,225,0.65)",
+                  fontFamily: "var(--font-fraunces), Georgia, serif",
+                  fontSize: "52px",
+                  lineHeight: 0.97,
+                  letterSpacing: "-0.03em",
+                  color: "#F0EBE1",
                 }}
               >
-                {f}
-              </span>
-            ))}
-          </div>
-        </div>
+                Welcome<br />back to<br />
+                <span style={{ color: "#C67156", fontStyle: "italic" }}>bloom.</span>
+              </h2>
+              <p
+                className="mt-6 leading-relaxed"
+                style={{ fontSize: "16px", color: "#A6B3A8", maxWidth: "300px" }}
+              >
+                Your feelings have been waiting. Let&rsquo;s pick up where you left off.
+              </p>
+            </div>
 
-        <p className="relative z-10 text-xs" style={{ color: "rgba(166,179,168,0.45)" }}>
-          &copy; {new Date().getFullYear()} Bloom. Your data stays private.
-        </p>
+            {/* Feature pills */}
+            <div className="flex flex-wrap gap-2">
+              {["Mood tracking", "Aastha AI", "Private Journal", "Peer Talk"].map((f) => (
+                <span
+                  key={f}
+                  className="text-xs font-medium px-3 py-1.5 rounded-full"
+                  style={{
+                    background: "rgba(255,255,255,0.07)",
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    color: "rgba(240,235,225,0.65)",
+                  }}
+                >
+                  {f}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Copyright */}
+          <p className="mt-16 text-xs" style={{ color: "rgba(166,179,168,0.45)" }}>
+            &copy; {new Date().getFullYear()} Bloom. Your data stays private.
+          </p>
+        </div>
       </div>
 
       {/* ── Right: Form ──────────────────────────────── */}
@@ -171,12 +174,12 @@ export default function LoginPage() {
                 Create one free →
               </Link>
             </p>
+
+            <p className="mt-8 text-xs text-center" style={{ color: "rgba(93,104,98,0.45)" }}>
+              Your wellbeing, our priority.
+            </p>
           </div>
         </div>
-
-        <p className="text-xs text-center" style={{ color: "rgba(93,104,98,0.45)" }}>
-          Your wellbeing, our priority.
-        </p>
       </div>
     </div>
   )
