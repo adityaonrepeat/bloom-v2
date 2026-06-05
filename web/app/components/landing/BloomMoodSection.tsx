@@ -48,8 +48,7 @@ export default function BloomMoodSection() {
             <span className="italic text-[#C67156]">One honest line.</span>
           </h2>
           <p className="text-lg text-[#5D6862] mt-6 leading-relaxed">
-            A single tap each night. Over five days a quiet shape emerges — the weather
-            of you. Not to fix you, just to show you what&rsquo;s been true.
+            A single tap each night. Over five days a quiet shape emerges. The weather of you. Not to fix you, just to show you what&rsquo;s been true.
           </p>
 
           <div className="mt-10 grid grid-cols-3 gap-4">

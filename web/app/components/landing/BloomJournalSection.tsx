@@ -57,15 +57,14 @@ export default function BloomJournalSection() {
             <span className="italic text-[#C67156]">doesn&rsquo;t judge</span> you back.
           </h2>
           <p className="text-lg text-[#5D6862] mt-6 leading-relaxed">
-            Bloom journaling is intentionally slow. No streaks. No likes. Just you, a
-            cursor, and a prompt that meets you where you are — whether that&rsquo;s one
-            line or a thousand.
+            Bloom journaling is intentionally slow. No likes. Just you, a
+            cursor, and a prompt that meets you where you are, whether that&rsquo;s one line or a thousand.
           </p>
           <ul className="mt-8 space-y-4">
             {[
               { icon: PenLine, text: "Guided prompts from Aastha when words won’t come" },
               { icon: Wind, text: "60-second breathing reset before you begin" },
-              { icon: Lock, text: "Encrypted locally — never used to train anything" },
+              { icon: Lock, text: "Your thoughts, your space. A personal journal built for reflection." },
             ].map((it, i) => (
               <li key={i} className="flex items-start gap-3">
                 <it.icon className="w-4 h-4 mt-1 text-[#C67156]" strokeWidth={1.6} />

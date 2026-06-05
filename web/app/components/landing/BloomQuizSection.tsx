@@ -43,7 +43,7 @@ export default function BloomQuizSection() {
               <span className="italic text-[#C67156]">One honest number.</span>
             </h2>
             <p className="text-lg text-[#5D6862] mt-6 leading-relaxed">
-              A five-minute check-in — 10 questions, 5 answers each — produces an
+              A five-minute check-in: 10 questions, 5 answers each. Produces an
               Emotional Score out of 50. It&rsquo;s the quiet language Bloom uses to
               match you with someone who&rsquo;s in the same weather as you.
             </p>

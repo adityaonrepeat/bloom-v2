@@ -57,8 +57,8 @@ export default function BloomTalkSection() {
               <span className="italic text-[#E3A863]">in the same weather.</span>
             </h2>
             <p className="text-lg text-[#A6B3A8] mt-6 leading-relaxed max-w-md">
-              When the ache is too specific for a journal, we match you — by Emotional
-              Score, not by looks — with one real person online right now. Talk, video,
+              When the ache is too specific for a journal, we match you by Emotional
+              Score, not by looks, with one real person online right now. Talk, video,
               voice. Skip anytime. Report anytime. Leave feeling less alone.
             </p>
 
@@ -67,7 +67,7 @@ export default function BloomTalkSection() {
                 ["Mic off by default", "You choose when to be heard"],
                 ["Blur-first video", "Ease into being seen"],
                 ["Skip instantly", "One tap, new match in 4s"],
-                ["Report & block", "One strike — gone forever"],
+                ["Report & block", "One strike. Gone forever."],
               ].map(([title, sub], i) => (
                 <div key={i} className="rounded-2xl p-4 bg-white/[0.04] border border-white/10">
                   <div className="font-display text-[16px]">{title}</div>

@@ -72,7 +72,7 @@ export default function BloomHero() {
             >
               Journal in private. Watch your moods form a pattern. Talk to{" "}
               <span className="text-[#28312C] font-medium">Aastha</span>, our quiet AI
-              therapist — and when the weight is too much, match with a real human
+              therapist, and when the weight is too much, match with a real human
               who&rsquo;s feeling the same shade of blue.
             </motion.p>
 

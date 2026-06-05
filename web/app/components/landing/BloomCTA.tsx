@@ -34,7 +34,7 @@ export default function BloomCTA() {
           </h2>
           <p className="mt-6 text-lg text-[#F9F8F6]/80 max-w-md mx-auto leading-relaxed">
             One quiet app. A journal that listens. A match who understands.
-            Start tonight — it&rsquo;s always free.
+            Start tonight. It&rsquo;s always free.
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <Link

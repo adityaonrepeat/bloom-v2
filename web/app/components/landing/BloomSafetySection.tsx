@@ -40,7 +40,7 @@ export default function BloomSafetySection() {
             <span className="italic text-[#C67156]">with scaffolding.</span>
           </h2>
           <p className="text-lg text-[#5D6862] mt-6 leading-relaxed">
-            Bloom is built the way a therapist&rsquo;s office is designed — quiet,
+            Bloom is built the way a therapist&rsquo;s office is designed: quiet,
             confidential, and protected. Here&rsquo;s what&rsquo;s always on, in the
             background, so you don&rsquo;t have to think about it.
           </p>

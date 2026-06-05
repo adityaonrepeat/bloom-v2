@@ -22,7 +22,7 @@ const testimonials = [
     size: "large",
   },
   {
-    quote: "We use it as a couple. The mood charts are oddly romantic — seeing each other’s waves.",
+    quote: "We use it as a couple. The mood charts are oddly romantic, seeing each other’s waves.",
     name: "Riya &amp; Kabir",
     tag: "mood · 12 weeks",
     size: "normal",

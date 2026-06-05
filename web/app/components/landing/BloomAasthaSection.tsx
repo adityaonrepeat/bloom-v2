@@ -92,15 +92,14 @@ export default function BloomAasthaSection() {
             <span className="italic text-[#C67156]">Attention.</span>
           </h2>
           <p className="text-lg text-[#5D6862] mt-6 leading-relaxed">
-            Aastha is trained on decades of clinical conversation theory —
-            trauma-informed, non-pathologising, and refreshingly slow. She
+            Aastha is a memory-enabled AI companion designed for thoughtful, reflective conversations. She
             won&rsquo;t rush you to solutions. She&rsquo;ll sit with you until
             something honest surfaces.
           </p>
 
           <div className="mt-10 grid grid-cols-2 gap-3">
             {[
-              ["Trauma-informed", "ACT, IFS, CBT-blended"],
+              ["Private by design", "Your conversations stay yours."],
               ["Zero data training", "Your words stay yours"],
               ["24/7, never tired", "3AM? She’s here."],
               ["Escalates gently", "Hands off to humans when needed"],

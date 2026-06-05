@@ -3,7 +3,7 @@ import { BookOpen, LineChart, Sparkles, Video, HeartHandshake } from "lucide-rea
 const items = [
   { icon: BookOpen, label: "Private Journal" },
   { icon: LineChart, label: "5-Day Mood Graph" },
-  { icon: Sparkles, label: "Aastha — AI Therapist" },
+  { icon: Sparkles, label: "Aastha, AI Therapist" },
   { icon: HeartHandshake, label: "Emotional Score Quiz" },
   { icon: Video, label: "Live 1:1 Talk" },
 ];
