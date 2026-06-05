@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   AreaChart,
@@ -9,7 +10,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { TooltipPayloadEntry, TooltipValueType } from "recharts";
 
 interface MoodDataPoint {
   day: string;
@@ -26,6 +26,9 @@ const data: MoodDataPoint[] = [
 ];
 
 export default function BloomMoodSection() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   return (
     <section id="mood" className="relative py-24 md:py-32 bg-[#F0EBE1]/60">
       <div className="mx-auto max-w-[1400px] px-6 md:px-10 grid grid-cols-12 gap-10 items-center">
@@ -93,51 +96,53 @@ export default function BloomMoodSection() {
             </div>
 
             <div className="h-[280px] md:h-[340px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={data} margin={{ top: 20, right: 10, bottom: 0, left: -25 }}>
-                  <defs>
-                    <linearGradient id="bloomMood" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#C67156" stopOpacity={0.45} />
-                      <stop offset="100%" stopColor="#C67156" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <XAxis
-                    dataKey="day"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: "#5D6862", fontSize: 12, fontFamily: "var(--font-figtree)" }}
-                    dy={8}
-                  />
-                  <YAxis domain={[0, 10]} hide />
-                  <Tooltip
-                    cursor={{ stroke: "#C67156", strokeDasharray: "3 3", opacity: 0.4 } as React.SVGProps<SVGLineElement>}
-                    contentStyle={{
-                      background: "#28312C",
-                      border: "none",
-                      borderRadius: 12,
-                      color: "#F9F8F6",
-                      fontFamily: "var(--font-figtree)",
-                      fontSize: 12,
-                      padding: "8px 12px",
-                    }}
-                    labelStyle={{ color: "#A6B3A8", marginBottom: 4 }}
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    formatter={(value: any, _name: any, item: any) => [
-                      `${value} · ${item.payload.label}`,
-                      "Mood",
-                    ]}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="mood"
-                    stroke="#C67156"
-                    strokeWidth={2.5}
-                    fill="url(#bloomMood)"
-                    dot={{ r: 4, stroke: "#C67156", strokeWidth: 2, fill: "#F9F8F6" }}
-                    activeDot={{ r: 6, stroke: "#C67156", strokeWidth: 2, fill: "#F9F8F6" }}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
+              {mounted && (
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={data} margin={{ top: 20, right: 10, bottom: 0, left: -25 }}>
+                    <defs>
+                      <linearGradient id="bloomMood" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#C67156" stopOpacity={0.45} />
+                        <stop offset="100%" stopColor="#C67156" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <XAxis
+                      dataKey="day"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: "#5D6862", fontSize: 12, fontFamily: "var(--font-figtree)" }}
+                      dy={8}
+                    />
+                    <YAxis domain={[0, 10]} hide />
+                    <Tooltip
+                      cursor={{ stroke: "#C67156", strokeDasharray: "3 3", opacity: 0.4 } as React.SVGProps<SVGLineElement>}
+                      contentStyle={{
+                        background: "#28312C",
+                        border: "none",
+                        borderRadius: 12,
+                        color: "#F9F8F6",
+                        fontFamily: "var(--font-figtree)",
+                        fontSize: 12,
+                        padding: "8px 12px",
+                      }}
+                      labelStyle={{ color: "#A6B3A8", marginBottom: 4 }}
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      formatter={(value: any, _name: any, item: any) => [
+                        `${value} · ${item.payload.label}`,
+                        "Mood",
+                      ]}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="mood"
+                      stroke="#C67156"
+                      strokeWidth={2.5}
+                      fill="url(#bloomMood)"
+                      dot={{ r: 4, stroke: "#C67156", strokeWidth: 2, fill: "#F9F8F6" }}
+                      activeDot={{ r: 6, stroke: "#C67156", strokeWidth: 2, fill: "#F9F8F6" }}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              )}
             </div>
 
             <div className="mt-4 flex items-center justify-between text-xs text-[#5D6862]">

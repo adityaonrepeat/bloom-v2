@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     ResponsiveContainer,
     AreaChart,
@@ -191,6 +191,8 @@ const RANGES: Range[] = ["7d", "30d", "90d"];
 
 export default function MoodView({ logs }: MoodViewProps) {
     const [range, setRange] = useState<Range>("7d");
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
 
     const data = buildSeries(logs, range);
     const todayScore = getTodayScore(logs);
@@ -277,48 +279,50 @@ export default function MoodView({ logs }: MoodViewProps) {
                     </div>
                 </div>
                 <div className="h-72 -mx-2">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={data} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
-                            <defs>
-                                <linearGradient id="mg" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="#D96A4E" stopOpacity={0.3} />
-                                    <stop offset="100%" stopColor="#D96A4E" stopOpacity={0} />
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="0" stroke="#E5DCD3" vertical={false} opacity={0.7} />
-                            <XAxis
-                                dataKey="day"
-                                stroke="#5C6B64"
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fontSize: 11, fontFamily: "DM Sans", letterSpacing: "0.12em" }}
-                                tickFormatter={(v: string) => v.toUpperCase()}
-                                interval={range === "30d" ? 4 : 0}
-                            />
-                            <YAxis
-                                stroke="#5C6B64"
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fontSize: 11, fontFamily: "DM Sans" }}
-                                domain={[0, 50]}
-                                ticks={[0, 25, 50]}
-                            />
-                            <Tooltip
-                                content={<CustomTooltip />}
-                                cursor={{ stroke: "#D96A4E", strokeDasharray: "3 3", strokeOpacity: 0.5 }}
-                            />
-                            <Area
-                                type="monotone"
-                                dataKey="mood"
-                                stroke="#D96A4E"
-                                strokeWidth={2.2}
-                                fill="url(#mg)"
-                                dot={{ r: 3, fill: "#fff", stroke: "#D96A4E", strokeWidth: 2 }}
-                                activeDot={{ r: 6, fill: "#D96A4E", stroke: "#fff", strokeWidth: 2 }}
-                                connectNulls={false}
-                            />
-                        </AreaChart>
-                    </ResponsiveContainer>
+                    {mounted && (
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={data} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
+                                <defs>
+                                    <linearGradient id="mg" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stopColor="#D96A4E" stopOpacity={0.3} />
+                                        <stop offset="100%" stopColor="#D96A4E" stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="0" stroke="#E5DCD3" vertical={false} opacity={0.7} />
+                                <XAxis
+                                    dataKey="day"
+                                    stroke="#5C6B64"
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fontSize: 11, fontFamily: "DM Sans", letterSpacing: "0.12em" }}
+                                    tickFormatter={(v: string) => v.toUpperCase()}
+                                    interval={range === "30d" ? 4 : 0}
+                                />
+                                <YAxis
+                                    stroke="#5C6B64"
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fontSize: 11, fontFamily: "DM Sans" }}
+                                    domain={[0, 50]}
+                                    ticks={[0, 25, 50]}
+                                />
+                                <Tooltip
+                                    content={<CustomTooltip />}
+                                    cursor={{ stroke: "#D96A4E", strokeDasharray: "3 3", strokeOpacity: 0.5 }}
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="mood"
+                                    stroke="#D96A4E"
+                                    strokeWidth={2.2}
+                                    fill="url(#mg)"
+                                    dot={{ r: 3, fill: "#fff", stroke: "#D96A4E", strokeWidth: 2 }}
+                                    activeDot={{ r: 6, fill: "#D96A4E", stroke: "#fff", strokeWidth: 2 }}
+                                    connectNulls={false}
+                                />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    )}
                 </div>
             </Card>
 
