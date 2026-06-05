@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
+import { checkRateLimit, writeLimiter } from "@/lib/ratelimit"
 
 export async function POST(req: Request) {
 
@@ -12,6 +13,9 @@ export async function POST(req: Request) {
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
+
+  const limited = await checkRateLimit([writeLimiter], session.user.id)
+  if (limited) return limited
 
   const userId = session.user.id
   const { tag, score, note } = await req.json()

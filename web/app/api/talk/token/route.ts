@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 import { generateToken04 } from "@/lib/zegoToken"
+import { checkRateLimit, writeLimiter } from "@/lib/ratelimit"
 
 // Issues a short-lived Zego token signed with the ServerSecret. The secret
 // stays server-side; the browser only ever sees the resulting token. The Zego
@@ -11,6 +12,9 @@ export async function POST() {
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
+
+  const limited = await checkRateLimit([writeLimiter], session.user.id)
+  if (limited) return limited
 
   const appID = Number(process.env.NEXT_PUBLIC_ZEGO_APP_ID)
   const serverSecret = process.env.ZEGO_SERVER_SECRET

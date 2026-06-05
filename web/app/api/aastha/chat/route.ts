@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma"
 import { headers } from "next/headers"
 import { NextRequest } from "next/server"
 import { GoogleGenAI } from "@google/genai"
+import { checkRateLimit, chatBurstLimiter, chatDailyLimiter } from "@/lib/ratelimit"
 
 // Initialize GenAI dynamically to avoid Next.js caching issues with env variables
 // we initialize it inside the POST handler now.
@@ -31,6 +32,15 @@ export async function POST(req: NextRequest) {
   if (!session?.user) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 })
   }
+
+  // Throttle before any DB work or the (paid) Gemini call. The message is
+  // phrased in Aastha's voice so useStreamingChat surfaces it as a chat bubble.
+  const limited = await checkRateLimit(
+    [chatBurstLimiter, chatDailyLimiter],
+    session.user.id,
+    "I'm sorry, you're sending messages faster than I can thoughtfully respond. Take a breath and try again in a few seconds.",
+  )
+  if (limited) return limited
 
   const body = await req.json()
   const { sessionId, message } = body

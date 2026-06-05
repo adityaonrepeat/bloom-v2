@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
+import { checkRateLimit, reportLimiter } from "@/lib/ratelimit"
 
 const REPORT_THRESHOLD = 5
 
@@ -16,6 +17,9 @@ export async function POST(req: Request) {
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
+
+  const limited = await checkRateLimit([reportLimiter], session.user.id)
+  if (limited) return limited
 
   const reporterId = session.user.id
   const { reportedId } = await req.json()

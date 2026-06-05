@@ -120,7 +120,9 @@ Open **http://localhost:3000**.
 | `RESEND_API_KEY` | Resend API key for transactional email |
 | `EMAIL_FROM` | "From" address for emails |
 | `GEMINI_API_KEY` | Google Gemini API key |
-| `NEXT_PUBLIC_ZEGO_APP_ID` / `NEXT_PUBLIC_ZEGO_SERVER_SECRET` | ZegoCloud video credentials |
+| `NEXT_PUBLIC_ZEGO_APP_ID` | ZegoCloud app ID (public, used client-side) |
+| `ZEGO_SERVER_SECRET` | ZegoCloud server secret (server-side only; signs Talk tokens) |
+| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Upstash Redis — powers API rate limiting (reuse the realtime instance). If unset, rate limiting is disabled. |
 
 **realtime/**
 | Key | Description |
