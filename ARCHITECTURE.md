@@ -2,7 +2,7 @@
 
 This document explains how Bloom is put together: the two‑service design, how the major features work end‑to‑end, the data model, and the key trade‑offs.
 
-For setup and scripts, see the [root README](../README.md).
+For setup and scripts, see the [root README](README.md).
 
 ---
 

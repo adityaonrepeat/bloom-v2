@@ -84,6 +84,13 @@ CLAUDE.md
 *.cjs
 
 # ========================
+# Docs / writeups (commit explicitly if needed)
+# ========================
+docs/
+scripts/
+tutorials/
+
+# ========================
 # Screenshots / images
 # ========================
 *.png
