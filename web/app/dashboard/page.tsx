@@ -48,6 +48,7 @@ export default async function Dashboard() {
             emotionalTag={(user?.emotionalTag as "happy" | "calm" | "stressed" | "anxious") ?? null}
             streak={streak}
             last7Days={last7Days}
+            userName={session.user.name ?? ""}
           />
         </div>
       </main>

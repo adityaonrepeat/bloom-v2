@@ -207,7 +207,7 @@ export default function MoodView({ logs }: MoodViewProps) {
                 eyebrow="Mood · the weather of you"
                 title="One honest"
                 titleAccent="line."
-                sub="A single tap each night. Over time a quiet shape emerges — not to fix you, just to show what's been true."
+                sub="A single tap each night. Over time a quiet shape emerges. Not to fix you, just to show what's been true."
                 right={
                     <div className="inline-flex bg-white border border-bloom-line rounded-full p-1">
                         {RANGES.map((r) => (

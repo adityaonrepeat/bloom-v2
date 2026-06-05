@@ -26,6 +26,15 @@ interface TodayViewProps {
     emotionalTag?: EmotionTag | null;
     streak?: number;
     last7Days?: boolean[];
+    userName?: string;
+}
+
+function getGreeting(): string {
+    const h = new Date().getHours();
+    if (h >= 5 && h < 12) return "Good morning,";
+    if (h >= 12 && h < 17) return "Good afternoon,";
+    if (h >= 17 && h < 22) return "Good evening,";
+    return "Still up,";
 }
 
 const MOODS: Mood[] = [
@@ -43,7 +52,8 @@ const TAG_LABELS: Record<EmotionTag, string> = {
     anxious: "On edge",
 };
 
-export default function TodayView({ emotionalScore, emotionalTag, streak = 0, last7Days = [] }: TodayViewProps) {
+export default function TodayView({ emotionalScore, emotionalTag, streak = 0, last7Days = [], userName }: TodayViewProps) {
+    const firstName = userName?.trim().split(" ")[0] || "there";
     const [mood, setMood] = useState(4);
     const [note, setNote] = useState("");
     const [saving, setSaving] = useState(false);
@@ -77,9 +87,9 @@ export default function TodayView({ emotionalScore, emotionalTag, streak = 0, la
     return (
         <WorkspaceShell>
             <WorkspaceHeader
-                title="Good evening,"
-                titleAccent="there."
-                sub="You haven't written tonight. There's no rush — the page is here when you're ready."
+                title={getGreeting()}
+                titleAccent={`${firstName}.`}
+                sub="You haven't written yet. No rush. The page is here when you're ready."
                 right={
                     <>
                         <Link href="/journal/new">
