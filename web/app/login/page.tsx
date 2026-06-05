@@ -94,28 +94,6 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Testimonial */}
-          <div
-            className="rounded-2xl p-5"
-            style={{
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.1)",
-            }}
-          >
-            <p style={{ color: "rgba(240,235,225,0.85)", fontSize: "14px", lineHeight: 1.75, fontStyle: "italic" }}>
-              &ldquo;Bloom changed how I see my own emotions. It&rsquo;s quiet, calm, and always there.&rdquo;
-            </p>
-            <div className="mt-3 flex items-center gap-2.5">
-              <div
-                className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
-                style={{ background: "rgba(198,113,86,0.3)", color: "#F0EBE1" }}
-              >
-                PK
-              </div>
-              <span style={{ fontSize: "12px", color: "#7C9885" }}>Priya K. — College student</span>
-            </div>
-          </div>
-
           {/* Feature pills */}
           <div className="flex flex-wrap gap-2">
             {["Mood tracking", "Aastha AI", "Private Journal", "Peer Talk"].map((f) => (
