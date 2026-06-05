@@ -16,7 +16,7 @@ export default function LoginPage() {
     >
       {/* ── Left: Decorative dark panel ─────────────────── */}
       <div
-        className="relative hidden lg:flex flex-col justify-center overflow-hidden p-16"
+        className="relative hidden lg:flex flex-col overflow-hidden p-16"
         style={{ background: "#28312C" }}
       >
         {/* Atmospheric blobs */}
@@ -43,78 +43,73 @@ export default function LoginPage() {
           }}
         />
 
-        <div className="relative z-10">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-1 w-fit mb-12" style={{ marginLeft: "-8px" }}>
-            <Image
-              src="/logo.png"
-              alt=""
-              width={72}
-              height={52}
-              style={{ mixBlendMode: "luminosity", opacity: 0.85, marginRight: "-16px" }}
-            />
-            <span
-              style={{
-                fontFamily: "var(--font-fraunces), Georgia, serif",
-                fontSize: "20px",
-                letterSpacing: "-0.03em",
-                color: "#F0EBE1",
-                lineHeight: 1,
-              }}
-            >
-              bloom
-            </span>
-          </Link>
+        {/* Logo — top */}
+        <Link href="/" className="relative z-10 flex items-center gap-1 w-fit" style={{ marginLeft: "-8px" }}>
+          <Image
+            src="/logo.png"
+            alt=""
+            width={72}
+            height={52}
+            style={{ mixBlendMode: "luminosity", opacity: 0.85, marginRight: "-16px" }}
+          />
+          <span
+            style={{
+              fontFamily: "var(--font-fraunces), Georgia, serif",
+              fontSize: "20px",
+              letterSpacing: "-0.03em",
+              color: "#F0EBE1",
+              lineHeight: 1,
+            }}
+          >
+            bloom
+          </span>
+        </Link>
 
-          {/* Main content */}
-          <div className="space-y-10">
-            <div>
-              <div
-                className="inline-flex items-center gap-2 mb-6"
-                style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: "#A6B3A8" }}
-              >
-                <span>•</span> A soft place for the mind
-              </div>
-              <h2
+        {/* Main content + pills — sits right below logo */}
+        <div className="relative z-10 mt-11.5">
+          <div
+            className="inline-flex items-center gap-2 mb-8"
+            style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: "#A6B3A8" }}
+          >
+            <span>•</span> A soft place for the mind
+          </div>
+          <h2
+            style={{
+              fontFamily: "var(--font-fraunces), Georgia, serif",
+              fontSize: "56px",
+              lineHeight: 0.97,
+              letterSpacing: "-0.03em",
+              color: "#F0EBE1",
+            }}
+          >
+            Welcome<br />back to<br />
+            <span style={{ color: "#C67156", fontStyle: "italic" }}>bloom.</span>
+          </h2>
+          <p
+            className="mt-8 leading-relaxed"
+            style={{ fontSize: "16px", color: "#A6B3A8", maxWidth: "300px" }}
+          >
+            Your feelings have been waiting. Let&rsquo;s pick up where you left off.
+          </p>
+
+          {/* Pills — immediately below description */}
+          <div className="flex flex-wrap gap-2 mt-8">
+            {["Mood tracking", "Aastha AI", "Private Journal", "Peer Talk"].map((f) => (
+              <span
+                key={f}
+                className="text-xs font-medium px-3 py-1.5 rounded-full"
                 style={{
-                  fontFamily: "var(--font-fraunces), Georgia, serif",
-                  fontSize: "52px",
-                  lineHeight: 0.97,
-                  letterSpacing: "-0.03em",
-                  color: "#F0EBE1",
+                  background: "rgba(255,255,255,0.07)",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  color: "rgba(240,235,225,0.65)",
                 }}
               >
-                Welcome<br />back to<br />
-                <span style={{ color: "#C67156", fontStyle: "italic" }}>bloom.</span>
-              </h2>
-              <p
-                className="mt-6 leading-relaxed"
-                style={{ fontSize: "16px", color: "#A6B3A8", maxWidth: "300px" }}
-              >
-                Your feelings have been waiting. Let&rsquo;s pick up where you left off.
-              </p>
-            </div>
-
-            {/* Feature pills */}
-            <div className="flex flex-wrap gap-2">
-              {["Mood tracking", "Aastha AI", "Private Journal", "Peer Talk"].map((f) => (
-                <span
-                  key={f}
-                  className="text-xs font-medium px-3 py-1.5 rounded-full"
-                  style={{
-                    background: "rgba(255,255,255,0.07)",
-                    border: "1px solid rgba(255,255,255,0.12)",
-                    color: "rgba(240,235,225,0.65)",
-                  }}
-                >
-                  {f}
-                </span>
-              ))}
-            </div>
+                {f}
+              </span>
+            ))}
           </div>
 
-          {/* Copyright */}
-          <p className="mt-16 text-xs" style={{ color: "rgba(166,179,168,0.45)" }}>
+          <p className="mt-9 text-xs" style={{ color: "rgba(166,179,168,0.45)" }}>
             &copy; {new Date().getFullYear()} Bloom. Your data stays private.
           </p>
         </div>
