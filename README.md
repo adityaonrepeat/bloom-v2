@@ -14,6 +14,7 @@
 - **Journaling** - private free-text entries with full CRUD.
 - **Mood tracking** - daily mood logs visualized as a history chart.
 - **Safety** - peer reporting with auto-blocking past a threshold, blocked-user gating, and email verification.
+- **Rate limiting** - all web API routes are rate-limited via Upstash Redis to prevent abuse.
 - **Auth** - email/password + Google OAuth, with transactional email via Resend.
 
 ## Tech Stack
@@ -29,7 +30,7 @@
 
 **Realtime server (`realtime/`)**
 - [Express 5](https://expressjs.com) + [Socket.IO](https://socket.io)
-- [Upstash Redis](https://upstash.com) - emotion queues + skip cooldowns
+- [Upstash Redis](https://upstash.com) - emotion queues, skip cooldowns, and web API rate limiting
 - TypeScript via [tsx](https://github.com/privatenumber/tsx)
 
 ## Architecture at a glance
