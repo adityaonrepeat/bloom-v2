@@ -90,11 +90,3 @@ docs/
 scripts/
 tutorials/
 
-# ========================
-# Screenshots / images
-# ========================
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.webp
