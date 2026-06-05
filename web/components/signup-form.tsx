@@ -40,7 +40,10 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
       if (res?.error) {
         setServerError(res?.error?.message || "Registration failed")
       } else {
-        router.push("/verify-email")
+        // Email verification is off, so signUp auto-signs the user in — go
+        // straight to the dashboard. (When verification is re-enabled, point
+        // this back to "/verify-email".)
+        router.push("/dashboard")
       }
     } catch {
       setServerError("Something went wrong")

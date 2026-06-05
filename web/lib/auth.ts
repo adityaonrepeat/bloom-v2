@@ -28,18 +28,6 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
-    // sendResetPassword: async ({ user, url }) => {
-    //   await resend.emails.send({
-    //     from: process.env.EMAIL_FROM!,
-    //     to: user.email,
-    //     subject: "Reset your password",
-    //     react: ForgotPasswordEmail({
-    //       username: user.name,
-    //       resetUrl: url,
-    //       userEmail: user.email,
-    //     }),
-    //   });
-    // },
     sendResetPassword: async ({ user, url }) => {
       await resend.emails.send({
         from: process.env.EMAIL_FROM!,
@@ -53,7 +41,9 @@ export const auth = betterAuth({
       });
     },
 
-    requireEmailVerification: true,
+    // Email verification is OFF for now (DNS/domain still settling).
+    // To turn it back ON: set this to true AND set sendOnSignUp: true below.
+    requireEmailVerification: false,
   },
 
   emailVerification: {
@@ -68,7 +58,8 @@ export const auth = betterAuth({
         }),
       });
     },
-    sendOnSignUp: true,
+    // Flip to true to send a verification email on signup (re-enables the flow).
+    sendOnSignUp: false,
   },
 
   socialProviders: {
