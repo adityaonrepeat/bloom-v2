@@ -4,6 +4,8 @@
 
 > Built as a full-stack project spanning a Next.js web app and a standalone realtime matchmaking server, with auth, AI streaming, video, and a Postgres data model.
 
+![Bloom](web/public/bloom.png)
+
 ---
 
 ## Features
