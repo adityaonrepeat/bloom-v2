@@ -3,7 +3,6 @@ import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import prisma from "@/lib/prisma"
 
-// GET /api/journal/[id] — get single journal
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
@@ -18,7 +17,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   return NextResponse.json(journal)
 }
 
-// PUT /api/journal/[id] — update journal
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
@@ -45,7 +43,6 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   return NextResponse.json(updated)
 }
 
-// DELETE /api/journal/[id] — delete journal
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

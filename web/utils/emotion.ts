@@ -6,16 +6,6 @@ export function getEmotionLevel(score: number): string {
   return "anxious"
 }
 
-export function getEmotionEmoji(tag: string): string {
-  switch (tag) {
-    case "happy": return "😊"
-    case "calm": return "😌"
-    case "stressed": return "😓"
-    case "anxious": return "😰"
-    default: return "🌿"
-  }
-}
-
 export function getEmotionMessage(tag: string): string {
   switch (tag) {
     case "happy":
@@ -28,15 +18,5 @@ export function getEmotionMessage(tag: string): string {
       return "You're going through a tough time. Please reach out — Aastha and our community are here for you."
     default:
       return "Thank you for checking in with yourself today."
-  }
-}
-
-export function getEmotionColor(tag: string): string {
-  switch (tag) {
-    case "happy": return "emerald"
-    case "calm": return "teal"
-    case "stressed": return "amber"
-    case "anxious": return "rose"
-    default: return "stone"
   }
 }

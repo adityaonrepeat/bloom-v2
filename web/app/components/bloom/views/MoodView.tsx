@@ -386,8 +386,8 @@ export default function MoodView({ logs }: MoodViewProps) {
                                 <div className="col-span-2">
                                     <span className="font-display text-2xl text-bloom-ink">{e.score}</span>
                                 </div>
-                                <div className="col-span-2">
-                                    <span className="text-xs italic text-bloom-terracotta">{e.label}</span>
+                                <div className="col-span-2 min-w-0">
+                                    <span className="text-xs italic text-bloom-terracotta block truncate">{e.label}</span>
                                 </div>
                                 <div className="col-span-5">
                                     {e.note && (

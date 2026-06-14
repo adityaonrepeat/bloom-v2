@@ -4,7 +4,6 @@ import { headers } from "next/headers"
 import { NextRequest, NextResponse } from "next/server"
 import { checkRateLimit, writeLimiter } from "@/lib/ratelimit"
 
-// GET /api/aastha/sessions - list all sessions for user
 export async function GET() {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
@@ -25,7 +24,6 @@ export async function GET() {
   return NextResponse.json({ sessions })
 }
 
-// POST /api/aastha/sessions - create new session
 export async function POST(req: NextRequest) {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
@@ -53,7 +51,6 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ session: newSession })
 }
 
-// DELETE /api/aastha/sessions?id=xxx - delete a session
 export async function DELETE(req: NextRequest) {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
@@ -62,7 +59,6 @@ export async function DELETE(req: NextRequest) {
   const id = searchParams.get("id")
   if (!id) return NextResponse.json({ error: "Session ID required" }, { status: 400 })
 
-  // Verify ownership
   const aasthaSession = await prisma.aasthaSession.findFirst({
     where: { id, userId: session.user.id },
   })

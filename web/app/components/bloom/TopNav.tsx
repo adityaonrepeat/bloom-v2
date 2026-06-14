@@ -54,7 +54,6 @@ export default function TopNav() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [dropdownOpen]);
 
-  // Close the mobile sheet whenever the route changes
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);

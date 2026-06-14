@@ -5,8 +5,6 @@ import { NextRequest } from "next/server"
 import { GoogleGenAI } from "@google/genai"
 import { checkRateLimit, chatBurstLimiter, chatDailyLimiter } from "@/lib/ratelimit"
 
-// Initialize GenAI dynamically to avoid Next.js caching issues with env variables
-// we initialize it inside the POST handler now.
 const SYSTEM_PROMPT = `You are Aastha, a compassionate and warm AI therapist on the Bloom mental wellness platform.
 
 Your core qualities:
@@ -51,7 +49,6 @@ export async function POST(req: NextRequest) {
     })
   }
 
-  // Verify ownership
   const aasthaSession = await prisma.aasthaSession.findFirst({
     where: { id: sessionId, userId: session.user.id },
   })
@@ -59,18 +56,15 @@ export async function POST(req: NextRequest) {
     return new Response(JSON.stringify({ error: "Session not found" }), { status: 404 })
   }
 
-  // User context
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
     select: { name: true, emotionalTag: true, emotionalScore: true },
   })
 
-  // Save user message first
   await prisma.aasthaMessage.create({
     data: { sessionId, role: "user", content: message },
   })
 
-  // Fetch last 10 messages for context
   const recentMessages = await prisma.aasthaMessage.findMany({
     where: { sessionId },
     orderBy: { createdAt: "asc" },
@@ -80,7 +74,7 @@ export async function POST(req: NextRequest) {
   const moodContext = aasthaSession.emotionTag
     ? `The user ${user?.name ?? "this person"} is currently feeling ${aasthaSession.emotionTag}${
         aasthaSession.emotionScore
-          ? ` with an emotional intensity score of ${aasthaSession.emotionScore}/100`
+          ? ` with an emotional intensity score of ${aasthaSession.emotionScore}/50`
           : ""
       }. Keep this emotional state in mind throughout the conversation.`
     : ""
@@ -118,18 +112,16 @@ Aastha:`
               model: "gemini-2.5-flash",
               contents: fullPrompt,
             })
-            break // Success, exit retry loop
+            break
           } catch (e: any) {
             attempt++
             if (attempt >= maxAttempts || e?.status !== 503) {
-              throw e // Rethrow if max attempts reached or not a 503
+              throw e
             }
-            // Wait 1 second before retrying
             await new Promise((resolve) => setTimeout(resolve, 1000))
           }
         }
 
-        // We know result is defined here if it didn't throw
         for await (const chunk of result!) {
           const text = chunk.text ?? ""
           if (text) {
@@ -138,12 +130,10 @@ Aastha:`
           }
         }
 
-        // Persist the full AI response
         const aiMessage = await prisma.aasthaMessage.create({
           data: { sessionId, role: "assistant", content: fullAiText.trim() },
         })
 
-        // Auto-title on first exchange
         const messageCount = await prisma.aasthaMessage.count({ where: { sessionId } })
         if (messageCount <= 3 && aasthaSession.title === "New Session") {
           const titleHint = message.slice(0, 60).replace(/\n/g, " ")

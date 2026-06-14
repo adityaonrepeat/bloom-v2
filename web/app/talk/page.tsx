@@ -74,7 +74,7 @@ function ZegoVideoRoom({
       let readyCalled = false
 
       zp.joinRoom({
-        container, // ✅ use stable snapshot, not live ref
+        container,
         scenario: { mode: ZegoUIKitPrebuilt.VideoConference },
         showPreJoinView: false,
         showTextChat: true,
@@ -164,7 +164,6 @@ export default function TalkPage() {
 
   const sessionRef = useRef<{ id: string } | null>(null)
 
-  // ─── Skip cooldown timer ───
   useEffect(() => {
     if (skipCooldown <= 0) return
     const timer = setInterval(() => {
@@ -173,7 +172,6 @@ export default function TalkPage() {
     return () => clearInterval(timer)
   }, [skipCooldown])
 
-  // ─── Initialize session + socket + join queue ───
   useEffect(() => {
     let mounted = true
 
@@ -201,7 +199,7 @@ export default function TalkPage() {
           }
         }
       } catch {
-        // Lobby still lets the user pick manually if this fails
+        // ignore — lobby lets the user pick emotion manually
       }
 
       if (!socket.connected) {
@@ -210,8 +208,6 @@ export default function TalkPage() {
     }
 
     init()
-
-    // ─── Socket event handlers ───
 
     const handleMatchFound = ({ roomId: newRoom, partnerId: pid }: { roomId: string; partnerId: string }) => {
       if (!mounted) return
@@ -254,8 +250,6 @@ export default function TalkPage() {
     }
   }, [router])
 
-  // ─── Actions ───
-
   const startMatching = () => {
     if (!emotion || !sessionRef.current) return
     if (!socket.connected) socket.connect()
@@ -285,7 +279,7 @@ export default function TalkPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          reportedId: partnerId // Realtime server guarantees this is a proper DB user ID; reporter comes from the session
+          reportedId: partnerId
         })
       })
       setHasReported(true)
@@ -304,7 +298,6 @@ export default function TalkPage() {
     router.push("/dashboard")
   }, [router])
 
-  // ─────────── LOBBY STATE ───────────
   if (pageState === "lobby") {
     return (
       <div className="min-h-screen bg-bloom-cream text-bloom-ink font-sans flex flex-col">
@@ -373,7 +366,6 @@ export default function TalkPage() {
     )
   }
 
-  // ─────────── SEARCHING STATE ───────────
   if (pageState === "searching") {
     return (
       <div
@@ -381,19 +373,15 @@ export default function TalkPage() {
         style={{ background: "#f7f4ef", fontFamily: "var(--font-figtree), ui-sans-serif, sans-serif" }}
       >
         <div className="text-center space-y-6">
-          {/* Spinner with heart */}
           <div className="relative mx-auto flex items-center justify-center w-24 h-24">
-            {/* Outer pulsing ring */}
             <div
               className="absolute rounded-full animate-ping border-2"
               style={{ width: "112px", height: "112px", borderColor: "rgba(198,113,86,0.25)" }}
             />
-            {/* Static background ring — slight orange */}
             <div
               className="absolute inset-0 rounded-full border-4"
               style={{ borderColor: "rgba(198,113,86,0.25)" }}
             />
-            {/* Spinning arc */}
             <div
               className="absolute inset-0 rounded-full border-4 border-transparent animate-spin"
               style={{ borderTopColor: "#C67156" }}
@@ -423,13 +411,11 @@ export default function TalkPage() {
     )
   }
 
-  // ─────────── CONNECTED STATE ───────────
   return (
     <div
       className="h-screen flex flex-col"
       style={{ background: "#f7f4ef", fontFamily: "var(--font-figtree), ui-sans-serif, sans-serif" }}
     >
-      {/* Header */}
       <div
         className="px-5 py-3 flex items-center justify-between z-10 shrink-0"
         style={{
@@ -492,7 +478,6 @@ export default function TalkPage() {
         </div>
       </div>
 
-      {/* Video container */}
       <div className="flex-1 relative min-h-0">
         {!zegoReady && (
           <div

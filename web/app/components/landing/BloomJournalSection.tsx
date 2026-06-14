@@ -32,7 +32,7 @@ export default function BloomJournalSection() {
           <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -bottom-6 -right-4 md:-right-10 w-[220px] rounded-[1.25rem] p-4 bg-white shadow-[0_20px_50px_-15px_rgba(40,49,44,0.25)] border border-black/5"
+            className="absolute -bottom-6 right-0 md:-right-10 w-[220px] rounded-[1.25rem] p-4 bg-white shadow-[0_20px_50px_-15px_rgba(40,49,44,0.25)] border border-black/5"
           >
             <div className="flex items-center gap-2 text-xs text-[#5D6862] uppercase tracking-widest">
               <Lock className="w-3 h-3" /> End-to-end private

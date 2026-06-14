@@ -49,7 +49,6 @@ export function Sidebar({ activeSessionId, onSelectSession, onSessionCreated, on
   return (
     <div className="flex h-full flex-col" style={{ fontFamily: "var(--font-figtree), ui-sans-serif, sans-serif" }}>
 
-      {/* ── Header ─────────────────────────────────────────────────── */}
       <div
         className="flex items-center justify-between px-4 py-3 shrink-0"
         style={{ borderBottom: "1px solid rgba(40,49,44,0.07)" }}
@@ -87,7 +86,6 @@ export function Sidebar({ activeSessionId, onSelectSession, onSessionCreated, on
         </div>
       </div>
 
-      {/* ── Session list ───────────────────────────────────────────── */}
       <div className="aastha-sessions-scroll flex-1 overflow-y-auto min-h-0 p-2">
         {isLoading ? (
           <div className="space-y-0.5">
@@ -116,7 +114,6 @@ export function Sidebar({ activeSessionId, onSelectSession, onSessionCreated, on
         )}
       </div>
 
-      {/* ── Aastha is ──────────────────────────────────────────────── */}
       <div
         className="shrink-0"
         style={{ borderTop: "1px solid rgba(40,49,44,0.07)" }}

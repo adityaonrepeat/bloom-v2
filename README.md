@@ -39,14 +39,32 @@
 
 Bloom runs as **two independent services** that share only a user ID and a Socket.IO connection:
 
-```
-┌─────────────────────────┐         ┌──────────────────────────┐
-│  web/  (Next.js :3000)   │         │ realtime/ (Socket.IO :4000)│
-│  UI · auth · AI chat ·   │ <-----> │  emotion-based matchmaking │
-│  journals · quiz · API   │ socket  │  rooms · skip · reporting  │
-└───────────┬─────────────┘         └─────────────┬─────────────┘
-            │                                     │
-       PostgreSQL (Prisma)                  Upstash Redis
+```mermaid
+graph TD
+    Browser["Browser — Next.js client + UI"]
+
+    subgraph Vercel
+        Web["web/ · Next.js<br/>API routes · auth · AI chat"]
+    end
+
+    subgraph Render
+        RT["realtime/ · Socket.IO<br/>emotion-based matchmaking"]
+    end
+
+    PG[("PostgreSQL<br/>via Prisma")]
+    Redis[("Upstash Redis<br/>queues · cooldowns · rate limits")]
+    Gemini["Gemini 2.5 Flash"]
+    Zego["ZegoCloud<br/>peer video"]
+
+    Browser -->|HTTP / SSE| Web
+    Browser -->|WebSocket| RT
+    Browser -->|WebRTC video| Zego
+
+    Web --> PG
+    Web --> Redis
+    Web -->|SSE token stream| Gemini
+
+    RT --> Redis
 ```
 
 For the full design - Talk matchmaking flow, Aastha streaming, the emotion system, and the data model - see **[ARCHITECTURE.md](ARCHITECTURE.md)**.

@@ -21,7 +21,6 @@ export default function SignupPage() {
       className="min-h-screen grid lg:grid-cols-2"
       style={{ background: "#f7f4ef", fontFamily: "var(--font-figtree), ui-sans-serif, sans-serif" }}
     >
-      {/* ── Left: Form ──────────────────────────────── */}
       <div className="flex flex-col px-8 py-10 md:px-12">
         <div className="flex flex-1 items-center justify-center py-8">
           <div className="w-full max-w-sm">
@@ -75,7 +74,6 @@ export default function SignupPage() {
         </p>
       </div>
 
-      {/* ── Right: Decorative dark panel ─────────────────── */}
       <div
         className="relative hidden lg:flex flex-col justify-between overflow-hidden p-16"
         style={{ background: "#28312C" }}

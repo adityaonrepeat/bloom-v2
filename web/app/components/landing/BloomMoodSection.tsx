@@ -59,11 +59,11 @@ export default function BloomMoodSection() {
             ].map((stat) => (
               <div
                 key={stat.label}
-                className="rounded-2xl bg-white/80 backdrop-blur px-4 py-5 border border-black/5"
+                className="rounded-2xl bg-white/80 backdrop-blur px-3 sm:px-4 py-4 sm:py-5 border border-black/5"
               >
                 <div className="text-xs uppercase tracking-widest text-[#5D6862]">{stat.label}</div>
                 <div
-                  className="font-display text-3xl mt-1"
+                  className="font-display text-2xl sm:text-3xl mt-1"
                   style={stat.colored ? { color: "#7C9885" } : undefined}
                 >
                   {stat.value}

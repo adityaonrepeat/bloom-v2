@@ -21,7 +21,7 @@ function CtrlBtn({
       }`}
     >
       {icon}
-      {label && <span className="pr-0.5">{label}</span>}
+      {label && <span className="pr-0.5 hidden sm:inline">{label}</span>}
     </button>
   );
 }

@@ -20,21 +20,39 @@ They share **no code**. The only things that cross the boundary are:
 1. The browser's Socket.IO client (`web/lib/socket.ts`) connecting to the realtime server.
 2. **User IDs** from Bloom's PostgreSQL database — the realtime server has no database of its own; the client tells it the user's DB id on `join-queue`.
 
+```mermaid
+graph TD
+    Browser["Browser — Next.js client + UI"]
+
+    subgraph Vercel
+        Web["web/ · Next.js<br/>API routes · auth · AI chat"]
+    end
+
+    subgraph Render
+        RT["realtime/ · Socket.IO<br/>match + room managers"]
+    end
+
+    PG[("PostgreSQL<br/>via Prisma")]
+    Redis[("Upstash Redis<br/>queues · cooldowns · rate limits")]
+    Gemini["Gemini 2.5 Flash"]
+    Zego["ZegoCloud<br/>peer video"]
+    Resend["Resend · email"]
+    Google["Google OAuth"]
+
+    Browser -->|HTTP / SSE| Web
+    Browser -->|WebSocket| RT
+    Browser -->|WebRTC video| Zego
+
+    Web --> PG
+    Web --> Redis
+    Web -->|SSE token stream| Gemini
+    Web --> Resend
+    Web --> Google
+
+    RT --> Redis
 ```
-                 Browser
-        ┌────────────────────────┐
-        │  Next.js client + UI   │
-        └───────┬────────────┬───┘
-       HTTP/SSE │            │ WebSocket (Socket.IO)
-                ▼            ▼
-   ┌──────────────────┐  ┌─────────────────────────┐
-   │ web/ (Next.js)   │  │ realtime/ (Socket.IO)   │
-   │  API routes      │  │  match + room managers  │
-   └────────┬─────────┘  └───────────┬─────────────┘
-            │                        │
-            ▼                        ▼
-      PostgreSQL (Prisma)      Upstash Redis
-```
+
+> The realtime server has **no database** — it reads/writes only Redis and receives the user's DB id from the client at match time. The Zego token is signed **server-side** in the web app (no network call to Zego); the browser then connects to Zego directly for video.
 
 **Why two services?** Video matchmaking is stateful, latency‑sensitive, and connection‑oriented (WebSockets), which is a poor fit for serverless Next.js route handlers. Isolating it keeps the web app stateless and easy to deploy, while the realtime server owns the queueing logic.
 
@@ -80,8 +98,8 @@ The emotion tag is the connective tissue between features — it personalizes th
 
    | Score | Tag |
    |-------|-----|
-   | ≥ 42 | `happy` |
-   | ≥ 31 | `calm` |
+   | ≥ 40 | `happy` |
+   | ≥ 30 | `calm` |
    | ≥ 20 | `stressed` |
    | else | `anxious` |
 

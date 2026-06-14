@@ -5,8 +5,6 @@ import {
   type QueryClient,
 } from "@tanstack/react-query"
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 export interface AasthaMessage {
   id: string
   role: "user" | "assistant"
@@ -24,14 +22,10 @@ export interface AasthaSession {
   _count?: { messages: number }
 }
 
-// ─── Query keys ───────────────────────────────────────────────────────────────
-
 export const keys = {
   sessions: ["aastha", "sessions"] as const,
   messages: (sessionId: string) => ["aastha", "messages", sessionId] as const,
 }
-
-// ─── Sessions ─────────────────────────────────────────────────────────────────
 
 export function useSessions() {
   return useQuery<AasthaSession[]>({
@@ -81,7 +75,6 @@ export function useDeleteSession() {
   })
 }
 
-// Update session title in the list cache (called after auto-title fires)
 export function updateSessionTitle(qc: QueryClient, sessionId: string, title: string) {
   qc.setQueryData<AasthaSession[]>(keys.sessions, (prev = []) =>
     prev.map((s) =>
@@ -89,8 +82,6 @@ export function updateSessionTitle(qc: QueryClient, sessionId: string, title: st
     )
   )
 }
-
-// ─── Messages ─────────────────────────────────────────────────────────────────
 
 export function useMessages(sessionId: string | null) {
   return useQuery<{ messages: AasthaMessage[]; sessionMeta: AasthaSession }>({

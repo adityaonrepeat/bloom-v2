@@ -118,13 +118,13 @@ export default function TodayView({ emotionalScore, emotionalTag, streak = 0, la
                         <span className="text-xs text-bloom-inkSoft">takes 30 seconds</span>
                     </div>
 
-                    <div className="mt-8 grid grid-cols-5 gap-2">
+                    <div className="mt-8 grid grid-cols-5 gap-1.5 sm:gap-2">
                         {MOODS.map((m) => (
                             <button
                                 key={m.value}
                                 data-testid={`mood-${m.value}`}
                                 onClick={() => setMood(m.value)}
-                                className={`group relative py-5 rounded-2xl border transition-all ${
+                                className={`group relative py-3 sm:py-5 rounded-2xl border transition-all ${
                                     mood === m.value
                                         ? "bg-bloom-terracotta/10 border-bloom-terracotta"
                                         : "bg-bloom-cream border-bloom-line hover:border-bloom-terracotta/50"
@@ -132,7 +132,7 @@ export default function TodayView({ emotionalScore, emotionalTag, streak = 0, la
                             >
                                 <div className="flex flex-col items-center gap-2">
                                     <div
-                                        className="w-8 h-8 rounded-full transition-all"
+                                        className="w-6 h-6 sm:w-8 sm:h-8 rounded-full transition-all"
                                         style={{
                                             background: `linear-gradient(135deg, #D96A4E ${m.value * 18}%, #E5DCD3 ${m.value * 18}%)`,
                                             opacity: mood === m.value ? 1 : 0.55,

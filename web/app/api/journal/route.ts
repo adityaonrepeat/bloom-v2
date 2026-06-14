@@ -4,7 +4,6 @@ import { headers } from "next/headers"
 import prisma from "@/lib/prisma"
 import { checkRateLimit, writeLimiter } from "@/lib/ratelimit"
 
-// GET /api/journal — list user's journals
 export async function GET() {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
@@ -17,7 +16,6 @@ export async function GET() {
   return NextResponse.json(journals)
 }
 
-// POST /api/journal — create new journal entry
 export async function POST(req: Request) {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

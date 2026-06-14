@@ -14,7 +14,6 @@ export default function LoginPage() {
       className="min-h-screen grid lg:grid-cols-2"
       style={{ background: "#f7f4ef", fontFamily: "var(--font-figtree), ui-sans-serif, sans-serif" }}
     >
-      {/* ── Left: Decorative dark panel ─────────────────── */}
       <div
         className="relative hidden lg:flex flex-col overflow-hidden p-16"
         style={{ background: "#28312C" }}
@@ -115,7 +114,6 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* ── Right: Form ──────────────────────────────── */}
       <div className="flex flex-col px-8 py-10 md:px-12">
         {/* Mobile logo */}
         <Link href="/" className="flex items-center gap-1 w-fit lg:hidden" style={{ marginLeft: "-4px" }}>

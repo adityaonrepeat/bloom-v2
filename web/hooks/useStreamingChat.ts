@@ -24,7 +24,6 @@ export function useStreamingChat({ sessionId }: UseStreamingChatOptions) {
     async (message: string) => {
       if (!message.trim() || state.isStreaming) return
 
-      // ── 1. Optimistic user message ─────────────────────────────────────────
       const optimisticUserMsg: AasthaMessage = {
         id: `optimistic-${Date.now()}`,
         role: "user",
@@ -54,7 +53,6 @@ export function useStreamingChat({ sessionId }: UseStreamingChatOptions) {
           throw new Error(err.error || "Failed to send message")
         }
 
-        // ── 2. Read SSE stream ───────────────────────────────────────────────
         const reader = res.body!.getReader()
         const decoder = new TextDecoder()
         let accumulated = ""
@@ -84,7 +82,6 @@ export function useStreamingChat({ sessionId }: UseStreamingChatOptions) {
             }
 
             if (payload.done && payload.message) {
-              // ── 3. Commit final messages to cache ──────────────────────
               qc.setQueryData<{ messages: AasthaMessage[]; sessionMeta: any }>(
                 keys.messages(sessionId),
                 (prev) => {
@@ -103,7 +100,6 @@ export function useStreamingChat({ sessionId }: UseStreamingChatOptions) {
                 }
               )
 
-              // ── 4. Refetch sessions list (title may have auto-updated) ─
               qc.invalidateQueries({ queryKey: keys.sessions })
             }
           }
@@ -114,7 +110,6 @@ export function useStreamingChat({ sessionId }: UseStreamingChatOptions) {
           ? rawMsg
           : "I\u2019m sorry, something on my side isn\u2019t working right now. But you\u2019re not alone \u2014 feel free to keep sharing, and I\u2019ll be back with you shortly."
 
-        // Roll back optimistic user message
         qc.setQueryData<{ messages: AasthaMessage[]; sessionMeta: unknown }>(
           keys.messages(sessionId),
           (prev) => {
@@ -123,7 +118,6 @@ export function useStreamingChat({ sessionId }: UseStreamingChatOptions) {
           }
         )
 
-        // Inject friendly error as assistant bubble
         const errorBubble: AasthaMessage = {
           id: `error-${Date.now()}`,
           role: "assistant",

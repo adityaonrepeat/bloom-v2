@@ -7,7 +7,6 @@ export const socket = io(SOCKET_URL, {
   autoConnect: false
 })
 
-// Prevent multiple connects
 let isConnecting = false
 
 export function ensureSocketConnected() {
@@ -17,11 +16,9 @@ export function ensureSocketConnected() {
 
     socket.on("connect", () => {
       isConnecting = false
-      console.log("✅ Socket connected:", socket.id)
     })
 
     socket.on("disconnect", () => {
-      console.log("❌ Socket disconnected")
       isConnecting = false
     })
   }

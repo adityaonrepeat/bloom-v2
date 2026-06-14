@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function BloomHero() {
   return (
     <section
-      className="relative h-screen overflow-hidden"
+      className="relative min-h-screen md:h-screen overflow-hidden"
       style={{
         background: [
           "radial-gradient(ellipse 58% 58% at -5% 108%, rgba(148,163,155,0.82) 0%, transparent 56%)",
@@ -15,13 +15,9 @@ export default function BloomHero() {
         ].join(", "),
       }}
     >
-      {/* Atmospheric background — two-layer soft radial glow */}
       <div className="hero-atmosphere" aria-hidden />
-
-      {/* Atmospheric glow behind the flower */}
       <div className="flower-glow" aria-hidden />
 
-      {/* Orange corner glow — blur-based so there's no hard ellipse edge */}
       <div
         aria-hidden
         style={{
@@ -38,8 +34,7 @@ export default function BloomHero() {
         }}
       />
 
-      {/* ── Left-side text content ─────────────────────────────────────── */}
-      <div className="relative z-10 h-full flex flex-col justify-center px-6 sm:px-10 lg:px-12 xl:px-16 2xl:px-20 pt-[68px]">
+      <div className="relative z-10 md:h-full flex flex-col justify-center px-6 sm:px-10 lg:px-12 xl:px-16 2xl:px-20 pt-[68px] pb-10 md:pb-0">
         <div className="max-w-[680px]">
 
             <motion.div
@@ -112,7 +107,6 @@ export default function BloomHero() {
         </div>
       </div>
 
-      {/* ── Flower image — absolute, overflows right viewport edge ─────── */}
       <motion.div
         className="hero-flower-wrap"
         initial={{ opacity: 0 }}
@@ -127,9 +121,6 @@ export default function BloomHero() {
         />
       </motion.div>
 
-      {/* ── Floating UI cards (desktop only) ──────────────────────────── */}
-
-      {/* TODAY mood card — upper-left of flower area */}
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
@@ -164,7 +155,6 @@ export default function BloomHero() {
         </div>
       </motion.div>
 
-      {/* Aastha chat card — bottom-right of flower area */}
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
