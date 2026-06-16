@@ -16,7 +16,7 @@ export default function BloomAasthaSection() {
       <div className="blob" style={{ background: "#A6B3A8", width: 420, height: 420, top: 80, left: -120, opacity: 0.35 }} />
       <div className="blob" style={{ background: "#E3A863", width: 340, height: 340, bottom: -100, right: -80, opacity: 0.3 }} />
 
-      <div className="mx-auto max-w-[1400px] px-6 md:px-10 grid grid-cols-12 gap-10 items-center relative">
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10 grid grid-cols-12 gap-y-10 lg:gap-10 items-center relative">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}

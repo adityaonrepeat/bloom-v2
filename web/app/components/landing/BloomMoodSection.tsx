@@ -31,7 +31,7 @@ export default function BloomMoodSection() {
 
   return (
     <section id="mood" className="relative py-24 md:py-32 bg-[#F0EBE1]/60">
-      <div className="mx-auto max-w-[1400px] px-6 md:px-10 grid grid-cols-12 gap-10 items-center">
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10 grid grid-cols-12 gap-y-10 lg:gap-10 items-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -81,7 +81,7 @@ export default function BloomMoodSection() {
           className="col-span-12 lg:col-span-7"
         >
           <div className="relative rounded-[2rem] p-6 md:p-10 bg-[#F9F8F6] border border-black/5 shadow-[0_40px_80px_-50px_rgba(40,49,44,0.4)]">
-            <div className="flex items-baseline justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-3 sm:gap-0 mb-6">
               <div>
                 <div className="text-xs uppercase tracking-[0.2em] text-[#5D6862]">Mood, past 5 days</div>
                 <div className="font-display text-2xl md:text-3xl mt-1 text-[#28312C]">
@@ -146,7 +146,7 @@ export default function BloomMoodSection() {
 
             <div className="mt-4 flex items-center justify-between text-xs text-[#5D6862]">
               <span>Flat · Low · Okay · Lifting · Grounded</span>
-              <span className="italic font-display">bloom.journal · v.24</span>
+              <span className="italic font-display hidden sm:inline">bloom.journal · v.24</span>
             </div>
           </div>
         </motion.div>

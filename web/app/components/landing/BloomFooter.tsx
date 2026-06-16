@@ -4,7 +4,7 @@ export default function BloomFooter() {
   return (
     <footer className="border-t border-black/5" style={{ background: "var(--bloom-bg)" }}>
       <div className="mx-auto max-w-[1400px] px-6 md:px-10 py-14">
-        <div className="grid grid-cols-12 gap-8">
+        <div className="grid grid-cols-12 gap-y-8 lg:gap-8">
           <div className="col-span-12 md:col-span-4">
             <Link href="/" className="flex items-center gap-2 mb-4">
               <span
@@ -80,11 +80,10 @@ export default function BloomFooter() {
           </div>
         </div>
 
-        <div className="mt-14 pt-8 border-t border-black/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="mt-14 pt-8 border-t border-black/5 text-center">
           <p className="text-xs text-[#5D6862]">
-            &copy; {new Date().getFullYear()} Bloom. Built with care for your mind.
+            &copy; 2026 Bloom. Built with care for your mind.
           </p>
-          <p className="text-xs text-[#5D6862]">bloom.journal</p>
         </div>
       </div>
     </footer>

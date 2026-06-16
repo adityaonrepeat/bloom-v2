@@ -39,7 +39,7 @@ export default function BloomTalkSection() {
       />
 
       <div className="mx-auto max-w-[1400px] px-6 md:px-10 relative">
-        <div className="grid grid-cols-12 gap-10 items-center">
+        <div className="grid grid-cols-12 gap-y-10 lg:gap-10 items-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -131,7 +131,7 @@ export default function BloomTalkSection() {
               </div>
             </div>
 
-            <div className="mt-4 flex items-center justify-between text-xs text-[#A6B3A8]">
+            <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-xs text-[#A6B3A8]">
               <span>End-to-end encrypted · No recordings · No identity</span>
               <span className="flex items-center gap-1">
                 <MicOff className="w-3 h-3" /> <VideoOff className="w-3 h-3" /> One tap, one exit.

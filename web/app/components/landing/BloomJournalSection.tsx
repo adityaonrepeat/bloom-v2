@@ -6,7 +6,7 @@ import { PenLine, Lock, Wind } from "lucide-react";
 export default function BloomJournalSection() {
   return (
     <section id="journal" className="relative py-24 md:py-32">
-      <div className="mx-auto max-w-[1400px] px-6 md:px-10 grid grid-cols-12 gap-10 items-center">
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10 grid grid-cols-12 gap-y-10 lg:gap-10 items-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -32,7 +32,7 @@ export default function BloomJournalSection() {
           <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -bottom-6 right-0 md:-right-10 w-[220px] rounded-[1.25rem] p-4 bg-white shadow-[0_20px_50px_-15px_rgba(40,49,44,0.25)] border border-black/5"
+            className="relative mt-4 mx-auto w-[220px] rounded-[1.25rem] p-4 bg-white shadow-[0_20px_50px_-15px_rgba(40,49,44,0.25)] border border-black/5 lg:absolute lg:-bottom-6 lg:-right-10 lg:mt-0 lg:mx-0"
           >
             <div className="flex items-center gap-2 text-xs text-[#5D6862] uppercase tracking-widest">
               <Lock className="w-3 h-3" /> End-to-end private
