@@ -500,14 +500,7 @@ html {
 
 @media (max-width: 768px) {
   .hero-flower-wrap {
-    position: relative;
-    right: auto;
-    top: auto;
-    width: 86vw;
-    min-width: 260px;
-    max-width: 420px;
-    margin: 2.5rem auto 0;
-    pointer-events: auto;
+    display: none;
   }
   .flower-glow {
     display: none;

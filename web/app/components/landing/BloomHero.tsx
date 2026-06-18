@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function BloomHero() {
   return (
     <section
-      className="relative min-h-screen md:h-screen overflow-hidden"
+      className="relative h-screen overflow-hidden"
       style={{
         background: [
           "radial-gradient(ellipse 58% 58% at -5% 108%, rgba(148,163,155,0.82) 0%, transparent 56%)",
@@ -34,7 +34,7 @@ export default function BloomHero() {
         }}
       />
 
-      <div className="relative z-10 md:h-full flex flex-col justify-center px-6 sm:px-10 lg:px-12 xl:px-16 2xl:px-20 pt-[68px] pb-10 md:pb-0">
+      <div className="relative z-10 h-full flex flex-col justify-center px-6 sm:px-10 lg:px-12 xl:px-16 2xl:px-20 pt-[68px] pb-10 md:pb-0">
         <div className="max-w-[680px]">
 
             <motion.div
