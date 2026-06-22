@@ -65,10 +65,14 @@ export default function BloomHero() {
               transition={{ duration: 0.9, delay: 0.25 }}
               className="mt-8 max-w-xl text-lg md:text-xl text-[#5D6862] leading-relaxed"
             >
-              Journal in private. Watch your moods form a pattern. Talk to{" "}
-              <span className="text-[#28312C] font-medium">Aastha</span>, our quiet AI
-              therapist, and when the weight is too much, match with a real human
-              who&rsquo;s feeling the same shade of blue.
+              Connect with someone feeling the{" "}
+              <span className="text-[#28312C] font-medium">exact same shade of blue</span>.{" "}
+              Match by emotion,{" "}
+              <span className="text-[#28312C] font-medium">skip without friction</span>,
+              map the shifting tides of
+              your mood, unravel things with{" "}
+              <span className="text-[#28312C] font-medium">Aastha</span>, and
+              journal your thoughts in a secure space.
             </motion.p>
 
             <motion.div
