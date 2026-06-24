@@ -23,12 +23,12 @@ const figtree = Figtree({
 });
 
 export const metadata: Metadata = {
-  title: "Bloom — Mental Health, Reimagined",
+  title: "Bloom - Mental Health, Reimagined",
   description:
     "Bloom is your personal mental wellness companion. Track your mood, journal your thoughts, talk to an AI therapist, and connect with people who understand.",
   keywords: ["mental health", "mood tracker", "AI therapist", "wellness", "journal", "anxiety", "self care"],
   openGraph: {
-    title: "Bloom — Mental Health, Reimagined",
+    title: "Bloom - Mental Health, Reimagined",
     description: "Track your mood, journal your thoughts, talk to Aastha AI, and connect with people who understand.",
     siteName: "Bloom",
     type: "website",
