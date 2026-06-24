@@ -1,6 +1,7 @@
 "use client"
 
-import { Sparkles, ShieldCheck, Moon, Heart, SquarePen, X } from "lucide-react"
+import { useState } from "react"
+import { Sparkles, ShieldCheck, Moon, Heart, SquarePen, X, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   useSessions,

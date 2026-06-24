@@ -1,3 +1,5 @@
+import { useState } from "react"
+import { createPortal } from "react-dom"
 import { Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { AasthaSession } from "@/hooks/useAastha"
@@ -34,9 +36,11 @@ interface SessionItemProps {
 }
 
 export function SessionItem({ session, isActive, onSelect, onDelete, isDeleting }: SessionItemProps) {
+  const [showConfirm, setShowConfirm] = useState(false)
+
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (confirm("Delete this session? This can't be undone.")) onDelete()
+    setShowConfirm(true)
   }
 
   return (
@@ -90,7 +94,7 @@ export function SessionItem({ session, isActive, onSelect, onDelete, isDeleting 
 
       <button
         onClick={handleDelete}
-        className="absolute right-2 top-2.5 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-all"
+        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-all"
         style={{ color: "rgba(40,49,44,0.35)" }}
         onMouseEnter={(e) => (e.currentTarget.style.color = "#D96A4E")}
         onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(40,49,44,0.35)")}
@@ -99,6 +103,46 @@ export function SessionItem({ session, isActive, onSelect, onDelete, isDeleting 
       >
         <Trash2 className="h-3.5 w-3.5" />
       </button>
+
+      {showConfirm && createPortal(
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center px-4"
+          style={{ background: "rgba(28,42,37,0.4)", backdropFilter: "blur(4px)" }}
+          onClick={(e) => { e.stopPropagation(); setShowConfirm(false) }}
+        >
+          <div
+            className="bg-bloom-cream rounded-3xl border border-bloom-line/70 p-8 max-w-sm w-full space-y-5"
+            style={{ boxShadow: "0 32px 80px -20px rgba(28,42,37,0.5)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="text-center space-y-3">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto bg-bloom-terracotta/10">
+                <Trash2 size={20} strokeWidth={1.75} className="text-bloom-terracotta" />
+              </div>
+              <h2 className="font-display text-xl text-bloom-ink">Delete this session?</h2>
+              <p className="text-sm text-bloom-inkSoft">
+                This cannot be undone. Your conversation will be permanently deleted.
+              </p>
+            </div>
+            <div className="flex gap-3 pt-1">
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="flex-1 h-11 rounded-full text-sm border border-bloom-line text-bloom-inkSoft hover:bg-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => { setShowConfirm(false); onDelete() }}
+                disabled={isDeleting}
+                className="flex-1 h-11 rounded-full text-sm bg-bloom-terracotta text-bloom-cream hover:bg-bloom-terracottaHover transition-colors disabled:opacity-50"
+              >
+                {isDeleting ? "Deleting…" : "Yes, delete"}
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   )
 }
