@@ -15,7 +15,7 @@ export default function LoginPage() {
       style={{ background: "#f7f4ef", fontFamily: "var(--font-figtree), ui-sans-serif, sans-serif" }}
     >
       <div
-        className="relative hidden lg:flex flex-col overflow-hidden p-16"
+        className="relative hidden lg:flex flex-col overflow-hidden p-16 pl-38"
         style={{ background: "#28312C" }}
       >
         {/* Atmospheric blobs */}
@@ -109,7 +109,7 @@ export default function LoginPage() {
           </div>
 
           <p className="mt-9 text-xs" style={{ color: "rgba(166,179,168,0.45)" }}>
-            &copy; {new Date().getFullYear()} Bloom. Your data stays private.
+            &copy; {new Date().getFullYear()} Bloom. Your wellbeing, our priority.
           </p>
         </div>
       </div>
@@ -168,9 +168,6 @@ export default function LoginPage() {
               </Link>
             </p>
 
-            <p className="mt-8 text-xs text-center" style={{ color: "rgba(93,104,98,0.45)" }}>
-              Your wellbeing, our priority.
-            </p>
           </div>
         </div>
       </div>

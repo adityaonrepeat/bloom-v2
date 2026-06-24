@@ -69,13 +69,10 @@ export default function SignupPage() {
           </div>
         </div>
 
-        <p className="text-xs text-center" style={{ color: "rgba(93,104,98,0.45)" }}>
-          &copy; {new Date().getFullYear()} Bloom. Your wellbeing, our priority.
-        </p>
       </div>
 
       <div
-        className="relative hidden lg:flex flex-col justify-between overflow-hidden p-16"
+        className="relative hidden lg:flex flex-col items-center overflow-hidden pl-14 pr-2 py-16"
         style={{ background: "#28312C" }}
       >
         {/* Atmospheric blobs */}
@@ -102,30 +99,30 @@ export default function SignupPage() {
           }}
         />
 
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-1 w-fit z-10" style={{ marginLeft: "-8px" }}>
-          <Image
-            src="/logo.png"
-            alt=""
-            width={72}
-            height={52}
-            style={{ mixBlendMode: "luminosity", opacity: 0.85, marginRight: "-16px" }}
-          />
-          <span
-            style={{
-              fontFamily: "var(--font-fraunces), Georgia, serif",
-              fontSize: "20px",
-              letterSpacing: "-0.03em",
-              color: "#F0EBE1",
-              lineHeight: 1,
-            }}
-          >
-            bloom
-          </span>
-        </Link>
+        {/* Logo + main content centered as a group */}
+        <div className="relative z-10 flex-1 flex flex-col justify-center gap-10 w-full max-w-sm">
+          <Link href="/" className="flex items-center gap-1 w-fit" style={{ marginLeft: "-8px" }}>
+            <Image
+              src="/logo.png"
+              alt=""
+              width={72}
+              height={52}
+              style={{ mixBlendMode: "luminosity", opacity: 0.85, marginRight: "-16px" }}
+            />
+            <span
+              style={{
+                fontFamily: "var(--font-fraunces), Georgia, serif",
+                fontSize: "20px",
+                letterSpacing: "-0.03em",
+                color: "#F0EBE1",
+                lineHeight: 1,
+              }}
+            >
+              bloom
+            </span>
+          </Link>
 
-        {/* Main content */}
-        <div className="relative z-10 space-y-10">
+          <div className="space-y-10">
           <div>
             <div
               className="inline-flex items-center gap-2 mb-6"
@@ -148,7 +145,7 @@ export default function SignupPage() {
             </h2>
             <p
               className="mt-6 leading-relaxed"
-              style={{ fontSize: "16px", color: "#A6B3A8", maxWidth: "300px" }}
+              style={{ fontSize: "16px", color: "#A6B3A8"}}
             >
               Join hundreds building healthier minds, one honest moment at a time.
             </p>
@@ -169,7 +166,7 @@ export default function SignupPage() {
 
           {/* Stats */}
           <div
-            className="rounded-2xl p-5 grid grid-cols-2 gap-5"
+            className="rounded-2xl p-5 grid grid-cols-2 gap-5 -mx-10 px-8"
             style={{
               background: "rgba(255,255,255,0.06)",
               border: "1px solid rgba(255,255,255,0.1)",
@@ -197,10 +194,11 @@ export default function SignupPage() {
               </div>
             ))}
           </div>
+          </div>
         </div>
 
-        <p className="relative z-10 text-xs" style={{ color: "rgba(166,179,168,0.45)" }}>
-          &copy; {new Date().getFullYear()} Bloom. Your data stays private.
+        <p className="relative z-10 text-xs mt-8" style={{ color: "rgba(166,179,168,0.45)" }}>
+          &copy; {new Date().getFullYear()} Bloom. Your wellbeing, our priority.
         </p>
       </div>
     </div>
