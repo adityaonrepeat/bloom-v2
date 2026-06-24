@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Plus, Wind, ArrowRight, Sparkles, Heart } from "lucide-react";
 import {
@@ -53,6 +54,7 @@ const TAG_LABELS: Record<EmotionTag, string> = {
 };
 
 export default function TodayView({ emotionalScore, emotionalTag, streak = 0, last7Days = [], userName }: TodayViewProps) {
+    const router = useRouter();
     const firstName = userName?.trim().split(" ")[0] || "there";
     const [mood, setMood] = useState(4);
     const [note, setNote] = useState("");
@@ -78,6 +80,7 @@ export default function TodayView({ emotionalScore, emotionalTag, streak = 0, la
                 setSaved(true);
                 setNote("");
                 setTimeout(() => setSaved(false), 3000);
+                router.refresh();
             }
         } finally {
             setSaving(false);
