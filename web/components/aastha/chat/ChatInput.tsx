@@ -44,7 +44,7 @@ export function ChatInput({
 
   return (
     <div
-      className="px-4 pb-4 pt-3"
+      className="px-3 pb-3 pt-2.5 md:px-4 md:pb-4 md:pt-3"
       style={{
         background: "rgba(28,42,37,0.97)",
         backdropFilter: "blur(16px)",
@@ -53,9 +53,9 @@ export function ChatInput({
       }}
     >
       <div className="mx-auto max-w-3xl">
-        <div className="flex items-end gap-3">
+        <div className="flex items-end gap-2.5 md:gap-3">
           <div
-            className="flex-1 flex items-end rounded-2xl px-4 py-2.5 transition-all"
+            className="flex-1 flex items-end rounded-2xl px-3.5 py-2.5 md:px-4 transition-all"
             style={{
               background: "rgba(37,54,48,0.7)",
               border: "1px solid #364A41",
@@ -72,7 +72,8 @@ export function ChatInput({
               rows={1}
               className={cn(
                 "aastha-textarea",
-                "flex-1 resize-none bg-transparent text-sm leading-relaxed outline-none",
+                "flex-1 resize-none bg-transparent leading-relaxed outline-none",
+                "text-[16px] md:text-sm",
                 "min-h-6 max-h-40",
                 "disabled:cursor-not-allowed disabled:opacity-50",
                 "placeholder:text-[rgba(249,246,240,0.35)]"
@@ -85,11 +86,11 @@ export function ChatInput({
             disabled={disabled || !value.trim()}
             className="h-11 w-11 shrink-0 rounded-full flex items-center justify-center bg-bloom-terracotta hover:bg-bloom-terracottaHover text-bloom-cream transition-all shadow-[0_4px_12px_rgba(217,106,78,0.3)] hover:shadow-[0_4px_16px_rgba(217,106,78,0.45)] active:scale-95 disabled:opacity-30"
           >
-            <Send className="h-4 w-4" />
+            <Send className="h-[17px] w-[17px]" style={{ transform: "translateY(0.75px)" }} />
           </button>
         </div>
         <p
-          className="mt-2 text-center text-[10px]"
+          className="mt-1.5 text-center text-[10px] hidden sm:block"
           style={{ color: "rgba(249,246,240,0.3)" }}
         >
           Not a substitute for professional care. In crisis? Call iCall:{" "}
