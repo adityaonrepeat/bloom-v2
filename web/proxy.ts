@@ -22,9 +22,12 @@ export async function proxy(request: NextRequest) {
   // agreement. (This endpoint isn't in the matcher, so there's no recursion.)
   let isLoggedIn = false;
   let isBlocked = false;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 4000);
   try {
     const res = await fetch(new URL("/api/auth/get-session", request.url), {
       headers: { cookie: request.headers.get("cookie") ?? "" },
+      signal: controller.signal,
     });
     if (res.ok) {
       const session = await res.json().catch(() => null);
@@ -32,7 +35,11 @@ export async function proxy(request: NextRequest) {
       isBlocked = !!session?.user?.isBlocked;
     }
   } catch {
-    isLoggedIn = false;
+    // Timeout or network error (serverless cold start) — fall back to cookie
+    // presence so logged-in users aren't bounced to /login.
+    isLoggedIn = request.cookies.has("better-auth.session_token");
+  } finally {
+    clearTimeout(timeout);
   }
 
   // 1. Block unauthenticated users from protected routes
