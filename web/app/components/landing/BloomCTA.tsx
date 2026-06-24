@@ -12,7 +12,7 @@ export default function BloomCTA() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.9 }}
-        className="mx-auto max-w-[1400px] relative rounded-[2.5rem] overflow-hidden px-6 sm:px-10 md:px-20 py-16 sm:py-20 md:py-28 text-center"
+        className="mx-auto max-w-[1400px] relative rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden px-6 sm:px-10 md:px-20 py-10 sm:py-20 md:py-28 text-center"
         style={{
           background: "radial-gradient(ellipse at 60% 40%, #E3A863 0%, #C67156 45%, #B05D44 100%)",
         }}
@@ -27,7 +27,7 @@ export default function BloomCTA() {
         />
 
         <div className="relative">
-          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-[5rem] leading-[0.98] tracking-tight text-[#F9F8F6]">
+          <h2 className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-[5rem] leading-[0.98] tracking-tight text-[#F9F8F6]">
             You don&rsquo;t have to
             <br />
             bloom alone.

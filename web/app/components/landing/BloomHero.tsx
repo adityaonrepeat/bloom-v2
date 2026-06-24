@@ -105,7 +105,7 @@ export default function BloomHero() {
                     />
                   ))}
                 </div>
-                <span>12,800+ quiet hearts</span>
+                <span>100+ quiet hearts</span>
               </div>
             </motion.div>
         </div>

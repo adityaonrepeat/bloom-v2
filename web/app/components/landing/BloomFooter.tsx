@@ -82,7 +82,7 @@ export default function BloomFooter() {
 
         <div className="mt-14 pt-8 border-t border-black/5 text-center">
           <p className="text-xs text-[#5D6862]">
-            &copy; 2026 Bloom. Built with care for your mind.
+            &copy; 2026 Bloom. Your wellbeing, our priority.
           </p>
         </div>
       </div>
