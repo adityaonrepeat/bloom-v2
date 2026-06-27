@@ -127,7 +127,7 @@ export function ForgotPasswordForm({
             </p>
           </div>
 
-          <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
+          <form method="post" className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="email" style={{ color: "#28312C", fontSize: "13px", fontWeight: 500 }}>
                 Email

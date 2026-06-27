@@ -17,7 +17,7 @@ export default function JournalSearch() {
   }
 
   return (
-    <form onSubmit={handleSearch} className="flex-1 relative">
+    <form method="post" onSubmit={handleSearch} className="flex-1 relative">
       <input
         type="text"
         value={query}

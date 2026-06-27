@@ -82,7 +82,7 @@ export default function NewJournalPage() {
           </h1>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form method="post" onSubmit={handleSubmit}>
           <div className="bg-white rounded-3xl border border-bloom-line/70 shadow-[0_18px_50px_-30px_rgba(42,47,45,0.2)] overflow-hidden">
             {/* terracotta accent bar */}
             <div className="h-1 bg-bloom-terracotta" />

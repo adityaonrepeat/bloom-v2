@@ -56,6 +56,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
 
   return (
     <form
+      method="post"
       onSubmit={handleSubmit(onSubmit)}
       className={cn("flex flex-col gap-4", className)}
       {...props}

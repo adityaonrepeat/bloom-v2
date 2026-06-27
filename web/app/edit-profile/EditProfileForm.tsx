@@ -39,7 +39,7 @@ export function EditProfileForm({ initialName, email }: Props) {
   const initial = name.charAt(0).toUpperCase() || "U"
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6" style={{ fontFamily: "var(--font-figtree), ui-sans-serif, sans-serif" }}>
+    <form method="post" onSubmit={handleSubmit} className="space-y-6" style={{ fontFamily: "var(--font-figtree), ui-sans-serif, sans-serif" }}>
       {/* Avatar initial */}
       <div className="flex items-center gap-4">
         <div
