@@ -4,7 +4,7 @@ import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Terms of Service · Bloom",
-  description: "The terms that govern your use of Bloom — what you can expect from us, and what we ask of you.",
+  description: "The terms that govern your use of Bloom: what you can expect from us, and what we ask of you.",
 }
 
 const LAST_UPDATED = "June 5, 2026"
@@ -57,7 +57,7 @@ const sections: Section[] = [
   {
     title: "6. Your content",
     paragraphs: [
-      "Your journals, messages, and mood entries belong to you. You grant Bloom only the limited permission needed to store and process your content so the service can function — for example, sending your messages to our AI provider to generate Aastha’s replies.",
+      "Your journals, messages, and mood entries belong to you. You grant Bloom only the limited permission needed to store and process your content so the service can function, for example sending your messages to our AI provider to generate Aastha’s replies.",
       "We do not sell your personal content. We may process it through trusted third-party services strictly to operate Bloom.",
     ],
   },
@@ -76,7 +76,7 @@ const sections: Section[] = [
   {
     title: "9. Our rights",
     paragraphs: [
-      "Bloom reserves the right, at any time and at our sole discretion, to add, change, suspend, limit, or discontinue any part of the service. We may also remove content, restrict features, or suspend or terminate accounts — with or without notice — where we reasonably believe these Terms have been broken or to protect Bloom and its community.",
+      "Bloom reserves the right, at any time and at our sole discretion, to add, change, suspend, limit, or discontinue any part of the service. We may also remove content, restrict features, or suspend or terminate accounts, with or without notice, where we reasonably believe these Terms have been broken or to protect Bloom and its community.",
       "We may update these Terms from time to time. When we do, we’ll revise the date below, and your continued use of Bloom means you accept the updated Terms.",
     ],
   },

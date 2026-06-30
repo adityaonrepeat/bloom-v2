@@ -92,7 +92,7 @@ export default function TodayView({ emotionalScore, emotionalTag, streak = 0, la
             <WorkspaceHeader
                 title={getGreeting()}
                 titleAccent={`${firstName}.`}
-                sub="You haven't written yet. No rush. The page is here when you're ready."
+                sub="Take a moment to reflect, reset, and reconnect with yourself."
                 right={
                     <>
                         <Link href="/journal/new">

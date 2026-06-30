@@ -15,7 +15,7 @@ import BloomFooter from "./components/landing/BloomFooter";
 export const metadata: Metadata = {
   title: "Bloom - Feelings, finally in full bloom.",
   description:
-    "Journal in private. Watch your moods form a pattern. Talk to Aastha, our quiet AI therapist — and when the weight is too much, match with a real human who's feeling the same shade of blue.",
+    "Journal in private. Watch your moods form a pattern. Talk to Aastha, our quiet AI therapist, and when the weight is too much, match with a real human who's feeling the same shade of blue.",
 };
 
 export default function Home() {

@@ -73,7 +73,7 @@ export function EmptyState({ onNewSession, isCreating, onToggleSidebar, sidebarO
             className="max-w-xs leading-relaxed"
             style={{ fontSize: "15px", color: "rgba(249,246,240,0.55)" }}
           >
-            A safe space to talk about whatever&apos;s on your mind. I&apos;m here to listen — without judgment.
+            A safe space to talk about whatever&apos;s on your mind. I&apos;m here to listen without judgment.
           </p>
         </div>
 
