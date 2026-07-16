@@ -1,23 +1,111 @@
 # Bloom
 
-**Bloom** is a mental wellness platform that helps people understand how they feel, talk it through, and feel less alone. Users take a quick emotional check-in, journal their thoughts, chat with an AI therapist, and - when they want a human connection - get matched into anonymous peer-to-peer video conversations with someone in a similar emotional state.
+**Bloom** matches 100+ users into anonymous peer video calls by emotional state — anxious talks to anxious, calm to calm. Not random. Not an AI. Someone in the same moment.
 
-> Built as a full-stack project spanning a Next.js web app and a standalone realtime matchmaking server, with auth, AI streaming, video, and a Postgres data model.
+Also: streaming AI therapist, private journaling, mood tracking.
+
+**How does same-emotion matching work? →** [Queue Orchestration](#queue-orchestration)
 
 ![Bloom](web/public/bloom.png)
+
+## Queue Orchestration
+
+```
+User takes quiz
+        │
+        ▼
+ Emotion assigned
+        │
+        ▼
+ Redis Queue Manager
+ ┌──────────────────────────┐◄───────────────────────┐
+ │ Happy Queue              │                        │
+ │ Calm Queue               │                        │
+ │ Stressed Queue           │                        │
+ │ Anxious Queue            │                        │
+ └──────────────────────────┘                        │
+        │                                            │
+ Same emotion available?                             │
+      /     \                                        │
+    Yes      No                                      │
+     │        │                                      │
+     ▼        ▼                                      │
+  Match   Cross-emotion queue                        │
+     │        │                                      │
+     └────────┘                                      │
+          │                                          │
+ Previous partner < 4s? → skip, retry               │
+          │                                          │
+          ▼                                          │
+   Room allocated                                    │
+          │                                          │
+       Socket.IO                                     │
+          │                                          │
+       Zego Video                                    │
+          │                                          │
+        Skip?                                        │
+       /     \                                       │
+     Yes      No → session ends                      │
+      │                                              │
+  Cooldown · rematch block                           │
+  Both requeued ─────────────────────────────────────┘
+```
+
+## Architecture Highlights
+
+- Emotion-aware Redis queue orchestration with four primary queues and automatic cross-emotion fallback.
+- Previous-peer exclusion to prevent rematching within a 4-second window.
+- Skip cooldowns and report-aware matchmaking without duplicate room allocation.
+- Standalone Socket.IO service decoupled from the Next.js application.
+- SSE-based AI therapist with per-session conversational memory.
+- Shared PostgreSQL data model across independent realtime and web services.
+
+For the full design document see **[SYSTEM-DESIGN.md](SYSTEM-DESIGN.md)**.
 
 ---
 
 ## Features
 
-- **Emotional check-in quiz** - a 10-question quiz scores mood 0-50 and maps it to an emotion (`happy` / `calm` / `stressed` / `anxious`).
-- **Aastha, the AI therapist** - a streaming chat companion powered by **Gemini 2.5 Flash**, grounded in the user's current emotional state and recent history.
-- **Peer video Talk** - anonymous 1:1 video matchmaking that pairs people by emotion, with skip, rematch cooldowns, and in-session reporting.
-- **Journaling** - private free-text entries with full CRUD.
-- **Mood tracking** - daily mood logs visualized as a history chart.
-- **Safety** - peer reporting with auto-blocking past a threshold, blocked-user gating, and email verification.
-- **Rate limiting** - all web API routes are rate-limited via Upstash Redis to prevent abuse.
-- **Auth** - email/password + Google OAuth, with transactional email via Resend.
+- **Emotional check-in** — 10-question quiz scores mood 0–50, maps to one of four emotion tags (`happy` / `calm` / `stressed` / `anxious`).
+- **Aastha, AI therapist** — streaming chat powered by Gemini 2.5 Flash, grounded in the user's current emotional state and last 10 messages.
+- **Talk** — anonymous 1:1 peer video, emotion-matched, with skip, report, and auto-blocking.
+- **Journal** — private free-text entries with full CRUD.
+- **Mood tracking** — daily logs visualized as a history chart.
+- **Auth** — email/password + Google OAuth, rate-limited API routes via Upstash Redis.
+
+---
+
+## System Architecture
+
+Two independent services that share only a Postgres user ID:
+
+```
+                        ┌─────────────────────────────────────┐
+                        │           Browser                   │
+                        └──────┬──────────────┬──────────────┘
+                               │              │
+                    HTTP/SSE   │              │  WebSocket
+                               ▼              ▼
+              ┌────────────────────┐   ┌──────────────────────┐
+              │   Next.js · Vercel │   │ Socket.IO · Render   │
+              │                    │   │                      │
+              │  auth · API routes │   │  emotion queues      │
+              │  AI chat proxy     │   │  match + room mgmt   │
+              │  journals · mood   │   │  skip · cooldowns    │
+              └──────┬─────────────┘   └──────────┬───────────┘
+                     │                            │
+              Prisma │                   REST     │
+                     ▼                            ▼
+              ┌──────────────┐         ┌──────────────────────┐
+              │  PostgreSQL  │         │    Upstash Redis      │
+              │              │         │                      │
+              │  users       │         │  queue:happy         │
+              │  sessions    │         │  queue:calm          │
+              │  journals    │         │  queue:stressed      │
+              │  AI history  │         │  queue:anxious       │
+              │  reports     │         │  skip-cooldown:{id}  │
+              └──────────────┘         └──────────────────────┘
+```
 
 ## Tech Stack
 
@@ -35,39 +123,6 @@
 - [Upstash Redis](https://upstash.com) - emotion queues, skip cooldowns, and web API rate limiting
 - TypeScript via [tsx](https://github.com/privatenumber/tsx)
 
-## Architecture at a glance
-
-Bloom runs as **two independent services** that share only a user ID and a Socket.IO connection:
-
-```mermaid
-graph TD
-    Browser["Browser — Next.js client + UI"]
-
-    subgraph Vercel
-        Web["web/ · Next.js<br/>API routes · auth · AI chat"]
-    end
-
-    subgraph Render
-        RT["realtime/ · Socket.IO<br/>emotion-based matchmaking"]
-    end
-
-    PG[("PostgreSQL<br/>via Prisma")]
-    Redis[("Upstash Redis<br/>queues · cooldowns · rate limits")]
-    Gemini["Gemini 2.5 Flash"]
-    Zego["ZegoCloud<br/>peer video"]
-
-    Browser -->|HTTP / SSE| Web
-    Browser -->|WebSocket| RT
-    Browser -->|WebRTC video| Zego
-
-    Web --> PG
-    Web --> Redis
-    Web -->|SSE token stream| Gemini
-
-    RT --> Redis
-```
-
-For the full design - Talk matchmaking flow, Aastha streaming, the emotion system, and the data model - see **[ARCHITECTURE.md](ARCHITECTURE.md)**.
 
 ## Getting Started
 
